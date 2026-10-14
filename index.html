@@ -190,6 +190,9 @@ h2, h3, p { margin: 0; }
 .primary { background: var(--green); color: var(--btn-ink); border: 0; border-radius: 1rem; font-weight: 700; padding: 0.8rem 1.5rem; }
 .primary:hover:not(:disabled) { filter: brightness(1.07); }
 .primary:disabled { opacity: 0.4; cursor: default; }
+.gate-ok { color: var(--green-deep); font-weight: 600; font-size: 0.95rem; }
+.gate-links { display: flex; flex-direction: column; align-items: flex-start; gap: 0.55rem; border-top: 1px solid var(--line); padding-top: 0.9rem; }
+.field .hint { font-size: 0.8rem; }
 .gate-error { color: var(--green-deep); font-weight: 700; font-size: 0.92rem; }
 .gate-wait { text-align: center; color: var(--muted); padding-block: 1.25rem; }
 .forgot { display: flex; flex-direction: column; gap: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.9rem; align-items: flex-start; }
@@ -294,13 +297,22 @@ body {
     </div>
   </header>
 
-  <!-- Gate: registration on the first visit, sign-in afterwards -->
+  <!-- Gate: sign in, sign up, password reset -->
   <section class="card gate" id="gate" data-i18n-aria="gateAria" aria-label="Вход в архив">
     <form class="stack" id="gate-form" novalidate>
       <h2 id="gate-title" data-i18n="tLogin">Вход</h2>
       <p class="gate-wait" id="gate-wait" data-i18n="opening">Открываем архив…</p>
       <div class="stack" id="gate-fields" hidden>
         <p class="hint" id="gate-lead"></p>
+        <div class="field" id="field-ident">
+          <label for="gate-ident" data-i18n="identLabel">Имя пользователя или почта</label>
+          <input id="gate-ident" type="text" autocomplete="username" autocapitalize="none" spellcheck="false">
+        </div>
+        <div class="field" id="field-uname">
+          <label for="gate-uname" data-i18n="uname">Имя пользователя</label>
+          <input id="gate-uname" type="text" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false">
+          <span class="hint" data-i18n="unameHint">3–24 символа: латинские буквы, цифры, _ или .</span>
+        </div>
         <div class="field" id="field-name">
           <label for="gate-name" data-i18n="name">Имя</label>
           <input id="gate-name" type="text" maxlength="40" autocomplete="given-name">
@@ -309,13 +321,9 @@ body {
           <label for="gate-surname" data-i18n="surname">Фамилия</label>
           <input id="gate-surname" type="text" maxlength="40" autocomplete="family-name">
         </div>
-        <div class="code-panel" id="code-panel" hidden>
-          <code id="code-value"></code>
-          <button type="button" class="pill-btn" id="code-copy" data-i18n="copy">Скопировать</button>
-        </div>
-        <div class="field" id="field-code">
-          <label for="gate-code" data-i18n="recCode">Код восстановления</label>
-          <input id="gate-code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="field" id="field-email">
+          <label for="gate-email" data-i18n="email">Почта</label>
+          <input id="gate-email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false">
         </div>
         <div class="field" id="field-pass">
           <label for="gate-pass" id="gate-pass-label" data-i18n="pass">Пароль</label>
@@ -326,21 +334,15 @@ body {
           <input id="gate-pass2" type="password" autocomplete="new-password">
         </div>
         <p class="gate-error" id="gate-error" role="alert" hidden></p>
+        <p class="gate-ok" id="gate-ok" role="status" hidden></p>
         <div class="foot">
           <span class="hint" id="gate-hint"></span>
           <button class="primary" id="gate-submit" type="submit" data-i18n="signIn">Войти</button>
         </div>
-        <button type="button" class="strike" id="back-login" data-i18n="backLogin" hidden>Назад ко входу</button>
-        <div class="forgot" id="forgot" hidden>
-          <button type="button" class="strike" id="forgot-open" data-i18n="forgot">Забыли пароль?</button>
-          <div class="stack" id="forgot-confirm" hidden>
-            <p class="hint" id="forgot-text"></p>
-            <div class="forgot-row">
-              <button type="button" class="link" id="forgot-code" data-i18n="byCode">Восстановить по коду</button>
-              <button type="button" class="strike" id="forgot-yes" data-i18n="wipe">Стереть всё и начать заново</button>
-              <button type="button" class="strike" id="forgot-no" data-i18n="cancel">Отмена</button>
-            </div>
-          </div>
+        <div class="gate-links">
+          <button type="button" class="link" id="to-register" data-i18n="toRegister">Нет аккаунта? Зарегистрироваться</button>
+          <button type="button" class="link" id="to-login" data-i18n="toLogin">Уже есть аккаунт? Войти</button>
+          <button type="button" class="strike" id="to-forgot" data-i18n="forgot">Забыли пароль?</button>
         </div>
       </div>
     </form>
@@ -502,20 +504,8 @@ body {
         </div>
       </form>
       <section class="card stack">
-        <h3 data-i18n="recCode">Код восстановления</h3>
-        <p class="hint" data-i18n="codeHint">По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.</p>
-        <div class="code-panel" id="set-code-panel" hidden>
-          <code id="set-code-value"></code>
-          <button type="button" class="pill-btn" id="set-code-copy" data-i18n="copy">Скопировать</button>
-        </div>
-        <p class="hint" id="set-code-msg" role="status" hidden></p>
-        <div class="foot end">
-          <button type="button" class="strike" id="set-code-new" data-i18n="codeNew">Создать новый код</button>
-          <button type="button" class="primary" id="set-code-show" data-i18n="codeShow">Показать код</button>
-        </div>
-      </section>
-      <section class="card stack">
         <h3 data-i18n="account">Аккаунт</h3>
+        <p class="hint" id="set-account"></p>
         <div class="foot end">
           <span class="hint" data-i18n="logoutHint">Чтобы снова открыть архив, понадобится пароль.</span>
           <button type="button" class="pill-btn" id="lock" data-i18n="logout">Выйти</button>
@@ -581,7 +571,7 @@ body {
   </div>
 
   <footer class="colophon">
-    <span id="storage-note">Идеи шифруются вашим паролем.</span>
+    <span id="storage-note"></span>
   </footer>
 </div>
 
@@ -590,10 +580,10 @@ body {
   <button type="button" id="toast-undo" data-i18n="undo">Вернуть</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
   function $(id) { return document.getElementById(id); }
-
 
   // --- Interface languages
   var LANG_KEY = "overthinkers-lang";
@@ -635,6 +625,7 @@ body {
       theme: "Тема", themeSystem: "Как в системе", themeLight: "Светлая", themeDark: "Тёмная",
       changePass: "Смена пароля", passChanged: "Пароль изменён.", account: "Аккаунт", logoutHint: "Чтобы снова открыть архив, понадобится пароль.",
       affirmations: "Аффирмации", affirmHint: "Повторяйте каждую фразу столько раз в день, сколько выберете — текстом или голосом. Счётчик обнуляется в полночь.", affirmNew: "Новая фраза", add: "Добавить", affirmTitle: "Аффирмации на сегодня", affirmLead: "Прежде чем войти, напишите фразу своими руками.", affirmType: "Напишите эту фразу", affirmWrong: "Не совпадает. Напишите фразу слово в слово.", next: "Дальше", affirmMax: "Можно добавить не больше 10 фраз.", affirmTooLong: "Слишком много текста: все фразы вместе — не больше 40 000 символов.", editBtn: "Изменить",
+      uname: "Имя пользователя", identLabel: "Имя пользователя или почта", email: "Почта", unameHint: "3–24 символа: латинские буквы, цифры, _ или .", bRegister: "Создать аккаунт", toRegister: "Нет аккаунта? Зарегистрироваться", toLogin: "Уже есть аккаунт? Войти", tForgot: "Сброс пароля", leadForgot: "Укажите почту аккаунта — пришлём ссылку для нового пароля.", bSendLink: "Отправить ссылку", sentLink: "Если аккаунт с этой почтой есть, письмо уже в пути. Откройте ссылку из письма — появится поле для нового пароля.", tNewPass: "Новый пароль", leadNewPass: "Придумайте новый пароль для аккаунта.", bSavePass: "Сохранить пароль", leadLogin2: "Войдите, чтобы открыть свои идеи на этом устройстве.", leadReg2: "Аккаунт работает на любом устройстве: телефон, компьютер, планшет.", eUname: "Имя пользователя: 3–24 символа, латинские буквы, цифры, _ или .", eUnameTaken: "Это имя пользователя уже занято. Выберите другое.", eEmail: "Проверьте почту: адрес выглядит неправильно.", eEmailTaken: "Аккаунт с этой почтой уже есть. Войдите или сбросьте пароль.", eLogin: "Неверное имя пользователя, почта или пароль.", eConfirm: "Мы отправили письмо на вашу почту. Откройте ссылку из письма, чтобы завершить регистрацию.", eNetwork: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.", eRate: "Слишком много попыток. Подождите минуту и попробуйте снова.", noteServer: "Идеи хранятся в вашем аккаунте и открываются на любом устройстве.", signedAs: "Вы вошли как {u}.",
       codeHint: "По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.", codeNew: "Создать новый код", codeShow: "Показать код", codeHide: "Скрыть код", codeNewConfirm: "Точно? Старый код перестанет работать", codeUnknown: "Этот код был создан до того, как сайт научился его хранить, поэтому показать его нельзя. Создайте новый — старый перестанет работать.", codeMade: "Новый код создан. Сохраните его — старый больше не работает.",
       affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день",
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите или звоните.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
@@ -675,6 +666,7 @@ body {
       theme: "Көрініс", themeSystem: "Жүйедегідей", themeLight: "Жарық", themeDark: "Қараңғы",
       changePass: "Құпиясөзді өзгерту", passChanged: "Құпиясөз өзгертілді.", account: "Аккаунт", logoutHint: "Мұрағатты қайта ашу үшін құпиясөз қажет болады.",
       affirmations: "Аффирмациялар", affirmHint: "Әр сөйлемді күніне өзіңіз таңдаған рет қайталаңыз — мәтінмен немесе дауыспен. Есептегіш түн ортасында нөлденеді.", affirmNew: "Жаңа сөйлем", add: "Қосу", affirmTitle: "Бүгінгі аффирмациялар", affirmLead: "Кірмес бұрын сөйлемді өз қолыңызбен жазыңыз.", affirmType: "Осы сөйлемді жазыңыз", affirmWrong: "Сәйкес келмейді. Сөйлемді сөзбе-сөз жазыңыз.", next: "Әрі қарай", affirmMax: "10 сөйлемнен артық қосуға болмайды.", affirmTooLong: "Мәтін тым көп: барлық сөйлем бірге 40 000 таңбадан аспауы керек.", editBtn: "Өзгерту",
+      uname: "Пайдаланушы аты", identLabel: "Пайдаланушы аты немесе пошта", email: "Пошта", unameHint: "3–24 таңба: латын әріптері, сандар, _ немесе .", bRegister: "Аккаунт құру", toRegister: "Аккаунтыңыз жоқ па? Тіркелу", toLogin: "Аккаунтыңыз бар ма? Кіру", tForgot: "Құпиясөзді қалпына келтіру", leadForgot: "Аккаунт поштасын енгізіңіз — жаңа құпиясөзге сілтеме жібереміз.", bSendLink: "Сілтеме жіберу", sentLink: "Бұл поштамен аккаунт болса, хат жіберілді. Хаттағы сілтемені ашыңыз — жаңа құпиясөз өрісі шығады.", tNewPass: "Жаңа құпиясөз", leadNewPass: "Аккаунтқа жаңа құпиясөз ойлап табыңыз.", bSavePass: "Құпиясөзді сақтау", leadLogin2: "Идеяларыңызды осы құрылғыда ашу үшін кіріңіз.", leadReg2: "Аккаунт кез келген құрылғыда жұмыс істейді: телефон, компьютер, планшет.", eUname: "Пайдаланушы аты: 3–24 таңба, латын әріптері, сандар, _ немесе .", eUnameTaken: "Бұл пайдаланушы аты бос емес. Басқасын таңдаңыз.", eEmail: "Поштаны тексеріңіз: мекенжай қате сияқты.", eEmailTaken: "Бұл поштамен аккаунт бар. Кіріңіз немесе құпиясөзді қалпына келтіріңіз.", eLogin: "Пайдаланушы аты, пошта немесе құпиясөз қате.", eConfirm: "Поштаңызға хат жібердік. Тіркелуді аяқтау үшін хаттағы сілтемені ашыңыз.", eNetwork: "Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көріңіз.", eRate: "Әрекет тым көп. Бір минут күтіп, қайталап көріңіз.", noteServer: "Идеялар аккаунтыңызда сақталады және кез келген құрылғыда ашылады.", signedAs: "Сіз {u} ретінде кірдіңіз.",
       codeHint: "Бұл код арқылы ескі құпиясөзді ұмытсаңыз, жаңасын қоюға болады. Оны сенімді жерде сақтаңыз.", codeNew: "Жаңа код жасау", codeShow: "Кодты көрсету", codeHide: "Кодты жасыру", codeNewConfirm: "Сенімдісіз бе? Ескі код жұмыс істемей қалады", codeUnknown: "Бұл код сайт оны сақтауды үйренбей тұрып жасалған, сондықтан оны көрсету мүмкін емес. Жаңасын жасаңыз — ескісі жұмыс істемей қалады.", codeMade: "Жаңа код жасалды. Оны сақтаңыз — ескісі енді жұмыс істемейді.",
       affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет",
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, жазыңыз немесе қоңырау шалыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
@@ -715,6 +707,7 @@ body {
       theme: "Theme", themeSystem: "System", themeLight: "Light", themeDark: "Dark",
       changePass: "Change password", passChanged: "Password changed.", account: "Account", logoutHint: "You will need your password to open the archive again.",
       affirmations: "Affirmations", affirmHint: "Repeat each phrase as many times a day as you choose, by typing or by voice. The counter resets at midnight.", affirmNew: "New phrase", add: "Add", affirmTitle: "Today's affirmations", affirmLead: "Before you go in, type the phrase yourself.", affirmType: "Type this phrase", affirmWrong: "That does not match. Type the phrase word for word.", next: "Next", affirmMax: "You can add up to 10 phrases.", affirmTooLong: "Too much text: all phrases together can be up to 40,000 characters.", editBtn: "Edit",
+      uname: "Username", identLabel: "Username or email", email: "Email", unameHint: "3–24 characters: Latin letters, digits, _ or .", bRegister: "Create account", toRegister: "No account? Sign up", toLogin: "Already have an account? Sign in", tForgot: "Reset password", leadForgot: "Enter your account email and we'll send a link to set a new password.", bSendLink: "Send link", sentLink: "If an account with this email exists, the email is on its way. Open the link in it to set a new password.", tNewPass: "New password", leadNewPass: "Choose a new password for your account.", bSavePass: "Save password", leadLogin2: "Sign in to open your ideas on this device.", leadReg2: "Your account works on any device: phone, computer, tablet.", eUname: "Username: 3–24 characters, Latin letters, digits, _ or .", eUnameTaken: "That username is taken. Choose another one.", eEmail: "Check the email address: it doesn't look right.", eEmailTaken: "An account with this email already exists. Sign in or reset the password.", eLogin: "Wrong username, email or password.", eConfirm: "We sent an email to your address. Open the link in it to finish signing up.", eNetwork: "Can't reach the server. Check your internet and try again.", eRate: "Too many attempts. Wait a minute and try again.", noteServer: "Ideas are kept in your account and open on any device.", signedAs: "Signed in as {u}.",
       codeHint: "This code lets you set a new password if you forget the old one. Keep it somewhere safe.", codeNew: "Create a new code", codeShow: "Show code", codeHide: "Hide code", codeNewConfirm: "Sure? The old code will stop working", codeUnknown: "This code was made before the site could keep a copy, so it cannot be shown. Create a new one; the old one will stop working.", codeMade: "New code created. Save it; the old one no longer works.",
       affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day",
       contactTitle: "Questions?", contactText: "If you have any questions, write or call.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
@@ -755,6 +748,7 @@ body {
       theme: "Thème", themeSystem: "Système", themeLight: "Clair", themeDark: "Sombre",
       changePass: "Changer le mot de passe", passChanged: "Mot de passe modifié.", account: "Compte", logoutHint: "Il faudra votre mot de passe pour rouvrir l'archive.",
       affirmations: "Affirmations", affirmHint: "Répétez chaque phrase autant de fois par jour que vous le souhaitez, à l'écrit ou à voix haute. Le compteur repart à zéro à minuit.", affirmNew: "Nouvelle phrase", add: "Ajouter", affirmTitle: "Affirmations du jour", affirmLead: "Avant d'entrer, écrivez la phrase vous-même.", affirmType: "Écrivez cette phrase", affirmWrong: "Cela ne correspond pas. Écrivez la phrase mot pour mot.", next: "Suivant", affirmMax: "Vous pouvez ajouter 10 phrases au maximum.", affirmTooLong: "Trop de texte : toutes les phrases réunies ne peuvent pas dépasser 40 000 caractères.", editBtn: "Modifier",
+      uname: "Nom d'utilisateur", identLabel: "Nom d'utilisateur ou e-mail", email: "E-mail", unameHint: "3 à 24 caractères : lettres latines, chiffres, _ ou .", bRegister: "Créer un compte", toRegister: "Pas de compte ? S'inscrire", toLogin: "Déjà un compte ? Se connecter", tForgot: "Réinitialiser le mot de passe", leadForgot: "Indiquez l'e-mail du compte : nous enverrons un lien pour choisir un nouveau mot de passe.", bSendLink: "Envoyer le lien", sentLink: "Si un compte existe avec cet e-mail, le message est en route. Ouvrez le lien pour choisir un nouveau mot de passe.", tNewPass: "Nouveau mot de passe", leadNewPass: "Choisissez un nouveau mot de passe pour votre compte.", bSavePass: "Enregistrer le mot de passe", leadLogin2: "Connectez-vous pour ouvrir vos idées sur cet appareil.", leadReg2: "Votre compte fonctionne sur tous vos appareils : téléphone, ordinateur, tablette.", eUname: "Nom d'utilisateur : 3 à 24 caractères, lettres latines, chiffres, _ ou .", eUnameTaken: "Ce nom d'utilisateur est déjà pris. Choisissez-en un autre.", eEmail: "Vérifiez l'adresse e-mail : elle semble incorrecte.", eEmailTaken: "Un compte existe déjà avec cet e-mail. Connectez-vous ou réinitialisez le mot de passe.", eLogin: "Nom d'utilisateur, e-mail ou mot de passe incorrect.", eConfirm: "Nous avons envoyé un e-mail à votre adresse. Ouvrez le lien pour terminer l'inscription.", eNetwork: "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.", eRate: "Trop de tentatives. Attendez une minute et réessayez.", noteServer: "Les idées sont conservées dans votre compte et s'ouvrent sur tous vos appareils.", signedAs: "Connecté en tant que {u}.",
       codeHint: "Ce code permet de définir un nouveau mot de passe si vous oubliez l'ancien. Conservez-le en lieu sûr.", codeNew: "Créer un nouveau code", codeShow: "Afficher le code", codeHide: "Masquer le code", codeNewConfirm: "Sûr ? L'ancien code ne fonctionnera plus", codeUnknown: "Ce code a été créé avant que le site puisse en garder une copie : il ne peut pas être affiché. Créez-en un nouveau ; l'ancien ne fonctionnera plus.", codeMade: "Nouveau code créé. Conservez-le : l'ancien ne fonctionne plus.",
       affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour",
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez ou appelez.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
@@ -795,6 +789,7 @@ body {
       theme: "主题", themeSystem: "跟随系统", themeLight: "浅色", themeDark: "深色",
       changePass: "修改密码", passChanged: "密码已修改。", account: "账户", logoutHint: "再次打开档案时需要输入密码。",
       affirmations: "肯定语", affirmHint: "每句话每天按你设定的次数重复，可以打字或用语音。计数在午夜清零。", affirmNew: "新句子", add: "添加", affirmTitle: "今天的肯定语", affirmLead: "进入之前，请亲手写下这句话。", affirmType: "写下这句话", affirmWrong: "不一致。请逐字写下这句话。", next: "下一步", affirmMax: "最多可以添加 10 句。", affirmTooLong: "文字太多：所有句子合计不能超过 40,000 个字符。", editBtn: "编辑",
+      uname: "用户名", identLabel: "用户名或邮箱", email: "邮箱", unameHint: "3–24 个字符：拉丁字母、数字、_ 或 .", bRegister: "创建账户", toRegister: "没有账户？注册", toLogin: "已有账户？登录", tForgot: "重置密码", leadForgot: "输入账户邮箱，我们会发送设置新密码的链接。", bSendLink: "发送链接", sentLink: "如果该邮箱有账户，邮件已发出。打开邮件中的链接即可设置新密码。", tNewPass: "新密码", leadNewPass: "为账户设置新密码。", bSavePass: "保存密码", leadLogin2: "登录后即可在此设备上查看你的想法。", leadReg2: "账户可在任何设备上使用：手机、电脑、平板。", eUname: "用户名：3–24 个字符，拉丁字母、数字、_ 或 .", eUnameTaken: "该用户名已被占用，请换一个。", eEmail: "请检查邮箱地址，格式似乎不对。", eEmailTaken: "该邮箱已有账户。请登录或重置密码。", eLogin: "用户名、邮箱或密码错误。", eConfirm: "我们已向你的邮箱发送邮件。打开其中的链接即可完成注册。", eNetwork: "无法连接服务器。请检查网络后重试。", eRate: "尝试次数过多，请稍等一分钟再试。", noteServer: "想法保存在你的账户中，可在任何设备上打开。", signedAs: "当前登录：{u}。",
       codeHint: "忘记密码时，可以用这个恢复码设置新密码。请把它保存在安全的地方。", codeNew: "生成新恢复码", codeShow: "显示恢复码", codeHide: "隐藏恢复码", codeNewConfirm: "确定吗？旧恢复码将失效", codeUnknown: "这个恢复码是在网站能保存副本之前生成的，所以无法显示。请生成一个新的，旧的将失效。", codeMade: "新恢复码已生成。请保存好，旧的已失效。",
       affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数",
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发消息或打电话。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
@@ -835,6 +830,7 @@ body {
       theme: "Tema", themeSystem: "Sistema", themeLight: "Claro", themeDark: "Oscuro",
       changePass: "Cambiar contraseña", passChanged: "Contraseña cambiada.", account: "Cuenta", logoutHint: "Necesitarás tu contraseña para volver a abrir el archivo.",
       affirmations: "Afirmaciones", affirmHint: "Repite cada frase las veces al día que elijas, escribiéndola o por voz. El contador se reinicia a medianoche.", affirmNew: "Nueva frase", add: "Añadir", affirmTitle: "Afirmaciones de hoy", affirmLead: "Antes de entrar, escribe la frase tú mismo.", affirmType: "Escribe esta frase", affirmWrong: "No coincide. Escribe la frase palabra por palabra.", next: "Siguiente", affirmMax: "Puedes añadir hasta 10 frases.", affirmTooLong: "Demasiado texto: todas las frases juntas no pueden superar los 40 000 caracteres.", editBtn: "Editar",
+      uname: "Nombre de usuario", identLabel: "Nombre de usuario o correo", email: "Correo", unameHint: "3–24 caracteres: letras latinas, dígitos, _ o .", bRegister: "Crear cuenta", toRegister: "¿No tienes cuenta? Regístrate", toLogin: "¿Ya tienes cuenta? Entra", tForgot: "Restablecer contraseña", leadForgot: "Escribe el correo de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.", bSendLink: "Enviar enlace", sentLink: "Si existe una cuenta con este correo, el mensaje ya va en camino. Abre el enlace para crear una contraseña nueva.", tNewPass: "Contraseña nueva", leadNewPass: "Elige una contraseña nueva para tu cuenta.", bSavePass: "Guardar contraseña", leadLogin2: "Entra para abrir tus ideas en este dispositivo.", leadReg2: "Tu cuenta funciona en cualquier dispositivo: teléfono, ordenador, tableta.", eUname: "Nombre de usuario: 3–24 caracteres, letras latinas, dígitos, _ o .", eUnameTaken: "Ese nombre de usuario ya está en uso. Elige otro.", eEmail: "Revisa el correo: la dirección no parece correcta.", eEmailTaken: "Ya existe una cuenta con este correo. Entra o restablece la contraseña.", eLogin: "Nombre de usuario, correo o contraseña incorrectos.", eConfirm: "Te enviamos un correo. Abre el enlace para terminar el registro.", eNetwork: "No hay conexión con el servidor. Revisa internet e inténtalo de nuevo.", eRate: "Demasiados intentos. Espera un minuto e inténtalo de nuevo.", noteServer: "Las ideas se guardan en tu cuenta y se abren en cualquier dispositivo.", signedAs: "Has entrado como {u}.",
       codeHint: "Con este código puedes crear una nueva contraseña si olvidas la anterior. Guárdalo en un lugar seguro.", codeNew: "Crear un código nuevo", codeShow: "Mostrar código", codeHide: "Ocultar código", codeNewConfirm: "¿Seguro? El código anterior dejará de funcionar", codeUnknown: "Este código se creó antes de que el sitio pudiera guardar una copia, así que no se puede mostrar. Crea uno nuevo; el anterior dejará de funcionar.", codeMade: "Código nuevo creado. Guárdalo; el anterior ya no funciona.",
       affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día",
       contactTitle: "¿Tienes preguntas?", contactText: "Si tienes alguna pregunta, escribe o llama.", phoneLabel: "Teléfono", emailLabel: "Correo", creatorLabel: "Creado por"
@@ -853,6 +849,12 @@ body {
     if (vars) for (var v in vars) s = s.split("{" + v + "}").join(vars[v]);
     return s;
   }
+  function plural(n) {
+    var a = n % 10, b = n % 100;
+    if (a === 1 && b !== 11) return "идея";
+    if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return "идеи";
+    return "идей";
+  }
   function countIdeas(n) {
     if (lang === "en") return n + (n === 1 ? " idea" : " ideas");
     if (lang === "kk") return n + " идея";
@@ -861,10 +863,34 @@ body {
     if (lang === "zh") return n + " 个想法";
     return n + " " + plural(n);
   }
-  var noteMode = "default";
-  function setNote() {
-    note.textContent = t(noteMode === "cloud" ? "noteCloud" : noteMode === "browser" ? "noteBrowser" : "noteDefault");
-  }
+
+  // --- Supabase: accounts and data live on the server; row-level security lets each person read only their own rows.
+  var SUPABASE_URL = "https://iwzutjynnsxokkswfdlp.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_1mULoDsQVPDzXN8QZ2v2CA_4s1T8CAY"; // publishable key, meant to sit in the page
+  var recovering = /type=recovery/.test(location.hash); // opened from a password-reset email
+  var sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+  var MIN_PASS = 6;
+  var USERNAME = /^[a-z0-9_.]{3,24}$/;
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  var gate = $("gate"), gateTitle = $("gate-title"), gateForm = $("gate-form"), gateWait = $("gate-wait");
+  var gateFields = $("gate-fields"), gateLead = $("gate-lead"), gateHint = $("gate-hint");
+  var gateError = $("gate-error"), gateOk = $("gate-ok"), gateSubmit = $("gate-submit");
+  var app = $("app"), greetName = $("greet-name");
+  var form = $("idea-form"), input = $("idea-input"), saveBtn = $("idea-save");
+  var list = $("list"), empty = $("empty"), count = $("count"), note = $("storage-note");
+  var toast = $("toast"), toastText = $("toast-text"), toastUndo = $("toast-undo");
+
+  var user = null, profile = null;
+  var ideasData = [];   // { id, text, ts }
+  var affirmData = [];  // { id, text, ts }
+  var progress = {};    // affirmation id -> repetitions today
+  var progressDay = null;
+  var mode = "wait", busy = false;
+  var freshId = null, lastRemoved = null, toastTimer = null;
+
+  function setNote() { note.textContent = user ? t("noteServer") : ""; }
   function applyLang() {
     document.documentElement.lang = lang;
     Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (e) { e.textContent = t(e.getAttribute("data-i18n")); });
@@ -885,127 +911,22 @@ body {
     voiceNote.hidden = true;
     if (mode !== "wait" && !gate.hidden) gateTexts();
     if (listening) voiceLabel.textContent = t("voiceStop");
-    render();
-    renderAffirm();
-    profileState();
-    resetCodeCard();
+    if (user) { render(); renderAffirm(); profileState(); fillAccountLine(); }
   }
   $("lang").addEventListener("change", function () { setLang($("lang").value); });
 
-  var LOCAL_KEY = "overthinkers-ideas";
-  var ACCOUNT_KEY = "overthinkers-account";
-  var ACCOUNT_DOC = "_account";
-  var CHECK_WORD = "cogito ergo scribo";
-  var MIN_PASS = 6;
-
-  var gate = $("gate"), gateTitle = $("gate-title"), gateForm = $("gate-form"), gateWait = $("gate-wait");
-  var gateFields = $("gate-fields"), gateLead = $("gate-lead"), gateHint = $("gate-hint");
-  var fieldName = $("field-name"), fieldPass2 = $("field-pass2");
-  var gateName = $("gate-name"), gatePass = $("gate-pass"), gatePass2 = $("gate-pass2");
-  var gateError = $("gate-error"), gateSubmit = $("gate-submit");
-  var forgot = $("forgot"), forgotOpen = $("forgot-open"), forgotConfirm = $("forgot-confirm");
-  var app = $("app"), greet = $("greet"), greetName = $("greet-name");
-  var form = $("idea-form"), input = $("idea-input"), saveBtn = $("idea-save");
-  var list = $("list"), empty = $("empty"), count = $("count"), note = $("storage-note");
-  var toast = $("toast"), toastText = $("toast-text"), toastUndo = $("toast-undo");
-
-  var account = null;        // { name, salt, check: {iv, ct}, v }
-  var accountRemote = false; // the account document already lives in the personal archive
-  var key = null;            // AES key derived from the password; only in memory
-  var col = null;            // personal archive collection, once available
-  var localRaw = readJSON(LOCAL_KEY, []);   // records kept in this browser
-  var remoteRaw = [];                        // records kept in the personal archive
-  var plain = {};                            // id -> decrypted text
-  var mode = "wait";
-  var busy = false;
-  var freshId = null, lastRemoved = null, toastTimer = null, refreshSeq = 0;
-
-  if (!Array.isArray(localRaw)) localRaw = [];
-  localRaw = localRaw.filter(function (r) { return r && r.id; });
-
-  function readJSON(k, fallback) {
-    try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; }
+  function errKey(error) {
+    var m = String((error && (error.message || error.msg)) || "").toLowerCase();
+    if ((error && error.status === 429) || m.indexOf("rate limit") !== -1) return "eRate";
+    if (m.indexOf("failed to fetch") !== -1 || m.indexOf("network") !== -1 || m.indexOf("load failed") !== -1) return "eNetwork";
+    return "eGeneric";
   }
-  function writeJSON(k, v) {
-    try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
-  }
-  function newId() { return "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-
-  // --- Encryption: the password never leaves the page; ideas are stored only as ciphertext.
-  var enc = new TextEncoder(), dec = new TextDecoder();
-  function b64(buf) {
-    var b = new Uint8Array(buf), s = "";
-    for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
-    return btoa(s);
-  }
-  function unb64(s) {
-    var bin = atob(s), b = new Uint8Array(bin.length);
-    for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i);
-    return b;
-  }
-  async function deriveKey(password, salt) {
-    var base = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
-    return crypto.subtle.deriveKey(
-      { name: "PBKDF2", salt: salt, iterations: 250000, hash: "SHA-256" },
-      base, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-  }
-  async function seal(k, text) {
-    var iv = crypto.getRandomValues(new Uint8Array(12));
-    var ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, k, enc.encode(text));
-    return { iv: b64(iv), ct: b64(ct) };
-  }
-  async function unseal(k, box) {
-    var pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, k, unb64(box.ct));
-    return dec.decode(pt);
-  }
-
-  // The key that encrypts ideas can be stored "wrapped": sealed by a key made from a secret
-  // (a new password, or the recovery code). Whoever knows the secret gets the idea key back.
-  async function wrapKey(secret, k) {
-    var salt = crypto.getRandomValues(new Uint8Array(16));
-    var box = await seal(await deriveKey(secret, salt), b64(await crypto.subtle.exportKey("raw", k)));
-    return { salt: b64(salt), iv: box.iv, ct: box.ct };
-  }
-  async function unwrapKey(secret, w) {
-    var raw = await unseal(await deriveKey(secret, unb64(w.salt)), w);
-    return crypto.subtle.importKey("raw", unb64(raw), { name: "AES-GCM" }, true, ["encrypt", "decrypt"]);
-  }
-  function newCode() {
-    var alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", bytes = crypto.getRandomValues(new Uint8Array(20)), out = "";
-    for (var n = 0; n < bytes.length; n++) out += (n && n % 5 === 0 ? "-" : "") + alphabet[bytes[n] & 31];
-    return out;
-  }
-  function codeSecret(text) { return String(text).toUpperCase().replace(/[^A-Z0-9]/g, ""); }
-
-  // --- Formatting
-  function plural(n) {
-    var a = n % 10, b = n % 100;
-    if (a === 1 && b !== 11) return "идея";
-    if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return "идеи";
-    return "идей";
-  }
-  // --- Records
-  function records() {
-    var seen = {};
-    return remoteRaw.concat(localRaw).filter(function (r) {
-      if (seen[r.id]) return false;
-      seen[r.id] = true; return true;
-    }).sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
-  }
-  async function refresh() {
-    if (!key) return;
-    var seq = ++refreshSeq, k = key, recs = records();
-    for (var n = 0; n < recs.length; n++) {
-      var r = recs[n];
-      if (plain[r.id] !== undefined) continue;
-      if (r.ct && r.iv) {
-        try { plain[r.id] = await unseal(k, r); } catch (e) { plain[r.id] = null; }
-      } else {
-        plain[r.id] = typeof r.text === "string" ? r.text : null; // written before registration existed
-      }
-      if (k !== key) return;
-    }
-    if (seq === refreshSeq) render();
+  function flash(text) {
+    toastText.textContent = text;
+    toastUndo.hidden = true;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.hidden = true; }, 6000);
   }
 
   // --- Views
@@ -1057,11 +978,11 @@ body {
 
   function render() {
     var perDay = {}; // ideas are numbered within their own day: #01, #02, …
-    var ideas = key ? records().filter(function (r) { return typeof plain[r.id] === "string"; }).map(function (r) {
+    var ideas = ideasData.slice().sort(function (x, y) { return x.ts - y.ts; }).map(function (r) {
       var day = dayStart(r.ts);
       perDay[day] = (perDay[day] || 0) + 1;
-      return { id: r.id, ts: r.ts, text: plain[r.id], n: perDay[day] };
-    }) : [];
+      return { id: r.id, ts: r.ts, text: r.text, n: perDay[day] };
+    });
     var today = dayStart(Date.now());
 
     // Numbers and the 7-day chart
@@ -1201,64 +1122,67 @@ body {
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
   $("search").addEventListener("input", function () { query = $("search").value; render(); });
 
-  function keepLocal(rec) {
-    localRaw = localRaw.filter(function (r) { return r.id !== rec.id; });
-    localRaw.push(rec);
-    writeJSON(LOCAL_KEY, localRaw);
+  // --- Ideas
+  async function loadIdeas() {
+    var res = await sb.from("ideas").select("id,text,created_at").order("created_at", { ascending: true }).limit(5000);
+    if (res.error) throw res.error;
+    ideasData = res.data.map(function (r) { return { id: r.id, text: r.text, ts: Date.parse(r.created_at) }; });
   }
-  function dropLocal(id) {
-    localRaw = localRaw.filter(function (r) { return r.id !== id; });
-    writeJSON(LOCAL_KEY, localRaw);
-  }
-  function browserOnly() { noteMode = "browser"; setNote(); }
-
-  async function pushRecord(rec) {
-    if (!col) return;
-    try {
-      await col.doc(rec.id).set({ ts: rec.ts, iv: rec.iv, ct: rec.ct });
-      dropLocal(rec.id);
-    } catch (e) { browserOnly(); }
-  }
-
-  async function storeIdea(idea) {
-    if (!key) return;
-    plain[idea.id] = idea.text;
-    var box = await seal(key, idea.text);
-    var rec = { id: idea.id, ts: idea.ts, iv: box.iv, ct: box.ct };
-    // Shown at once from this browser; moved to the personal archive when it accepts the write.
-    keepLocal(rec);
+  // Shown at once; the server copy replaces the temporary one when the save is confirmed.
+  async function storeIdea(text, ts) {
+    var temp = { id: "tmp-" + Date.now() + Math.random().toString(36).slice(2, 6), text: text, ts: ts || Date.now() };
+    ideasData.push(temp);
+    freshId = temp.id;
     render();
-    pushRecord(rec);
-  }
-
-  function removeIdea(idea) {
-    dropLocal(idea.id);
-    remoteRaw = remoteRaw.filter(function (r) { return r.id !== idea.id; });
-    delete plain[idea.id];
+    var row = { text: text };
+    if (ts) row.created_at = new Date(ts).toISOString();
+    var res = await sb.from("ideas").insert(row).select("id,created_at").single();
+    if (res.error) {
+      ideasData = ideasData.filter(function (i) { return i !== temp; });
+      render();
+      input.value = text;
+      saveBtn.disabled = false;
+      flash(t(errKey(res.error)));
+      return;
+    }
+    temp.id = res.data.id;
+    temp.ts = Date.parse(res.data.created_at);
     render();
-    if (col) col.doc(idea.id).delete().catch(function () {});
-    lastRemoved = idea;
+  }
+  async function removeIdea(idea) {
+    if (String(idea.id).indexOf("tmp-") === 0) return;
+    var kept = ideasData.filter(function (i) { return i.id === idea.id; })[0];
+    ideasData = ideasData.filter(function (i) { return i.id !== idea.id; });
+    render();
+    lastRemoved = { text: idea.text, ts: idea.ts };
     toastText.textContent = t("erased");
+    toastUndo.hidden = false;
     toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toast.hidden = true; lastRemoved = null; }, 7000);
+    var res = await sb.from("ideas").delete().eq("id", idea.id);
+    if (res.error) {
+      if (kept) ideasData.push(kept);
+      lastRemoved = null;
+      render();
+      flash(t(errKey(res.error)));
+    }
   }
   toastUndo.addEventListener("click", function () {
     if (!lastRemoved) return;
-    var idea = lastRemoved; lastRemoved = null;
-    clearTimeout(toastTimer); toast.hidden = true;
-    storeIdea(idea);
+    var idea = lastRemoved;
+    lastRemoved = null;
+    clearTimeout(toastTimer);
+    toast.hidden = true;
+    storeIdea(idea.text, idea.ts);
   });
-
   function submitIdea() {
     var text = input.value.trim();
-    if (!text || !key) return;
-    var idea = { id: newId(), text: text.slice(0, 20000), ts: Date.now() };
-    freshId = idea.id;
+    if (!text || !user) return;
     input.value = "";
     saveBtn.disabled = true;
-    storeIdea(idea);
     closeSheet();
+    storeIdea(text.slice(0, 20000));
   }
   form.addEventListener("submit", function (e) { e.preventDefault(); submitIdea(); });
   input.addEventListener("input", function () { saveBtn.disabled = !input.value.trim(); });
@@ -1266,190 +1190,180 @@ body {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); submitIdea(); }
   });
 
-  // --- Gate
+  // --- Sign-in screen: sign in, sign up, forgotten password, new password from the email link
   function gateTexts() {
-    var reg = mode === "register", rec = mode === "recover", code = mode === "code";
-    $("forgot-text").textContent = t(account && account.recovery ? "forgotWith" : "forgotWithout");
-    $("gate-pass-label").textContent = t(rec ? "newPass" : "pass");
-    gateTitle.textContent = t(reg ? "tReg" : rec ? "tRec" : code ? "recCode" : "tLogin");
-    gateSubmit.textContent = t(reg ? "bCreate" : rec ? "bChange" : code ? "bSaved" : "signIn");
-    gateLead.textContent = reg ? t("leadReg") : rec ? t("leadRec") : code ? t("leadCode")
-      : t("leadLogin", { who: (account && account.name) || t("thinker") });
-    gateHint.textContent = reg || rec ? t("minPass", { n: MIN_PASS }) : "";
+    var reg = mode === "register", forgotMode = mode === "forgot", reset = mode === "reset";
+    gateTitle.textContent = t(reg ? "tReg" : forgotMode ? "tForgot" : reset ? "tNewPass" : "tLogin");
+    gateSubmit.textContent = t(reg ? "bRegister" : forgotMode ? "bSendLink" : reset ? "bSavePass" : "signIn");
+    gateLead.textContent = t(reg ? "leadReg2" : forgotMode ? "leadForgot" : reset ? "leadNewPass" : "leadLogin2");
+    gateHint.textContent = reg || reset ? t("minPass", { n: MIN_PASS }) : "";
+    $("gate-pass-label").textContent = t(reset ? "newPass" : "pass");
   }
   function showGate(next) {
     mode = next;
-    var reg = next === "register", rec = next === "recover", code = next === "code";
-    gate.hidden = false; app.hidden = true; greet.hidden = true; $("bar-tag").hidden = false; $("lang").hidden = false;
+    var reg = next === "register", forgotMode = next === "forgot", reset = next === "reset", login = next === "login";
+    gate.hidden = false; app.hidden = true;
+    $("lang").hidden = false; $("bar-tag").hidden = false;
     gateWait.hidden = true; gateFields.hidden = false;
-    gateError.hidden = true;
-    forgotConfirm.hidden = true; forgotOpen.hidden = false;
-    gatePass.value = ""; gatePass2.value = ""; $("gate-code").value = "";
-    fieldName.hidden = !reg; $("field-surname").hidden = !reg;
-    $("field-code").hidden = !rec;
-    $("field-pass").hidden = code;
-    fieldPass2.hidden = !(reg || rec);
-    $("code-panel").hidden = !code;
-    $("back-login").hidden = !rec;
-    forgot.hidden = next !== "login";
-    $("forgot-code").hidden = !(account && account.recovery);
-    gatePass.autocomplete = reg || rec ? "new-password" : "current-password";
+    gateError.hidden = true; gateOk.hidden = true; gateSubmit.hidden = false;
+    $("gate-pass").value = ""; $("gate-pass2").value = "";
+    $("field-ident").hidden = !login;
+    $("field-uname").hidden = !reg;
+    $("field-name").hidden = !reg;
+    $("field-surname").hidden = !reg;
+    $("field-email").hidden = !(reg || forgotMode);
+    $("field-pass").hidden = forgotMode;
+    $("field-pass2").hidden = !(reg || reset);
+    $("to-register").hidden = !login;
+    $("to-login").hidden = login || reset;
+    $("to-forgot").hidden = !login;
+    $("gate-pass").autocomplete = reg || reset ? "new-password" : "current-password";
     gateTexts();
-    try { (reg ? gateName : rec ? $("gate-code") : code ? gateSubmit : gatePass).focus({ preventScroll: true }); } catch (e) {}
+    var first = login ? $("gate-ident") : reg ? $("gate-uname") : forgotMode ? $("gate-email") : $("gate-pass");
+    try { first.focus({ preventScroll: true }); } catch (e) {}
   }
-  function showCode(code) {
-    showGate("code");
-    $("code-value").textContent = code;
-    $("code-copy").textContent = t("copy");
+  function fail(text) { gateOk.hidden = true; gateError.textContent = text; gateError.hidden = false; }
+  function done(text) { gateError.hidden = true; gateOk.textContent = text; gateOk.hidden = false; gateSubmit.hidden = true; }
+  function passwordProblem(error) {
+    var m = String((error && error.message) || "").toLowerCase();
+    return m.indexOf("password") !== -1 ? t("ePassShort", { n: MIN_PASS }) : t(errKey(error));
   }
-  function fail(msg) { gateError.textContent = msg; gateError.hidden = false; }
 
-  async function register() {
-    var name = gateName.value.trim(), pass = gatePass.value;
-    var surname = $("gate-surname").value.trim();
-    if (!name) return fail(t("eName"));
-    if (!surname) return fail(t("eSurname"));
-    if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
-    if (pass !== gatePass2.value) return fail(t("ePassMatch"));
-    var salt = crypto.getRandomValues(new Uint8Array(16));
-    var k = await deriveKey(pass, salt);
-    var code = newCode();
-    account = {
-      name: name.slice(0, 40), surname: surname.slice(0, 40), salt: b64(salt),
-      check: await seal(k, CHECK_WORD), recovery: await wrapKey(codeSecret(code), k), codeBox: await seal(k, code), v: 2
-    };
-    key = k;
-    await saveAccount();
-    showCode(code);
-  }
   async function login() {
-    var k;
-    try {
-      k = account.wrap ? await unwrapKey(gatePass.value, account.wrap) : await deriveKey(gatePass.value, unb64(account.salt));
-      if ((await unseal(k, account.check)) !== CHECK_WORD) throw new Error("mismatch");
-    } catch (e) { return fail(t("eWrong")); }
-    if (!account.recovery) {
-      // Archives created before recovery codes existed get one on the next sign-in.
-      var code = newCode();
-      account = Object.assign({}, account, { recovery: await wrapKey(codeSecret(code), k), codeBox: await seal(k, code) });
-      key = k;
-      await saveAccount();
-      return showCode(code);
+    var ident = $("gate-ident").value.trim(), pass = $("gate-pass").value;
+    if (!ident || !pass) return fail(t("eLogin"));
+    var email = ident;
+    if (ident.indexOf("@") === -1) {
+      // A username: the server returns its e-mail only when the password matches.
+      var found = await sb.rpc("email_for_login", { p_username: ident.toLowerCase(), p_password: pass });
+      if (found.error) return fail(t(errKey(found.error)));
+      if (!found.data) return fail(t("eLogin"));
+      email = found.data;
     }
-    key = k;
-    if (!accountRemote) await saveAccount();
-    await proceed();
+    var res = await sb.auth.signInWithPassword({ email: email, password: pass });
+    if (res.error) {
+      var m = String(res.error.message || "").toLowerCase();
+      return fail(t(m.indexOf("not confirmed") !== -1 ? "eConfirm" : m.indexOf("invalid") !== -1 ? "eLogin" : errKey(res.error)));
+    }
+    await enter(res.data.user);
   }
-  async function recover() {
-    var pass = gatePass.value, k;
-    if (!codeSecret($("gate-code").value)) return fail(t("eCodeEmpty"));
+  async function register() {
+    var uname = $("gate-uname").value.trim().toLowerCase();
+    var first = $("gate-name").value.trim(), last = $("gate-surname").value.trim();
+    var email = $("gate-email").value.trim(), pass = $("gate-pass").value;
+    if (!USERNAME.test(uname)) return fail(t("eUname"));
+    if (!first) return fail(t("eName"));
+    if (!last) return fail(t("eSurname"));
+    if (!EMAIL.test(email)) return fail(t("eEmail"));
     if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
-    if (pass !== gatePass2.value) return fail(t("ePassMatch"));
-    try {
-      k = await unwrapKey(codeSecret($("gate-code").value), account.recovery);
-      if ((await unseal(k, account.check)) !== CHECK_WORD) throw new Error("mismatch");
-    } catch (e) { return fail(t("eCodeBad")); }
-    account = Object.assign({}, account, { wrap: await wrapKey(pass, k), v: 2 });
-    key = k;
-    await saveAccount();
-    await proceed();
-  }
-  async function saveAccount() {
-    if (col) {
-      try {
-        await col.doc(ACCOUNT_DOC).set(account);
-        accountRemote = true;
-        writeJSON(ACCOUNT_KEY, null);
-        return;
-      } catch (e) { col = null; }
-    }
-    writeJSON(ACCOUNT_KEY, account);
-  }
-
-  function enter() {
-    gate.hidden = true; app.hidden = false;
-    gatePass.value = ""; gatePass2.value = "";
-    greetName.textContent = account.name + (account.surname ? " " + account.surname : "");
-    $("bar-tag").hidden = true;
-    $("lang").hidden = true;
-    greet.hidden = false;
-    if (col) { noteMode = "cloud"; setNote(); }
-    else browserOnly();
-    render();
-    refresh().then(upgradeRecords);
-    saveBtn.disabled = !input.value.trim();
-    show("home");
-  }
-
-  // Encrypt ideas written before registration existed, and carry over ones still waiting in this browser.
-  async function upgradeRecords() {
-    var k = key;
-    var recs = records();
-    for (var n = 0; n < recs.length; n++) {
-      var r = recs[n];
-      if (k !== key) return;
-      var isLocal = localRaw.some(function (l) { return l.id === r.id; });
-      if (!r.ct) {
-        if (typeof r.text !== "string") continue;
-        var box = await seal(k, r.text);
-        var rec = { id: r.id, ts: r.ts || Date.now(), iv: box.iv, ct: box.ct };
-        if (isLocal || !col) { keepLocal(rec); await pushRecord(rec); }
-        else { try { await col.doc(rec.id).set({ ts: rec.ts, iv: rec.iv, ct: rec.ct }); } catch (e) {} }
-      } else if (isLocal) {
-        await pushRecord(r);
+    if (pass !== $("gate-pass2").value) return fail(t("ePassMatch"));
+    var free = await sb.rpc("username_available", { p_username: uname });
+    if (free.error) return fail(t(errKey(free.error)));
+    if (!free.data) return fail(t("eUnameTaken"));
+    var res = await sb.auth.signUp({
+      email: email,
+      password: pass,
+      options: {
+        data: { username: uname, first_name: first.slice(0, 40), last_name: last.slice(0, 40) },
+        emailRedirectTo: location.origin + location.pathname
       }
+    });
+    if (res.error) {
+      var m = String(res.error.message || "").toLowerCase();
+      if (m.indexOf("already") !== -1) return fail(t("eEmailTaken"));
+      if (m.indexOf("database error") !== -1) return fail(t("eUnameTaken"));
+      return fail(passwordProblem(res.error));
     }
+    if (res.data.session) return enter(res.data.user);
+    // With e-mail confirmation on, an address that is already registered comes back with no identities.
+    if (res.data.user && res.data.user.identities && res.data.user.identities.length === 0) return fail(t("eEmailTaken"));
+    done(t("eConfirm"));
   }
-
-  function lock() {
-    key = null; plain = {}; lastRemoved = null; refreshSeq++; affirmations = [];
-    toast.hidden = true; input.value = ""; closeSheet();
-    render();
-    showGate("login");
+  async function sendReset() {
+    var email = $("gate-email").value.trim();
+    if (!EMAIL.test(email)) return fail(t("eEmail"));
+    var res = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (res.error) return fail(t(errKey(res.error)));
+    done(t("sentLink"));
   }
-  $("lock").addEventListener("click", lock);
+  async function saveNewPassword() {
+    var pass = $("gate-pass").value;
+    if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
+    if (pass !== $("gate-pass2").value) return fail(t("ePassMatch"));
+    var res = await sb.auth.updateUser({ password: pass });
+    if (res.error) return fail(passwordProblem(res.error));
+    recovering = false;
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    await enter(res.data.user);
+  }
 
   gateForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    if (busy || mode === "wait") return;
-    if (!window.crypto || !crypto.subtle) return fail(t("eCrypto"));
+    if (busy || mode === "wait" || !sb) return;
     gateError.hidden = true;
     busy = true; gateSubmit.disabled = true;
     try {
       if (mode === "register") await register();
-      else if (mode === "recover") await recover();
-      else if (mode === "code") await proceed();
+      else if (mode === "forgot") await sendReset();
+      else if (mode === "reset") await saveNewPassword();
       else await login();
     } catch (err) {
-      fail(t("eGeneric"));
+      fail(t(errKey(err)));
     }
     busy = false; gateSubmit.disabled = false;
   });
+  $("to-register").addEventListener("click", function () { showGate("register"); });
+  $("to-login").addEventListener("click", function () { showGate("login"); });
+  $("to-forgot").addEventListener("click", function () {
+    var ident = $("gate-ident").value.trim();
+    showGate("forgot");
+    if (ident.indexOf("@") !== -1) $("gate-email").value = ident;
+  });
 
-  $("forgot-code").addEventListener("click", function () { showGate("recover"); });
-  $("back-login").addEventListener("click", function () { showGate("login"); });
-  $("code-copy").addEventListener("click", function () {
-    var text = $("code-value").textContent, btn = $("code-copy");
-    function pick() { try { var r = document.createRange(); r.selectNodeContents($("code-value")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function fullName() {
+    return [profile.first_name, profile.last_name].filter(Boolean).join(" ") || profile.username;
+  }
+  async function enter(u) {
+    user = u;
+    mode = "wait";
+    gateFields.hidden = true;
+    gateWait.hidden = false;
     try {
-      navigator.clipboard.writeText(text).then(function () { btn.textContent = t("copied"); }, pick);
-    } catch (e) { pick(); }
-  });
-  forgotOpen.addEventListener("click", function () { forgotConfirm.hidden = false; forgotOpen.hidden = true; });
-  $("forgot-no").addEventListener("click", function () { forgotConfirm.hidden = true; forgotOpen.hidden = false; });
-  $("forgot-yes").addEventListener("click", async function () {
-    if (busy) return;
-    busy = true;
-    var doomed = remoteRaw.slice();
-    if (col) {
-      for (var n = 0; n < doomed.length; n++) { try { await col.doc(doomed[n].id).delete(); } catch (e) {} }
-      try { await col.doc(ACCOUNT_DOC).delete(); } catch (e) {}
+      var p = await sb.from("profiles").select("username,first_name,last_name,affirm_goal").eq("id", u.id).maybeSingle();
+      if (p.error) throw p.error;
+      profile = p.data || { username: (u.user_metadata && u.user_metadata.username) || "", first_name: "", last_name: "", affirm_goal: 10 };
+      await Promise.all([loadIdeas(), loadAffirm()]);
+    } catch (err) {
+      user = null;
+      showGate("login");
+      fail(t(errKey(err)));
+      return;
     }
-    remoteRaw = []; localRaw = []; plain = {}; account = null; accountRemote = false; key = null;
-    writeJSON(LOCAL_KEY, null); writeJSON(ACCOUNT_KEY, null);
-    busy = false;
-    showGate("register");
-  });
+    gate.hidden = true;
+    app.hidden = false;
+    $("lang").hidden = true;
+    $("bar-tag").hidden = true;
+    greetName.textContent = fullName();
+    setNote();
+    show("home");
+    render();
+    saveBtn.disabled = !input.value.trim();
+  }
+
+  async function lock() {
+    stopVoice();
+    stopAffirmVoice();
+    closeSheet();
+    try { await sb.auth.signOut(); } catch (e) {}
+    user = null; profile = null;
+    ideasData = []; affirmData = []; progress = {}; progressDay = null; goalDraft = null;
+    lastRemoved = null;
+    toast.hidden = true;
+    input.value = "";
+    setNote();
+    showGate("login");
+  }
+  $("lock").addEventListener("click", lock);
 
   // --- Settings: profile, language, theme, password
   var THEME_KEY = "overthinkers-theme";
@@ -1474,59 +1388,20 @@ body {
     $("set-surname").readOnly = !profileEditing;
     $("profile-btn").textContent = t(profileEditing ? "saveBtn" : "editBtn");
   }
-  // Recovery code card: shows the current code (kept sealed with the idea key) or makes a new one.
-  var codeConfirm = false;
-  function resetCodeCard() {
-    codeConfirm = false;
-    $("set-code-panel").hidden = true;
-    $("set-code-msg").hidden = true;
-    $("set-code-show").textContent = t("codeShow");
-    $("set-code-new").textContent = t("codeNew");
-    $("set-code-copy").textContent = t("copy");
+  function fillAccountLine() {
+    if (!user || !profile) return;
+    $("set-account").textContent = t("signedAs", { u: "@" + profile.username + (user.email ? ", " + user.email : "") });
   }
-  function showCodeValue(code) {
-    $("set-code-value").textContent = code;
-    $("set-code-panel").hidden = false;
-    $("set-code-show").textContent = t("codeHide");
-  }
-  $("set-code-show").addEventListener("click", async function () {
-    if (!$("set-code-panel").hidden) { resetCodeCard(); return; }
-    if (!key || !account) return;
-    if (!account.codeBox) return say("set-code-msg", t("codeUnknown"));
-    try { showCodeValue(await unseal(key, account.codeBox)); $("set-code-msg").hidden = true; }
-    catch (e) { say("set-code-msg", t("codeUnknown")); }
-  });
-  $("set-code-new").addEventListener("click", async function () {
-    if (busy || !key || !account) return;
-    if (!codeConfirm) { codeConfirm = true; $("set-code-new").textContent = t("codeNewConfirm"); return; }
-    busy = true;
-    try {
-      var code = newCode();
-      account = Object.assign({}, account, { recovery: await wrapKey(codeSecret(code), key), codeBox: await seal(key, code) });
-      await saveAccount();
-      resetCodeCard();
-      showCodeValue(code);
-      say("set-code-msg", t("codeMade"));
-    } catch (e) { say("set-code-msg", t("eGeneric")); }
-    busy = false;
-  });
-  $("set-code-copy").addEventListener("click", function () {
-    var btn = $("set-code-copy");
-    function pick() { try { var r = document.createRange(); r.selectNodeContents($("set-code-value")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
-    try { navigator.clipboard.writeText($("set-code-value").textContent).then(function () { btn.textContent = t("copied"); }, pick); }
-    catch (e) { pick(); }
-  });
   function say(id, text) { var e = $(id); e.textContent = text; e.hidden = false; }
   function fillSettings() {
-    if (!account) return;
-    $("set-name").value = account.name || "";
-    $("set-surname").value = account.surname || "";
+    if (!profile) return;
+    $("set-name").value = profile.first_name || "";
+    $("set-surname").value = profile.last_name || "";
     $("set-pass").value = ""; $("set-pass2").value = "";
-    $("set-profile-msg").hidden = true; $("set-pass-msg").hidden = true; $("affirm-msg").hidden = true;
-    renderAffirm();
-    resetCodeCard();
+    $("set-profile-msg").hidden = true; $("set-pass-msg").hidden = true;
     profileEditing = false;
     profileState();
+    fillAccountLine();
   }
   $("theme-choice").addEventListener("click", function (e) {
     var b = e.target.closest("button");
@@ -1551,12 +1426,14 @@ body {
     var name = $("set-name").value.trim(), surname = $("set-surname").value.trim();
     if (!name) return say("set-profile-msg", t("eName"));
     if (!surname) return say("set-profile-msg", t("eSurname"));
-    if (busy || !key) return;
+    if (busy || !user) return;
     busy = true;
-    account = Object.assign({}, account, { name: name.slice(0, 40), surname: surname.slice(0, 40) });
-    await saveAccount();
+    var res = await sb.from("profiles").update({ first_name: name.slice(0, 40), last_name: surname.slice(0, 40) }).eq("id", user.id);
     busy = false;
-    greetName.textContent = account.name + " " + account.surname;
+    if (res.error) return say("set-profile-msg", t(errKey(res.error)));
+    profile.first_name = name.slice(0, 40);
+    profile.last_name = surname.slice(0, 40);
+    greetName.textContent = fullName();
     say("set-profile-msg", t("saved"));
     profileEditing = false;
     profileState();
@@ -1566,22 +1443,16 @@ body {
     var pass = $("set-pass").value;
     if (pass.length < MIN_PASS) return say("set-pass-msg", t("ePassShort", { n: MIN_PASS }));
     if (pass !== $("set-pass2").value) return say("set-pass-msg", t("ePassMatch"));
-    if (busy || !key) return;
+    if (busy || !user) return;
     busy = true;
-    try {
-      // The idea key stays the same; only the password that unlocks it changes.
-      account = Object.assign({}, account, { wrap: await wrapKey(pass, key), v: 2 });
-      await saveAccount();
-      $("set-pass").value = ""; $("set-pass2").value = "";
-      say("set-pass-msg", t("passChanged"));
-    } catch (err) { say("set-pass-msg", t("eGeneric")); }
+    var res = await sb.auth.updateUser({ password: pass });
     busy = false;
+    if (res.error) return say("set-pass-msg", passwordProblem(res.error));
+    $("set-pass").value = ""; $("set-pass2").value = "";
+    say("set-pass-msg", t("passChanged"));
   });
-  applyTheme();
 
-  // --- Affirmations: phrases the person types once a day, after the password, before the archive opens.
-  // They are stored encrypted with the same key as the ideas.
-  var affirmations = [], affirmIndex = 0;
+  // --- Affirmations: each phrase repeated the chosen number of times a day, by typing or by voice.
   function todayStamp() {
     var d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -1598,30 +1469,17 @@ body {
     return plainText(a) === plainText(b);
   }
   async function loadAffirm() {
-    affirmations = account && Array.isArray(account.affirmList)
-      ? account.affirmList.filter(function (s) { return typeof s === "string" && s.trim(); }) : [];
-    if (!account || !account.affirm) return;
-    // Phrases saved by the earlier, encrypted version move into the plain list once.
-    try {
-      var saved = JSON.parse(await unseal(key, account.affirm));
-      if (Array.isArray(saved)) affirmations = affirmations.concat(saved.filter(function (s) { return typeof s === "string" && s.trim(); }));
-    } catch (e) {}
-    await saveAffirm();
+    var a = await sb.from("affirmations").select("id,text,created_at").order("created_at", { ascending: true });
+    if (a.error) throw a.error;
+    affirmData = a.data.map(function (r) { return { id: r.id, text: r.text, ts: Date.parse(r.created_at) }; });
+    progressDay = todayStamp();
+    progress = {};
+    var p = await sb.from("affirmation_progress").select("affirmation_id,count").eq("day", progressDay);
+    if (p.error) throw p.error;
+    p.data.forEach(function (r) { progress[r.affirmation_id] = r.count; });
   }
-  async function saveAffirm() {
-    account = Object.assign({}, account, { affirmList: affirmations.slice(), affirm: null });
-    await saveAccount();
-  }
-  async function proceed() {
-    await loadAffirm();
-    enter();
-  }
-  // Today's repetitions per phrase, kept in the account record and reset when the date changes.
-  function affirmCounts() {
-    var done = account && account.affirmDone;
-    var fresh = done && done.day === todayStamp() && Array.isArray(done.counts);
-    return affirmations.map(function (_, i) { return fresh ? Number(done.counts[i]) || 0 : 0; });
-  }
+  // Counters belong to one calendar day; after midnight every phrase starts again from zero.
+  function countFor(id) { return progressDay === todayStamp() ? (progress[id] || 0) : 0; }
   var affirmVoice = null, affirmVoiceIdx = -1;
   function micKey(code) {
     return code === "not-allowed" || code === "service-not-allowed" ? "micBlocked"
@@ -1634,7 +1492,7 @@ body {
   // Daily goal: how many times each phrase should be repeated (1–1000, 10 by default).
   var goalDraft = null, goalTimer = null;
   function affirmGoal() {
-    var g = goalDraft != null ? goalDraft : account && Number(account.affirmGoal);
+    var g = goalDraft != null ? goalDraft : profile && Number(profile.affirm_goal);
     return g >= 1 ? Math.min(1000, Math.round(g)) : 10;
   }
   function setGoal(n) {
@@ -1644,23 +1502,23 @@ body {
     renderAffirm();
     clearTimeout(goalTimer);
     goalTimer = setTimeout(async function () {
-      if (!account || !key) return;
-      account = Object.assign({}, account, { affirmGoal: n });
-      await saveAccount();
+      if (!user) return;
+      var res = await sb.from("profiles").update({ affirm_goal: n }).eq("id", user.id);
+      if (!res.error && profile) profile.affirm_goal = n;
     }, 700);
   }
   $("goal-minus").addEventListener("click", function () { setGoal(affirmGoal() - 1); });
   $("goal-plus").addEventListener("click", function () { setGoal(affirmGoal() + 1); });
   $("affirm-goal").addEventListener("change", function () { setGoal($("affirm-goal").value); });
   function renderAffirm() {
-    var listEl = $("affirm-list"), counts = affirmCounts(), finished = 0, goal = affirmGoal();
+    var listEl = $("affirm-list"), finished = 0, goal = affirmGoal();
     if (document.activeElement !== $("affirm-goal")) $("affirm-goal").value = goal;
     listEl.textContent = "";
-    affirmations.forEach(function (text, i) {
-      var c = counts[i], done = c >= goal;
+    affirmData.forEach(function (item, i) {
+      var c = countFor(item.id), done = c >= goal;
       if (done) finished++;
       var li = el("li", "card stack affirm-card");
-      li.appendChild(el("p", "affirm-text", text));
+      li.appendChild(el("p", "affirm-text", item.text));
       var row = el("div", "affirm-progress"), bar = el("div", "bar-line"), fill = el("i", null);
       fill.style.width = Math.min(100, Math.round(c / goal * 100)) + "%";
       bar.appendChild(fill);
@@ -1703,34 +1561,38 @@ body {
       li.appendChild(foot);
       listEl.appendChild(li);
     });
-    $("affirm-empty").hidden = affirmations.length > 0;
-    $("affirm-voice-pick").hidden = !SpeechRec || !affirmations.length;
-    $("affirm-count").textContent = affirmations.length ? t("affirmToday", { a: finished, b: affirmations.length }) : "";
+    $("affirm-empty").hidden = affirmData.length > 0;
+    $("affirm-voice-pick").hidden = !SpeechRec || !affirmData.length;
+    $("affirm-count").textContent = affirmData.length ? t("affirmToday", { a: finished, b: affirmData.length }) : "";
   }
   async function repeatAffirm(i) {
-    var area = $("affirm-answer-" + i);
-    if (!area || !area.value.trim() || busy || !key) return;
-    if (!sameWords(area.value, affirmations[i])) return showAffirmError(i, t("affirmWrong"));
-    var counts = affirmCounts();
-    counts[i] = counts[i] + 1;
+    var area = $("affirm-answer-" + i), item = affirmData[i];
+    if (!area || !item || !area.value.trim() || busy || !user) return;
+    if (!sameWords(area.value, item.text)) return showAffirmError(i, t("affirmWrong"));
+    if (progressDay !== todayStamp()) { progressDay = todayStamp(); progress = {}; }
+    var next = countFor(item.id) + 1;
     busy = true;
-    account = Object.assign({}, account, { affirmDone: { day: todayStamp(), counts: counts } });
-    await saveAccount();
+    var res = await sb.from("affirmation_progress").upsert(
+      { affirmation_id: item.id, day: progressDay, count: next },
+      { onConflict: "affirmation_id,day" }
+    );
     busy = false;
+    if (res.error) return showAffirmError(i, t(errKey(res.error)));
+    progress[item.id] = next;
     renderAffirm();
     var again = $("affirm-answer-" + i);
     if (again) try { again.focus(); } catch (e) {}
   }
   async function removeAffirm(i) {
-    if (busy || !key) return;
+    var item = affirmData[i];
+    if (!item || busy || !user) return;
     stopAffirmVoice();
-    var counts = affirmCounts();
-    counts.splice(i, 1);
-    affirmations.splice(i, 1);
     busy = true;
-    account = Object.assign({}, account, { affirmList: affirmations.slice(), affirm: null, affirmDone: { day: todayStamp(), counts: counts } });
-    await saveAccount();
+    var res = await sb.from("affirmations").delete().eq("id", item.id);
     busy = false;
+    if (res.error) return showAffirmError(i, t(errKey(res.error)));
+    affirmData = affirmData.filter(function (a) { return a.id !== item.id; });
+    delete progress[item.id];
     renderAffirm();
   }
   function stopAffirmVoice() {
@@ -1768,52 +1630,39 @@ body {
   $("affirm-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     var text = $("affirm-new").value.trim().slice(0, 10000);
-    if (!text || busy || !key) return;
-    if (affirmations.length >= 10) return say("affirm-msg", t("affirmMax"));
-    // All phrases share one stored record, so their combined length is capped as well.
-    var total = affirmations.reduce(function (sum, s) { return sum + s.length; }, text.length);
+    if (!text || busy || !user) return;
+    if (affirmData.length >= 10) return say("affirm-msg", t("affirmMax"));
+    var total = affirmData.reduce(function (sum, a) { return sum + a.text.length; }, text.length);
     if (total > 40000) return say("affirm-msg", t("affirmTooLong"));
     busy = true;
-    affirmations.push(text);
-    await saveAffirm();
+    var res = await sb.from("affirmations").insert({ text: text }).select("id,created_at").single();
     busy = false;
+    if (res.error) return say("affirm-msg", t(errKey(res.error)));
+    affirmData.push({ id: res.data.id, text: text, ts: Date.parse(res.data.created_at) });
     $("affirm-new").value = "";
     $("affirm-msg").hidden = true;
     renderAffirm();
   });
 
-  // --- Personal archive: each person's account and ideas live in their own private subtree.
-  async function connect() {
-    if (!window.claude || !window.claude.use) return;
-    var db = await window.claude.use("db");
-    var user = await window.claude.use("user");
-    if (!db || !user) return;
-    var uid = await user.id();
-    if (!uid) return;
-    var c = db.collection("data/users/" + uid);
-    var snap = await c.doc(ACCOUNT_DOC).get();
-    if (snap.exists) { account = snap.data(); accountRemote = true; }
-    col = c;
-    c.limit(1000).onSnapshot(function (s) {
-      remoteRaw = s.docs.filter(function (doc) { return doc.id !== ACCOUNT_DOC; }).map(function (doc) {
-        var d = doc.data() || {};
-        return { id: doc.id, ts: Number(d.ts) || 0, iv: d.iv, ct: d.ct, text: d.text };
-      });
-      refresh();
-    }, function () {
-      col = null;
-      browserOnly();
-    });
-  }
-
+  // --- Start
+  applyTheme();
   applyLang();
-  connect().catch(function () { col = null; }).then(function () {
-    if (!account) {
-      var cached = readJSON(ACCOUNT_KEY, null);
-      if (cached && cached.salt && cached.check) account = cached;
+  if (!sb) {
+    gateWait.textContent = t("eNetwork");
+    return;
+  }
+  sb.auth.onAuthStateChange(function (event) {
+    if (event === "PASSWORD_RECOVERY") {
+      recovering = true;
+      showGate("reset");
     }
-    showGate(account ? "login" : "register");
   });
+  sb.auth.getSession().then(function (res) {
+    var session = res.data && res.data.session;
+    if (recovering) return showGate("reset");
+    if (session) return enter(session.user);
+    showGate("login");
+  }, function () { showGate("login"); });
 })();
 </script>
 </body>
