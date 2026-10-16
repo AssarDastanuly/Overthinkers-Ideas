@@ -1098,7 +1098,13 @@ body {
         input.value = voiceBase + said;
         saveBtn.disabled = !input.value.trim();
       };
-      r.onerror = function (e) { if (e.error !== "aborted") voiceProblem(e.error); };
+      r.onerror = function (e) {
+        if (e.error === "aborted") return;
+        voiceProblem(e.error);
+        // Some phones never send "end" after a refusal; reset here so the button does not stay stuck.
+        try { r.abort(); } catch (x) {}
+        voiceIdle();
+      };
       r.onend = voiceIdle;
       try {
         r.start();
@@ -1611,8 +1617,17 @@ body {
       var a = $("affirm-answer-" + i);
       if (a) a.value = heard;
     };
-    r.onerror = function (e) { if (e.error !== "aborted") problem = micKey(e.error); };
+    var finished = false;
+    r.onerror = function (e) {
+      if (e.error === "aborted") return;
+      problem = micKey(e.error);
+      // Some phones never send "end" after a refusal; finish here so the button does not stay stuck.
+      try { r.abort(); } catch (x) {}
+      r.onend();
+    };
     r.onend = function () {
+      if (finished) return;
+      finished = true;
       affirmVoice = null; affirmVoiceIdx = -1;
       renderAffirm();
       var a = $("affirm-answer-" + i);
