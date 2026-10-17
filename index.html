@@ -412,8 +412,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .menu-card { padding: 0.3rem 1.15rem; }
 .menu-row { display: flex; align-items: center; gap: 0.9rem; width: 100%; background: none; border: 0; padding: 0.95rem 0; color: var(--ink); text-align: left; font-size: 1.02rem; font-weight: 600; }
 .menu-row svg { width: 1.45rem; height: 1.45rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.menu-row span { flex: 1; min-width: 0; }
-.menu-row em { font-style: normal; font-weight: 400; font-size: 0.92rem; color: var(--muted); }
+/* The label keeps its words whole; the grey hint gives way first and is cut with "…" */
+.menu-row span { flex: 1 1 auto; }
+.menu-row em { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-style: normal; font-weight: 400; font-size: 0.92rem; color: var(--muted); }
+@media (max-width: 22rem) { .menu-row em { display: none; } }
 .menu-row .chev { width: 1.05rem; height: 1.05rem; color: var(--muted); transition: transform 0.15s ease; }
 .menu-row[aria-expanded="true"] .chev { transform: rotate(90deg); }
 .menu-panel { display: flex; flex-direction: column; gap: 0.7rem; padding: 0 0 1.1rem 2.35rem; }
