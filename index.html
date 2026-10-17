@@ -355,6 +355,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .stats .stat:nth-child(2) { background: var(--card-b); }
 .stats .stat:nth-child(3) { background: var(--card-c); }
 .stats .stat:nth-child(2) .card-title, .stats .stat:nth-child(3) .card-title { color: var(--ink); opacity: 0.7; }
+/* Two cards side by side: total ideas and today */
+.stat.feature { grid-row: auto; min-height: 9rem; }
+.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.stats .stat { justify-content: flex-start; }
+.stat.feature small { margin-top: auto; }
+.stat.feature .num { font-size: clamp(2.8rem, 12vw, 3.6rem); }
 .stat .num { font-family: var(--hand); font-weight: 700; font-size: 2.4rem; }
 .stat.feature .num { font-size: clamp(3.2rem, 15vw, 4.2rem); }
 
@@ -491,10 +497,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         <div class="card stat">
           <span class="card-title" data-i18n="today">Сегодня</span>
           <span class="num" id="stat-today">0</span>
-        </div>
-        <div class="card stat">
-          <span class="card-title" data-i18n="week">На этой неделе</span>
-          <span class="num" id="stat-week">0</span>
         </div>
       </div>
 
@@ -1128,7 +1130,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     var max = Math.max.apply(null, days.map(function (d) { return d.count; }).concat(1));
     $("stat-total").textContent = ideas.length;
     $("stat-today").textContent = days[dow].count;
-    $("stat-week").textContent = week;
     $("stat-last").textContent = ideas.length
       ? t("last", { when: dayLabel(ideas[ideas.length - 1].ts).toLowerCase() + ", " + clock(ideas[ideas.length - 1].ts) })
       : t("none");
