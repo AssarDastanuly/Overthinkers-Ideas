@@ -12,7 +12,7 @@
 </head>
 <body>
 <title>Overthinker's Ideas</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Unbounded:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: a phone-style app in one centered column — greeting, a quick-capture row, a
    featured green stat card beside two small ones, a 7-day activity chart, recent ideas;
@@ -278,6 +278,130 @@ body {
 .affirm-text { border-radius: 0.9rem; }
 .group { font-size: 1rem; }
 .nav { box-shadow: 0 12px 30px -14px rgba(14, 26, 19, 0.35); }
+/* Smile Todo look: notebook paper, handwritten titles under a marker stroke, pastel cards,
+   a floating pill nav. The paper, pattern and card colours come from the chosen style
+   (Settings → Background and cards); dark mode swaps them for night paper. */
+:root {
+  --bg: #F4F1E8; --surface: #FBF9F4; --surface-2: #EFEBE2; --ink: #1D1D1F; --muted: #8A877F; --line: #E6E1D6;
+  --green: #1677F2; --green-deep: #1A5FC0; --mint: #DCEAF8; --on-green: #1D1D1F; --btn-ink: #ffffff;
+  --scrim: rgba(40, 36, 28, 0.38);
+  --shadow: 0 1px 0 rgba(60, 50, 30, 0.04), 0 10px 24px -16px rgba(60, 50, 30, 0.28);
+  --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --brand: "Caveat", "Segoe Print", cursive;
+  --display: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --paper: #F4F1E8; --paper-img: none; --grid: rgba(120, 165, 210, 0.35); --mark: #B7D3EE;
+  --card-a: #F6D86B; --card-b: #F4A79B; --card-c: #C7DDF0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --surface: #201F1D; --surface-2: #2A2926; --ink: #F2EFE8; --muted: #A39F96; --line: #34322E;
+    --green: #3B8EEA; --green-deep: #8DC0FA; --mint: #1F3247; --on-green: #F2EFE8; --btn-ink: #ffffff;
+    --scrim: rgba(0, 0, 0, 0.6); --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 26px -16px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+  :root:not([data-theme="light"]) body {
+    --paper: #161615; --paper-img: none; --surface: #201F1D; --grid: rgba(255, 255, 255, 0.06); --mark: rgba(59, 142, 234, 0.45);
+    --card-a: #4A3F17; --card-b: #4A2A25; --card-c: #1F3247;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --surface: #201F1D; --surface-2: #2A2926; --ink: #F2EFE8; --muted: #A39F96; --line: #34322E;
+  --green: #3B8EEA; --green-deep: #8DC0FA; --mint: #1F3247; --on-green: #F2EFE8; --btn-ink: #ffffff;
+  --scrim: rgba(0, 0, 0, 0.6); --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 26px -16px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+:root[data-theme="dark"] body {
+  --paper: #161615; --paper-img: none; --surface: #201F1D; --grid: rgba(255, 255, 255, 0.06); --mark: rgba(59, 142, 234, 0.45);
+  --card-a: #4A3F17; --card-b: #4A2A25; --card-c: #1F3247;
+}
+
+body {
+  font-family: var(--body);
+  background-color: var(--paper);
+  background-image: var(--pat1, none), var(--pat2, none), var(--paper-img);
+  background-size: var(--pat-size, 22px 22px), var(--pat-size, 22px 22px), 100% 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  background-position: center top;
+}
+body[data-pattern="grid"] { --pat1: linear-gradient(var(--grid) 1px, transparent 1px); --pat2: linear-gradient(90deg, var(--grid) 1px, transparent 1px); --pat-size: 22px 22px; }
+body[data-pattern="lines"] { --pat1: linear-gradient(transparent 27px, var(--grid) 27px, var(--grid) 28px, transparent 28px); --pat2: none; --pat-size: 100% 28px; }
+body[data-pattern="dots"] { --pat1: radial-gradient(var(--grid) 1.3px, transparent 1.7px); --pat2: none; --pat-size: 20px 20px; }
+body[data-pattern="none"] { --pat1: none; --pat2: none; }
+
+/* Handwritten titles with a marker stroke behind them */
+.brand { font-family: var(--brand); font-weight: 700; font-size: 1.55rem; letter-spacing: 0; }
+.brand i { border-color: var(--card-a); background: var(--card-a); }
+.hello h2, .section-head h2, .gate h2 {
+  font-family: var(--hand); font-weight: 700; letter-spacing: 0; line-height: 1.05;
+  font-size: clamp(2.2rem, 9vw, 2.9rem);
+  width: fit-content; max-width: 100%; padding-inline: 0.12em;
+  background: linear-gradient(transparent 56%, var(--mark) 56%, var(--mark) 90%, transparent 90%);
+}
+.hello span { font-family: var(--hand); font-size: 1.45rem; font-weight: 600; color: var(--muted); }
+.section-head h3, .chart-head h3, .view .card h3 { font-weight: 800; font-size: 1.05rem; }
+
+/* Cards: soft paper-white, rounded, almost flat */
+.card, .daybox, .gate, .sheet-card { background: var(--surface); border: 0; border-radius: 22px; box-shadow: var(--shadow); }
+.daybox .plate { border-top: 1px solid var(--line); }
+.quick { background: var(--surface); border: 0; border-radius: 18px; box-shadow: var(--shadow); color: var(--muted); }
+.quick:hover { border: 0; }
+.quick b { background: var(--card-a); color: var(--ink); border-radius: 50%; font-weight: 800; }
+
+/* The three numbers wear the pastel card colours */
+.stat.feature { background: var(--card-a); color: var(--ink); box-shadow: var(--shadow); }
+.stat.feature .card-title, .stat.feature small { color: var(--ink); opacity: 0.75; }
+.stat.feature::after { border-color: var(--ink); opacity: 0.07; }
+.stats .stat:nth-child(2) { background: var(--card-b); }
+.stats .stat:nth-child(3) { background: var(--card-c); }
+.stats .stat:nth-child(2) .card-title, .stats .stat:nth-child(3) .card-title { color: var(--ink); opacity: 0.7; }
+.stat .num { font-family: var(--hand); font-weight: 700; font-size: 2.4rem; }
+.stat.feature .num { font-size: clamp(3.2rem, 15vw, 4.2rem); }
+
+.numeral { background: var(--card-c); color: var(--ink); border-radius: 999px; }
+.affirm-text { background: var(--card-c); color: var(--ink); border-radius: 16px; }
+.bar { background: var(--card-c); }
+.bar-col.now .bar { background: var(--green); }
+.bar-line { background: var(--card-c); }
+
+/* Buttons and fields */
+.primary { border-radius: 999px; background: var(--green); color: var(--btn-ink); padding: 0.8rem 1.6rem; }
+.primary:hover:not(:disabled) { background: var(--green-deep); color: var(--btn-ink); }
+.link { color: var(--green); }
+.field input, .field textarea, .search, .affirm-card textarea { background: var(--surface-2); border: 1px solid transparent; border-radius: 14px; }
+.field input[readonly] { background: transparent; }
+.choice button { background: var(--surface-2); border-color: transparent; }
+.choice button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.voice { background: var(--card-c); color: var(--ink); }
+.voice.live { background: var(--green); color: var(--btn-ink); }
+.empty { border: 0; background: transparent; color: var(--muted); }
+.empty strong { color: var(--muted); font-weight: 600; }
+
+/* Floating pill nav; the + is a round sticker */
+.nav { background: var(--surface); border: 0; border-radius: 999px; box-shadow: 0 10px 30px -12px rgba(60, 50, 30, 0.35); }
+.tab { color: var(--muted); font-size: clamp(0.56rem, 2.45vw, 0.72rem); letter-spacing: -0.02em; }
+.nav { padding-inline: 0.3rem; grid-template-columns: repeat(2, minmax(0, 1fr)) auto repeat(2, minmax(0, 1fr)); }
+.add { margin-inline: 0.15rem; }
+/* Icon-only tabs, as in Smile Todo; the names stay for screen readers */
+.tab { padding-block: 0.7rem; }
+.tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.tab svg { width: 1.55rem; height: 1.55rem; }
+.tab[aria-current="page"]::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); margin-top: 3px; }
+.tab[aria-current="page"] { color: var(--ink); }
+.tab[aria-current="page"] svg { stroke-width: 2.5; }
+.add { background: var(--card-a); color: var(--ink); border-radius: 50%; box-shadow: 0 8px 18px -10px rgba(60, 50, 30, 0.5); }
+.add svg { stroke-width: 2.6; }
+
+/* Settings → background and card styles */
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.6rem; }
+.swatch {
+  position: relative; aspect-ratio: 3 / 4; width: 100%; border-radius: 14px; border: 2px solid var(--line);
+  padding: 0; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; gap: 3px; padding-bottom: 8px;
+}
+.swatch i { width: 22%; height: 18%; border-radius: 6px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 2px var(--surface) inset; }
+.swatch .num-tag { position: absolute; top: 5px; left: 7px; font-size: 0.7rem; font-weight: 800; color: rgba(29, 29, 31, 0.55); }
+
 </style>
 
 <div class="page">
@@ -488,6 +612,11 @@ body {
           <button type="button" value="dark" data-i18n="themeDark">Тёмная</button>
         </div>
       </section>
+      <section class="card stack">
+        <h3 data-i18n="bgTitle">Фон и карточки</h3>
+        <p class="hint" data-i18n="bgHint">Выберите оформление. Оно сохранится на этом устройстве.</p>
+        <div class="swatches" id="bg-choice"></div>
+      </section>
       <form class="card stack" id="pass-form" novalidate>
         <h3 data-i18n="changePass">Смена пароля</h3>
         <div class="field">
@@ -625,7 +754,7 @@ body {
       theme: "Тема", themeSystem: "Как в системе", themeLight: "Светлая", themeDark: "Тёмная",
       changePass: "Смена пароля", passChanged: "Пароль изменён.", account: "Аккаунт", logoutHint: "Чтобы снова открыть архив, понадобится пароль.",
       affirmations: "Аффирмации", affirmHint: "Повторяйте каждую фразу столько раз в день, сколько выберете — текстом или голосом. Счётчик обнуляется в полночь.", affirmNew: "Новая фраза", add: "Добавить", affirmTitle: "Аффирмации на сегодня", affirmLead: "Прежде чем войти, напишите фразу своими руками.", affirmType: "Напишите эту фразу", affirmWrong: "Не совпадает. Напишите фразу слово в слово.", next: "Дальше", affirmMax: "Можно добавить не больше 10 фраз.", affirmTooLong: "Слишком много текста: все фразы вместе — не больше 40 000 символов.", editBtn: "Изменить",
-      uname: "Имя пользователя", identLabel: "Имя пользователя или почта", email: "Почта", unameHint: "3–24 символа: латинские буквы, цифры, _ или .", bRegister: "Создать аккаунт", toRegister: "Нет аккаунта? Зарегистрироваться", toLogin: "Уже есть аккаунт? Войти", tForgot: "Сброс пароля", leadForgot: "Укажите почту аккаунта — пришлём ссылку для нового пароля.", bSendLink: "Отправить ссылку", sentLink: "Если аккаунт с этой почтой есть, письмо уже в пути. Откройте ссылку из письма — появится поле для нового пароля.", tNewPass: "Новый пароль", leadNewPass: "Придумайте новый пароль для аккаунта.", bSavePass: "Сохранить пароль", leadLogin2: "Войдите, чтобы открыть свои идеи на этом устройстве.", leadReg2: "Аккаунт работает на любом устройстве: телефон, компьютер, планшет.", eUname: "Имя пользователя: 3–24 символа, латинские буквы, цифры, _ или .", eUnameTaken: "Это имя пользователя уже занято. Выберите другое.", eEmail: "Проверьте почту: адрес выглядит неправильно.", eEmailTaken: "Аккаунт с этой почтой уже есть. Войдите или сбросьте пароль.", eLogin: "Неверное имя пользователя, почта или пароль.", eConfirm: "Мы отправили письмо на вашу почту. Откройте ссылку из письма, чтобы завершить регистрацию.", eNetwork: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.", eRate: "Слишком много попыток. Подождите минуту и попробуйте снова.", noteServer: "Идеи хранятся в вашем аккаунте и открываются на любом устройстве.", signedAs: "Вы вошли как {u}.",
+      uname: "Имя пользователя", identLabel: "Имя пользователя или почта", email: "Почта", unameHint: "3–24 символа: латинские буквы, цифры, _ или .", bRegister: "Создать аккаунт", toRegister: "Нет аккаунта? Зарегистрироваться", toLogin: "Уже есть аккаунт? Войти", tForgot: "Сброс пароля", leadForgot: "Укажите почту аккаунта — пришлём ссылку для нового пароля.", bSendLink: "Отправить ссылку", sentLink: "Если аккаунт с этой почтой есть, письмо уже в пути. Откройте ссылку из письма — появится поле для нового пароля.", tNewPass: "Новый пароль", leadNewPass: "Придумайте новый пароль для аккаунта.", bSavePass: "Сохранить пароль", leadLogin2: "Войдите, чтобы открыть свои идеи на этом устройстве.", leadReg2: "Аккаунт работает на любом устройстве: телефон, компьютер, планшет.", eUname: "Имя пользователя: 3–24 символа, латинские буквы, цифры, _ или .", eUnameTaken: "Это имя пользователя уже занято. Выберите другое.", eEmail: "Проверьте почту: адрес выглядит неправильно.", eEmailTaken: "Аккаунт с этой почтой уже есть. Войдите или сбросьте пароль.", eLogin: "Неверное имя пользователя, почта или пароль.", eConfirm: "Мы отправили письмо на вашу почту. Откройте ссылку из письма, чтобы завершить регистрацию.", eNetwork: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.", eRate: "Слишком много попыток. Подождите минуту и попробуйте снова.", noteServer: "Идеи хранятся в вашем аккаунте и открываются на любом устройстве.", signedAs: "Вы вошли как {u}.", bgTitle: "Фон и карточки", bgHint: "Выберите оформление. Оно сохранится на этом устройстве.", bgStyle: "Стиль {n}",
       codeHint: "По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.", codeNew: "Создать новый код", codeShow: "Показать код", codeHide: "Скрыть код", codeNewConfirm: "Точно? Старый код перестанет работать", codeUnknown: "Этот код был создан до того, как сайт научился его хранить, поэтому показать его нельзя. Создайте новый — старый перестанет работать.", codeMade: "Новый код создан. Сохраните его — старый больше не работает.",
       affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день",
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите или звоните.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
@@ -666,7 +795,7 @@ body {
       theme: "Көрініс", themeSystem: "Жүйедегідей", themeLight: "Жарық", themeDark: "Қараңғы",
       changePass: "Құпиясөзді өзгерту", passChanged: "Құпиясөз өзгертілді.", account: "Аккаунт", logoutHint: "Мұрағатты қайта ашу үшін құпиясөз қажет болады.",
       affirmations: "Аффирмациялар", affirmHint: "Әр сөйлемді күніне өзіңіз таңдаған рет қайталаңыз — мәтінмен немесе дауыспен. Есептегіш түн ортасында нөлденеді.", affirmNew: "Жаңа сөйлем", add: "Қосу", affirmTitle: "Бүгінгі аффирмациялар", affirmLead: "Кірмес бұрын сөйлемді өз қолыңызбен жазыңыз.", affirmType: "Осы сөйлемді жазыңыз", affirmWrong: "Сәйкес келмейді. Сөйлемді сөзбе-сөз жазыңыз.", next: "Әрі қарай", affirmMax: "10 сөйлемнен артық қосуға болмайды.", affirmTooLong: "Мәтін тым көп: барлық сөйлем бірге 40 000 таңбадан аспауы керек.", editBtn: "Өзгерту",
-      uname: "Пайдаланушы аты", identLabel: "Пайдаланушы аты немесе пошта", email: "Пошта", unameHint: "3–24 таңба: латын әріптері, сандар, _ немесе .", bRegister: "Аккаунт құру", toRegister: "Аккаунтыңыз жоқ па? Тіркелу", toLogin: "Аккаунтыңыз бар ма? Кіру", tForgot: "Құпиясөзді қалпына келтіру", leadForgot: "Аккаунт поштасын енгізіңіз — жаңа құпиясөзге сілтеме жібереміз.", bSendLink: "Сілтеме жіберу", sentLink: "Бұл поштамен аккаунт болса, хат жіберілді. Хаттағы сілтемені ашыңыз — жаңа құпиясөз өрісі шығады.", tNewPass: "Жаңа құпиясөз", leadNewPass: "Аккаунтқа жаңа құпиясөз ойлап табыңыз.", bSavePass: "Құпиясөзді сақтау", leadLogin2: "Идеяларыңызды осы құрылғыда ашу үшін кіріңіз.", leadReg2: "Аккаунт кез келген құрылғыда жұмыс істейді: телефон, компьютер, планшет.", eUname: "Пайдаланушы аты: 3–24 таңба, латын әріптері, сандар, _ немесе .", eUnameTaken: "Бұл пайдаланушы аты бос емес. Басқасын таңдаңыз.", eEmail: "Поштаны тексеріңіз: мекенжай қате сияқты.", eEmailTaken: "Бұл поштамен аккаунт бар. Кіріңіз немесе құпиясөзді қалпына келтіріңіз.", eLogin: "Пайдаланушы аты, пошта немесе құпиясөз қате.", eConfirm: "Поштаңызға хат жібердік. Тіркелуді аяқтау үшін хаттағы сілтемені ашыңыз.", eNetwork: "Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көріңіз.", eRate: "Әрекет тым көп. Бір минут күтіп, қайталап көріңіз.", noteServer: "Идеялар аккаунтыңызда сақталады және кез келген құрылғыда ашылады.", signedAs: "Сіз {u} ретінде кірдіңіз.",
+      uname: "Пайдаланушы аты", identLabel: "Пайдаланушы аты немесе пошта", email: "Пошта", unameHint: "3–24 таңба: латын әріптері, сандар, _ немесе .", bRegister: "Аккаунт құру", toRegister: "Аккаунтыңыз жоқ па? Тіркелу", toLogin: "Аккаунтыңыз бар ма? Кіру", tForgot: "Құпиясөзді қалпына келтіру", leadForgot: "Аккаунт поштасын енгізіңіз — жаңа құпиясөзге сілтеме жібереміз.", bSendLink: "Сілтеме жіберу", sentLink: "Бұл поштамен аккаунт болса, хат жіберілді. Хаттағы сілтемені ашыңыз — жаңа құпиясөз өрісі шығады.", tNewPass: "Жаңа құпиясөз", leadNewPass: "Аккаунтқа жаңа құпиясөз ойлап табыңыз.", bSavePass: "Құпиясөзді сақтау", leadLogin2: "Идеяларыңызды осы құрылғыда ашу үшін кіріңіз.", leadReg2: "Аккаунт кез келген құрылғыда жұмыс істейді: телефон, компьютер, планшет.", eUname: "Пайдаланушы аты: 3–24 таңба, латын әріптері, сандар, _ немесе .", eUnameTaken: "Бұл пайдаланушы аты бос емес. Басқасын таңдаңыз.", eEmail: "Поштаны тексеріңіз: мекенжай қате сияқты.", eEmailTaken: "Бұл поштамен аккаунт бар. Кіріңіз немесе құпиясөзді қалпына келтіріңіз.", eLogin: "Пайдаланушы аты, пошта немесе құпиясөз қате.", eConfirm: "Поштаңызға хат жібердік. Тіркелуді аяқтау үшін хаттағы сілтемені ашыңыз.", eNetwork: "Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көріңіз.", eRate: "Әрекет тым көп. Бір минут күтіп, қайталап көріңіз.", noteServer: "Идеялар аккаунтыңызда сақталады және кез келген құрылғыда ашылады.", signedAs: "Сіз {u} ретінде кірдіңіз.", bgTitle: "Фон және карточкалар", bgHint: "Безендіруді таңдаңыз. Ол осы құрылғыда сақталады.", bgStyle: "Стиль {n}",
       codeHint: "Бұл код арқылы ескі құпиясөзді ұмытсаңыз, жаңасын қоюға болады. Оны сенімді жерде сақтаңыз.", codeNew: "Жаңа код жасау", codeShow: "Кодты көрсету", codeHide: "Кодты жасыру", codeNewConfirm: "Сенімдісіз бе? Ескі код жұмыс істемей қалады", codeUnknown: "Бұл код сайт оны сақтауды үйренбей тұрып жасалған, сондықтан оны көрсету мүмкін емес. Жаңасын жасаңыз — ескісі жұмыс істемей қалады.", codeMade: "Жаңа код жасалды. Оны сақтаңыз — ескісі енді жұмыс істемейді.",
       affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет",
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, жазыңыз немесе қоңырау шалыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
@@ -707,7 +836,7 @@ body {
       theme: "Theme", themeSystem: "System", themeLight: "Light", themeDark: "Dark",
       changePass: "Change password", passChanged: "Password changed.", account: "Account", logoutHint: "You will need your password to open the archive again.",
       affirmations: "Affirmations", affirmHint: "Repeat each phrase as many times a day as you choose, by typing or by voice. The counter resets at midnight.", affirmNew: "New phrase", add: "Add", affirmTitle: "Today's affirmations", affirmLead: "Before you go in, type the phrase yourself.", affirmType: "Type this phrase", affirmWrong: "That does not match. Type the phrase word for word.", next: "Next", affirmMax: "You can add up to 10 phrases.", affirmTooLong: "Too much text: all phrases together can be up to 40,000 characters.", editBtn: "Edit",
-      uname: "Username", identLabel: "Username or email", email: "Email", unameHint: "3–24 characters: Latin letters, digits, _ or .", bRegister: "Create account", toRegister: "No account? Sign up", toLogin: "Already have an account? Sign in", tForgot: "Reset password", leadForgot: "Enter your account email and we'll send a link to set a new password.", bSendLink: "Send link", sentLink: "If an account with this email exists, the email is on its way. Open the link in it to set a new password.", tNewPass: "New password", leadNewPass: "Choose a new password for your account.", bSavePass: "Save password", leadLogin2: "Sign in to open your ideas on this device.", leadReg2: "Your account works on any device: phone, computer, tablet.", eUname: "Username: 3–24 characters, Latin letters, digits, _ or .", eUnameTaken: "That username is taken. Choose another one.", eEmail: "Check the email address: it doesn't look right.", eEmailTaken: "An account with this email already exists. Sign in or reset the password.", eLogin: "Wrong username, email or password.", eConfirm: "We sent an email to your address. Open the link in it to finish signing up.", eNetwork: "Can't reach the server. Check your internet and try again.", eRate: "Too many attempts. Wait a minute and try again.", noteServer: "Ideas are kept in your account and open on any device.", signedAs: "Signed in as {u}.",
+      uname: "Username", identLabel: "Username or email", email: "Email", unameHint: "3–24 characters: Latin letters, digits, _ or .", bRegister: "Create account", toRegister: "No account? Sign up", toLogin: "Already have an account? Sign in", tForgot: "Reset password", leadForgot: "Enter your account email and we'll send a link to set a new password.", bSendLink: "Send link", sentLink: "If an account with this email exists, the email is on its way. Open the link in it to set a new password.", tNewPass: "New password", leadNewPass: "Choose a new password for your account.", bSavePass: "Save password", leadLogin2: "Sign in to open your ideas on this device.", leadReg2: "Your account works on any device: phone, computer, tablet.", eUname: "Username: 3–24 characters, Latin letters, digits, _ or .", eUnameTaken: "That username is taken. Choose another one.", eEmail: "Check the email address: it doesn't look right.", eEmailTaken: "An account with this email already exists. Sign in or reset the password.", eLogin: "Wrong username, email or password.", eConfirm: "We sent an email to your address. Open the link in it to finish signing up.", eNetwork: "Can't reach the server. Check your internet and try again.", eRate: "Too many attempts. Wait a minute and try again.", noteServer: "Ideas are kept in your account and open on any device.", signedAs: "Signed in as {u}.", bgTitle: "Background and cards", bgHint: "Pick a look. It is saved on this device.", bgStyle: "Style {n}",
       codeHint: "This code lets you set a new password if you forget the old one. Keep it somewhere safe.", codeNew: "Create a new code", codeShow: "Show code", codeHide: "Hide code", codeNewConfirm: "Sure? The old code will stop working", codeUnknown: "This code was made before the site could keep a copy, so it cannot be shown. Create a new one; the old one will stop working.", codeMade: "New code created. Save it; the old one no longer works.",
       affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day",
       contactTitle: "Questions?", contactText: "If you have any questions, write or call.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
@@ -748,7 +877,7 @@ body {
       theme: "Thème", themeSystem: "Système", themeLight: "Clair", themeDark: "Sombre",
       changePass: "Changer le mot de passe", passChanged: "Mot de passe modifié.", account: "Compte", logoutHint: "Il faudra votre mot de passe pour rouvrir l'archive.",
       affirmations: "Affirmations", affirmHint: "Répétez chaque phrase autant de fois par jour que vous le souhaitez, à l'écrit ou à voix haute. Le compteur repart à zéro à minuit.", affirmNew: "Nouvelle phrase", add: "Ajouter", affirmTitle: "Affirmations du jour", affirmLead: "Avant d'entrer, écrivez la phrase vous-même.", affirmType: "Écrivez cette phrase", affirmWrong: "Cela ne correspond pas. Écrivez la phrase mot pour mot.", next: "Suivant", affirmMax: "Vous pouvez ajouter 10 phrases au maximum.", affirmTooLong: "Trop de texte : toutes les phrases réunies ne peuvent pas dépasser 40 000 caractères.", editBtn: "Modifier",
-      uname: "Nom d'utilisateur", identLabel: "Nom d'utilisateur ou e-mail", email: "E-mail", unameHint: "3 à 24 caractères : lettres latines, chiffres, _ ou .", bRegister: "Créer un compte", toRegister: "Pas de compte ? S'inscrire", toLogin: "Déjà un compte ? Se connecter", tForgot: "Réinitialiser le mot de passe", leadForgot: "Indiquez l'e-mail du compte : nous enverrons un lien pour choisir un nouveau mot de passe.", bSendLink: "Envoyer le lien", sentLink: "Si un compte existe avec cet e-mail, le message est en route. Ouvrez le lien pour choisir un nouveau mot de passe.", tNewPass: "Nouveau mot de passe", leadNewPass: "Choisissez un nouveau mot de passe pour votre compte.", bSavePass: "Enregistrer le mot de passe", leadLogin2: "Connectez-vous pour ouvrir vos idées sur cet appareil.", leadReg2: "Votre compte fonctionne sur tous vos appareils : téléphone, ordinateur, tablette.", eUname: "Nom d'utilisateur : 3 à 24 caractères, lettres latines, chiffres, _ ou .", eUnameTaken: "Ce nom d'utilisateur est déjà pris. Choisissez-en un autre.", eEmail: "Vérifiez l'adresse e-mail : elle semble incorrecte.", eEmailTaken: "Un compte existe déjà avec cet e-mail. Connectez-vous ou réinitialisez le mot de passe.", eLogin: "Nom d'utilisateur, e-mail ou mot de passe incorrect.", eConfirm: "Nous avons envoyé un e-mail à votre adresse. Ouvrez le lien pour terminer l'inscription.", eNetwork: "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.", eRate: "Trop de tentatives. Attendez une minute et réessayez.", noteServer: "Les idées sont conservées dans votre compte et s'ouvrent sur tous vos appareils.", signedAs: "Connecté en tant que {u}.",
+      uname: "Nom d'utilisateur", identLabel: "Nom d'utilisateur ou e-mail", email: "E-mail", unameHint: "3 à 24 caractères : lettres latines, chiffres, _ ou .", bRegister: "Créer un compte", toRegister: "Pas de compte ? S'inscrire", toLogin: "Déjà un compte ? Se connecter", tForgot: "Réinitialiser le mot de passe", leadForgot: "Indiquez l'e-mail du compte : nous enverrons un lien pour choisir un nouveau mot de passe.", bSendLink: "Envoyer le lien", sentLink: "Si un compte existe avec cet e-mail, le message est en route. Ouvrez le lien pour choisir un nouveau mot de passe.", tNewPass: "Nouveau mot de passe", leadNewPass: "Choisissez un nouveau mot de passe pour votre compte.", bSavePass: "Enregistrer le mot de passe", leadLogin2: "Connectez-vous pour ouvrir vos idées sur cet appareil.", leadReg2: "Votre compte fonctionne sur tous vos appareils : téléphone, ordinateur, tablette.", eUname: "Nom d'utilisateur : 3 à 24 caractères, lettres latines, chiffres, _ ou .", eUnameTaken: "Ce nom d'utilisateur est déjà pris. Choisissez-en un autre.", eEmail: "Vérifiez l'adresse e-mail : elle semble incorrecte.", eEmailTaken: "Un compte existe déjà avec cet e-mail. Connectez-vous ou réinitialisez le mot de passe.", eLogin: "Nom d'utilisateur, e-mail ou mot de passe incorrect.", eConfirm: "Nous avons envoyé un e-mail à votre adresse. Ouvrez le lien pour terminer l'inscription.", eNetwork: "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.", eRate: "Trop de tentatives. Attendez une minute et réessayez.", noteServer: "Les idées sont conservées dans votre compte et s'ouvrent sur tous vos appareils.", signedAs: "Connecté en tant que {u}.", bgTitle: "Fond et cartes", bgHint: "Choisissez un style. Il est enregistré sur cet appareil.", bgStyle: "Style {n}",
       codeHint: "Ce code permet de définir un nouveau mot de passe si vous oubliez l'ancien. Conservez-le en lieu sûr.", codeNew: "Créer un nouveau code", codeShow: "Afficher le code", codeHide: "Masquer le code", codeNewConfirm: "Sûr ? L'ancien code ne fonctionnera plus", codeUnknown: "Ce code a été créé avant que le site puisse en garder une copie : il ne peut pas être affiché. Créez-en un nouveau ; l'ancien ne fonctionnera plus.", codeMade: "Nouveau code créé. Conservez-le : l'ancien ne fonctionne plus.",
       affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour",
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez ou appelez.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
@@ -789,7 +918,7 @@ body {
       theme: "主题", themeSystem: "跟随系统", themeLight: "浅色", themeDark: "深色",
       changePass: "修改密码", passChanged: "密码已修改。", account: "账户", logoutHint: "再次打开档案时需要输入密码。",
       affirmations: "肯定语", affirmHint: "每句话每天按你设定的次数重复，可以打字或用语音。计数在午夜清零。", affirmNew: "新句子", add: "添加", affirmTitle: "今天的肯定语", affirmLead: "进入之前，请亲手写下这句话。", affirmType: "写下这句话", affirmWrong: "不一致。请逐字写下这句话。", next: "下一步", affirmMax: "最多可以添加 10 句。", affirmTooLong: "文字太多：所有句子合计不能超过 40,000 个字符。", editBtn: "编辑",
-      uname: "用户名", identLabel: "用户名或邮箱", email: "邮箱", unameHint: "3–24 个字符：拉丁字母、数字、_ 或 .", bRegister: "创建账户", toRegister: "没有账户？注册", toLogin: "已有账户？登录", tForgot: "重置密码", leadForgot: "输入账户邮箱，我们会发送设置新密码的链接。", bSendLink: "发送链接", sentLink: "如果该邮箱有账户，邮件已发出。打开邮件中的链接即可设置新密码。", tNewPass: "新密码", leadNewPass: "为账户设置新密码。", bSavePass: "保存密码", leadLogin2: "登录后即可在此设备上查看你的想法。", leadReg2: "账户可在任何设备上使用：手机、电脑、平板。", eUname: "用户名：3–24 个字符，拉丁字母、数字、_ 或 .", eUnameTaken: "该用户名已被占用，请换一个。", eEmail: "请检查邮箱地址，格式似乎不对。", eEmailTaken: "该邮箱已有账户。请登录或重置密码。", eLogin: "用户名、邮箱或密码错误。", eConfirm: "我们已向你的邮箱发送邮件。打开其中的链接即可完成注册。", eNetwork: "无法连接服务器。请检查网络后重试。", eRate: "尝试次数过多，请稍等一分钟再试。", noteServer: "想法保存在你的账户中，可在任何设备上打开。", signedAs: "当前登录：{u}。",
+      uname: "用户名", identLabel: "用户名或邮箱", email: "邮箱", unameHint: "3–24 个字符：拉丁字母、数字、_ 或 .", bRegister: "创建账户", toRegister: "没有账户？注册", toLogin: "已有账户？登录", tForgot: "重置密码", leadForgot: "输入账户邮箱，我们会发送设置新密码的链接。", bSendLink: "发送链接", sentLink: "如果该邮箱有账户，邮件已发出。打开邮件中的链接即可设置新密码。", tNewPass: "新密码", leadNewPass: "为账户设置新密码。", bSavePass: "保存密码", leadLogin2: "登录后即可在此设备上查看你的想法。", leadReg2: "账户可在任何设备上使用：手机、电脑、平板。", eUname: "用户名：3–24 个字符，拉丁字母、数字、_ 或 .", eUnameTaken: "该用户名已被占用，请换一个。", eEmail: "请检查邮箱地址，格式似乎不对。", eEmailTaken: "该邮箱已有账户。请登录或重置密码。", eLogin: "用户名、邮箱或密码错误。", eConfirm: "我们已向你的邮箱发送邮件。打开其中的链接即可完成注册。", eNetwork: "无法连接服务器。请检查网络后重试。", eRate: "尝试次数过多，请稍等一分钟再试。", noteServer: "想法保存在你的账户中，可在任何设备上打开。", signedAs: "当前登录：{u}。", bgTitle: "背景与卡片", bgHint: "选择一种样式，会保存在此设备上。", bgStyle: "样式 {n}",
       codeHint: "忘记密码时，可以用这个恢复码设置新密码。请把它保存在安全的地方。", codeNew: "生成新恢复码", codeShow: "显示恢复码", codeHide: "隐藏恢复码", codeNewConfirm: "确定吗？旧恢复码将失效", codeUnknown: "这个恢复码是在网站能保存副本之前生成的，所以无法显示。请生成一个新的，旧的将失效。", codeMade: "新恢复码已生成。请保存好，旧的已失效。",
       affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数",
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发消息或打电话。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
@@ -830,7 +959,7 @@ body {
       theme: "Tema", themeSystem: "Sistema", themeLight: "Claro", themeDark: "Oscuro",
       changePass: "Cambiar contraseña", passChanged: "Contraseña cambiada.", account: "Cuenta", logoutHint: "Necesitarás tu contraseña para volver a abrir el archivo.",
       affirmations: "Afirmaciones", affirmHint: "Repite cada frase las veces al día que elijas, escribiéndola o por voz. El contador se reinicia a medianoche.", affirmNew: "Nueva frase", add: "Añadir", affirmTitle: "Afirmaciones de hoy", affirmLead: "Antes de entrar, escribe la frase tú mismo.", affirmType: "Escribe esta frase", affirmWrong: "No coincide. Escribe la frase palabra por palabra.", next: "Siguiente", affirmMax: "Puedes añadir hasta 10 frases.", affirmTooLong: "Demasiado texto: todas las frases juntas no pueden superar los 40 000 caracteres.", editBtn: "Editar",
-      uname: "Nombre de usuario", identLabel: "Nombre de usuario o correo", email: "Correo", unameHint: "3–24 caracteres: letras latinas, dígitos, _ o .", bRegister: "Crear cuenta", toRegister: "¿No tienes cuenta? Regístrate", toLogin: "¿Ya tienes cuenta? Entra", tForgot: "Restablecer contraseña", leadForgot: "Escribe el correo de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.", bSendLink: "Enviar enlace", sentLink: "Si existe una cuenta con este correo, el mensaje ya va en camino. Abre el enlace para crear una contraseña nueva.", tNewPass: "Contraseña nueva", leadNewPass: "Elige una contraseña nueva para tu cuenta.", bSavePass: "Guardar contraseña", leadLogin2: "Entra para abrir tus ideas en este dispositivo.", leadReg2: "Tu cuenta funciona en cualquier dispositivo: teléfono, ordenador, tableta.", eUname: "Nombre de usuario: 3–24 caracteres, letras latinas, dígitos, _ o .", eUnameTaken: "Ese nombre de usuario ya está en uso. Elige otro.", eEmail: "Revisa el correo: la dirección no parece correcta.", eEmailTaken: "Ya existe una cuenta con este correo. Entra o restablece la contraseña.", eLogin: "Nombre de usuario, correo o contraseña incorrectos.", eConfirm: "Te enviamos un correo. Abre el enlace para terminar el registro.", eNetwork: "No hay conexión con el servidor. Revisa internet e inténtalo de nuevo.", eRate: "Demasiados intentos. Espera un minuto e inténtalo de nuevo.", noteServer: "Las ideas se guardan en tu cuenta y se abren en cualquier dispositivo.", signedAs: "Has entrado como {u}.",
+      uname: "Nombre de usuario", identLabel: "Nombre de usuario o correo", email: "Correo", unameHint: "3–24 caracteres: letras latinas, dígitos, _ o .", bRegister: "Crear cuenta", toRegister: "¿No tienes cuenta? Regístrate", toLogin: "¿Ya tienes cuenta? Entra", tForgot: "Restablecer contraseña", leadForgot: "Escribe el correo de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.", bSendLink: "Enviar enlace", sentLink: "Si existe una cuenta con este correo, el mensaje ya va en camino. Abre el enlace para crear una contraseña nueva.", tNewPass: "Contraseña nueva", leadNewPass: "Elige una contraseña nueva para tu cuenta.", bSavePass: "Guardar contraseña", leadLogin2: "Entra para abrir tus ideas en este dispositivo.", leadReg2: "Tu cuenta funciona en cualquier dispositivo: teléfono, ordenador, tableta.", eUname: "Nombre de usuario: 3–24 caracteres, letras latinas, dígitos, _ o .", eUnameTaken: "Ese nombre de usuario ya está en uso. Elige otro.", eEmail: "Revisa el correo: la dirección no parece correcta.", eEmailTaken: "Ya existe una cuenta con este correo. Entra o restablece la contraseña.", eLogin: "Nombre de usuario, correo o contraseña incorrectos.", eConfirm: "Te enviamos un correo. Abre el enlace para terminar el registro.", eNetwork: "No hay conexión con el servidor. Revisa internet e inténtalo de nuevo.", eRate: "Demasiados intentos. Espera un minuto e inténtalo de nuevo.", noteServer: "Las ideas se guardan en tu cuenta y se abren en cualquier dispositivo.", signedAs: "Has entrado como {u}.", bgTitle: "Fondo y tarjetas", bgHint: "Elige un estilo. Se guarda en este dispositivo.", bgStyle: "Estilo {n}",
       codeHint: "Con este código puedes crear una nueva contraseña si olvidas la anterior. Guárdalo en un lugar seguro.", codeNew: "Crear un código nuevo", codeShow: "Mostrar código", codeHide: "Ocultar código", codeNewConfirm: "¿Seguro? El código anterior dejará de funcionar", codeUnknown: "Este código se creó antes de que el sitio pudiera guardar una copia, así que no se puede mostrar. Crea uno nuevo; el anterior dejará de funcionar.", codeMade: "Código nuevo creado. Guárdalo; el anterior ya no funciona.",
       affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día",
       contactTitle: "¿Tienes preguntas?", contactText: "Si tienes alguna pregunta, escribe o llama.", phoneLabel: "Teléfono", emailLabel: "Correo", creatorLabel: "Creado por"
@@ -912,6 +1041,7 @@ body {
     if (mode !== "wait" && !gate.hidden) gateTexts();
     if (listening) voiceLabel.textContent = t("voiceStop");
     if (user) { render(); renderAffirm(); profileState(); fillAccountLine(); }
+    buildSwatches();
   }
   $("lang").addEventListener("change", function () { setLang($("lang").value); });
 
@@ -1387,6 +1517,67 @@ body {
     if (want) root.setAttribute("data-theme", want); else root.removeAttribute("data-theme");
     markChoice("theme-choice", theme);
   }
+  // Background and card styles: paper colour, pattern, marker and the three pastel card colours.
+  var BG_KEY = "overthinkers-bg";
+  var BG_STYLES = [
+    { id: "grid", pattern: "grid", paper: "#F4F1E8", surface: "#FBF9F4", grid: "rgba(120,165,210,.35)", mark: "#B7D3EE", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
+    { id: "lines", pattern: "lines", paper: "#F8F5EE", surface: "#FFFDF8", grid: "rgba(120,165,210,.42)", mark: "#F5C9C1", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
+    { id: "dots", pattern: "dots", paper: "#F3F2EE", surface: "#FCFBF8", grid: "rgba(70,70,70,.22)", mark: "#D6E8C3", a: "#F3E3A1", b: "#E9C3BC", c: "#D3E0EA" },
+    { id: "plain", pattern: "none", paper: "#F7F3EA", surface: "#FFFDF8", grid: "transparent", mark: "#F6D86B", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
+    { id: "peach", pattern: "grid", paper: "#FCE9E1", surface: "#FFF7F3", grid: "rgba(232,140,120,.25)", mark: "#F8BFAF", a: "#FBD3AE", b: "#F4A79B", c: "#F6D7E2" },
+    { id: "lemon", pattern: "lines", paper: "#FBF4D6", surface: "#FFFCEE", grid: "rgba(214,176,60,.30)", mark: "#F6D86B", a: "#F6D86B", b: "#FBE7A6", c: "#D4E8BF" },
+    { id: "mint", pattern: "dots", paper: "#E5F4EB", surface: "#F6FBF8", grid: "rgba(70,160,110,.28)", mark: "#BFE6CE", a: "#C4EAD3", b: "#F6D86B", c: "#CFE6F3" },
+    { id: "sky", pattern: "none", paper: "#EAF4FB", img: "linear-gradient(180deg,#CBE4F6 0%,#EAF4FB 45%,#F8F6EF 100%)", surface: "#FBFDFF", grid: "transparent", mark: "#B7D3EE", a: "#F6D86B", b: "#BFDDF3", c: "#E1EEF8" },
+    { id: "lavender", pattern: "none", paper: "#EFEAF8", img: "linear-gradient(180deg,#DCD0F2 0%,#EFEAF8 50%,#F8F5FB 100%)", surface: "#FCFAFF", grid: "transparent", mark: "#D3C4F0", a: "#E4D8F7", b: "#F5C6DA", c: "#CDE0F5" },
+    { id: "sunset", pattern: "none", paper: "#F8DCCB", img: "linear-gradient(180deg,#F9CFA8 0%,#F4B6C2 45%,#CDB8E6 100%)", surface: "#FFF8F4", grid: "transparent", mark: "#F9CFA8", a: "#FBD9B4", b: "#F7C1CB", c: "#D9CCF0" }
+  ];
+  var bgStyle = (function () {
+    var v = null;
+    try { v = localStorage.getItem(BG_KEY); } catch (e) {}
+    return BG_STYLES.some(function (s) { return s.id === v; }) ? v : "grid";
+  })();
+  var bgVars = document.createElement("style");
+  document.head.appendChild(bgVars);
+  function patternOf(s, small) {
+    var g = s.grid, k = small ? 0.5 : 1;
+    if (s.pattern === "grid") return { img: "linear-gradient(" + g + " 1px, transparent 1px), linear-gradient(90deg, " + g + " 1px, transparent 1px)", size: (22 * k) + "px " + (22 * k) + "px", layers: 2 };
+    if (s.pattern === "lines") return { img: "linear-gradient(transparent " + (27 * k) + "px, " + g + " " + (27 * k) + "px, " + g + " " + (28 * k) + "px, transparent " + (28 * k) + "px)", size: "100% " + (28 * k) + "px", layers: 1 };
+    if (s.pattern === "dots") return { img: "radial-gradient(" + g + " 1px, transparent 1.5px)", size: (20 * k) + "px " + (20 * k) + "px", layers: 1 };
+    return null;
+  }
+  function applyBg() {
+    var s = BG_STYLES.filter(function (x) { return x.id === bgStyle; })[0] || BG_STYLES[0];
+    document.body.setAttribute("data-pattern", s.pattern);
+    // A plain body rule, so the dark-mode rules (more specific) still win at night.
+    bgVars.textContent = "body{--paper:" + s.paper + ";--paper-img:" + (s.img || "none") + ";--surface:" + s.surface +
+      ";--grid:" + s.grid + ";--mark:" + s.mark + ";--card-a:" + s.a + ";--card-b:" + s.b + ";--card-c:" + s.c + "}";
+    markChoice("bg-choice", s.id);
+  }
+  function buildSwatches() {
+    var box = $("bg-choice");
+    box.textContent = "";
+    BG_STYLES.forEach(function (s, i) {
+      var b = el("button", "swatch");
+      b.type = "button";
+      b.value = s.id;
+      b.setAttribute("aria-label", t("bgStyle", { n: i + 1 }));
+      var p = patternOf(s, true), images = [], sizes = [];
+      if (p) { images.push(p.img); for (var l = 0; l < p.layers; l++) sizes.push(p.size); }
+      if (s.img) { images.push(s.img); sizes.push("100% 100%"); }
+      b.style.backgroundColor = s.paper;
+      b.style.backgroundImage = images.length ? images.join(", ") : "none";
+      if (sizes.length) b.style.backgroundSize = sizes.join(", ");
+      b.appendChild(el("span", "num-tag", String(i + 1)));
+      [s.a, s.b, s.c].forEach(function (c) { var chip = el("i", null); chip.style.background = c; b.appendChild(chip); });
+      b.addEventListener("click", function () {
+        bgStyle = s.id;
+        try { localStorage.setItem(BG_KEY, bgStyle); } catch (e) {}
+        applyBg();
+      });
+      box.appendChild(b);
+    });
+    applyBg();
+  }
   // The profile is shown locked; "Edit" unlocks the fields and the same button then saves.
   var profileEditing = false;
   function profileState() {
@@ -1661,6 +1852,7 @@ body {
 
   // --- Start
   applyTheme();
+  buildSwatches();
   applyLang();
   if (!sb) {
     gateWait.textContent = t("eNetwork");
