@@ -513,11 +513,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 /* Brand: the globe logo with the name in a clean rounded sans, like the logo */
 .brand { font-family: var(--body); font-weight: 800; font-size: 1.08rem; letter-spacing: -0.01em; gap: 0.6rem; }
 .brand img { width: 30px; height: 30px; border-radius: 9px; flex: none; }
+.brand .brand-logo { width: auto; height: 44px; border-radius: 12px; }
 </style>
 
 <div class="page">
   <header class="top">
-    <h1 class="brand"><img src="/img/icon-512.png" alt="" width="30" height="30"><span>Overthinker's Ideas</span></h1>
+    <h1 class="brand"><img class="brand-logo" src="/img/logo-banner.png" alt="Overthinker's Ideas" width="134" height="44"></h1>
     <div class="top-right">
       <span class="bar-tag" id="bar-tag" data-i18n="tag">личный архив</span>
       <select class="lang" id="lang" data-i18n-aria="langAria" aria-label="Язык">
