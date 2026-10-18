@@ -454,7 +454,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .stars button.on { color: #F2B53A; }
 @media (prefers-reduced-motion: reduce) { .menu-row .chev { transition: none; } }
 /* Calendar: a day timeline like Google Calendar, items coloured by their own colour */
-.nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .add { width: 3.2rem; height: 3.2rem; }
 .cal-create { padding: 0.6rem 1.1rem; }
 .cal-nav { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
@@ -826,10 +826,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       <button type="button" class="tab" id="tab-home" aria-current="page">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>
         <span data-i18n="home">Главная</span>
-      </button>
-      <button type="button" class="tab" id="tab-archive">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>
-        <span data-i18n="archive">Архив</span>
       </button>
       <button type="button" class="tab" id="tab-cal">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
@@ -1411,10 +1407,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 
   function show(next) {
     view = next;
+    var current = next === "archive" ? "home" : next; // the archive opens from «Весь архив» on Home
     ["home", "archive", "cal", "affirm", "settings"].forEach(function (v) {
       $("view-" + v).hidden = v !== next;
-      if (v === next) $("tab-" + v).setAttribute("aria-current", "page");
-      else $("tab-" + v).removeAttribute("aria-current");
+      var tab = $("tab-" + v);
+      if (!tab) return;
+      if (v === current) tab.setAttribute("aria-current", "page");
+      else tab.removeAttribute("aria-current");
     });
     if (next === "settings") fillSettings();
     if (next === "affirm") renderAffirm(); else stopAffirmVoice();
@@ -1482,7 +1481,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     });
   }
   $("tab-home").addEventListener("click", function () { show("home"); });
-  $("tab-archive").addEventListener("click", function () { show("archive"); });
   $("tab-settings").addEventListener("click", function () { show("settings"); });
   $("tab-affirm").addEventListener("click", function () { show("affirm"); });
   $("tab-cal").addEventListener("click", function () { show("cal"); });
