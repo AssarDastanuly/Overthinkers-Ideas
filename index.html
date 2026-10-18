@@ -427,6 +427,57 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .stars button { background: none; border: 0; padding: 0.1rem; font-size: 1.9rem; line-height: 1; color: var(--line); }
 .stars button.on { color: #F2B53A; }
 @media (prefers-reduced-motion: reduce) { .menu-row .chev { transition: none; } }
+/* Calendar: a day timeline like Google Calendar, items coloured by their own colour */
+.nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.add { width: 3.2rem; height: 3.2rem; }
+.cal-create { padding: 0.6rem 1.1rem; }
+.cal-nav { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.cal-arrow { background: var(--surface); border: 0; width: 2.3rem; height: 2.3rem; border-radius: 50%; font-size: 1.35rem; line-height: 1; color: var(--ink); box-shadow: var(--shadow); }
+.cal-date { font-weight: 800; font-size: 1.05rem; }
+.cal-date::first-letter { text-transform: uppercase; }
+.cal-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.35rem; }
+.cal-daychip { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; background: var(--surface); border: 0; border-radius: 14px; padding: 0.45rem 0 0.35rem; color: var(--muted); font-size: 0.72rem; box-shadow: var(--shadow); min-height: 3.6rem; }
+.cal-daychip b { font-size: 1.05rem; color: var(--ink); }
+.cal-daychip.today b { color: var(--green); }
+.cal-daychip.on { background: var(--ink); color: var(--surface); }
+.cal-daychip.on b { color: var(--surface); }
+.cal-daychip i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.cal-allday { display: flex; flex-direction: column; gap: 0.35rem; }
+.cal-grid-card { padding: 0; max-height: 62vh; overflow-y: auto; }
+.cal-grid { position: relative; height: calc(48px * 24); }
+.cal-hour { position: absolute; left: 0; right: 0; height: 48px; border-top: 1px solid var(--line); cursor: pointer; }
+.cal-hour:first-child { border-top: 0; }
+.cal-hour-label { position: absolute; left: 0.55rem; top: -0.6rem; font-size: 0.72rem; color: var(--muted); background: var(--surface); padding: 0 0.2rem; font-variant-numeric: tabular-nums; }
+.cal-hour:first-child .cal-hour-label { top: 0.2rem; }
+.cal-item { border: 0; text-align: left; background: var(--c); color: #fff; border-radius: 9px; padding: 0.2rem 0.45rem; font: inherit; font-size: 0.78rem; line-height: 1.25; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; }
+.cal-item.timed { position: absolute; z-index: 1; }
+.cal-item-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-item-time { opacity: 0.9; font-size: 0.72rem; }
+.cal-item.kind-idea { background: color-mix(in srgb, var(--c) 24%, var(--surface)); color: var(--ink); border-left: 4px solid var(--c); }
+.cal-item.done { opacity: 0.55; }
+.cal-item.done .cal-item-title { text-decoration: line-through; }
+.cal-allday .cal-item { padding: 0.5rem 0.75rem; font-size: 0.9rem; }
+.cal-now { position: absolute; left: 3.1rem; right: 0; height: 2px; background: #E5484D; pointer-events: none; z-index: 2; }
+.cal-now::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #E5484D; }
+.cal-empty { text-align: center; }
+.cal-form { max-height: 88vh; overflow-y: auto; }
+.cal-sheet-title { font-weight: 800; }
+.cal-form .cal-title { width: 100%; font: inherit; font-size: 1.35rem; font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--green); padding: 0.3rem 0; outline: none; }
+.cal-form .cal-title::placeholder { color: var(--muted); font-weight: 600; }
+.kind-choice { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.kind-choice button { background: var(--surface-2); border: 0; border-radius: 12px; padding: 0.5rem 0.9rem; font: inherit; font-weight: 700; color: var(--ink); }
+.kind-choice button[aria-pressed="true"] { background: var(--green); color: var(--btn-ink); }
+.cal-row { display: flex; gap: 0.8rem; align-items: flex-start; }
+.cal-row > svg { width: 1.35rem; height: 1.35rem; flex: none; margin-top: 0.5rem; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cal-when { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; min-width: 0; }
+.cal-when input[type="date"], .cal-when input[type="time"] { font: inherit; color: var(--ink); background: var(--surface-2); border: 0; border-radius: 10px; padding: 0.45rem 0.6rem; }
+.cal-check { display: flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; color: var(--ink); }
+.cal-row textarea { flex: 1; min-width: 0; font: inherit; color: var(--ink); background: var(--surface-2); border: 0; border-radius: 12px; padding: 0.6rem 0.8rem; resize: vertical; }
+.color-choice { display: flex; flex-wrap: wrap; gap: 0.4rem; min-width: 0; }
+.color-dot { width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.06); }
+.color-dot[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+.cal-form .foot { justify-content: flex-end; }
+#cal-delete { margin-right: auto; }
 </style>
 
 <div class="page">
@@ -556,6 +607,24 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         <span data-i18n="noMatchS">Попробуйте другое слово.</span>
       </div>
       <ol class="list" id="list"></ol>
+    </div>
+
+    <!-- Calendar -->
+    <div class="view" id="view-cal" hidden>
+      <div class="section-head">
+        <h2 data-i18n="navCal">Календарь</h2>
+        <button type="button" class="primary cal-create" id="cal-create">+ <span data-i18n="calCreate">Создать</span></button>
+      </div>
+      <div class="cal-nav">
+        <button type="button" class="pill-btn" id="cal-today" data-i18n="calToday">Сегодня</button>
+        <button type="button" class="cal-arrow" id="cal-prev" data-i18n-aria="calPrev" aria-label="Предыдущий день">‹</button>
+        <button type="button" class="cal-arrow" id="cal-next" data-i18n-aria="calNext" aria-label="Следующий день">›</button>
+        <span class="cal-date" id="cal-date"></span>
+      </div>
+      <div class="cal-week" id="cal-week"></div>
+      <div class="cal-allday" id="cal-allday" hidden></div>
+      <div class="card cal-grid-card" id="cal-scroll"><div class="cal-grid" id="cal-grid"></div></div>
+      <p class="hint cal-empty" id="cal-empty" data-i18n="calEmpty"></p>
     </div>
 
     <!-- Affirmations -->
@@ -708,6 +777,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>
         <span data-i18n="archive">Архив</span>
       </button>
+      <button type="button" class="tab" id="tab-cal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        <span data-i18n="navCal">Календарь</span>
+      </button>
       <button type="button" class="add" id="add" data-i18n-aria="newIdea" aria-label="Новая идея">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
@@ -720,6 +793,44 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         <span data-i18n="settings">Настройки</span>
       </button>
     </nav>
+
+    <div class="sheet" id="cal-sheet" hidden>
+      <form class="sheet-card stack cal-form" id="cal-form" novalidate>
+        <div class="sheet-head">
+          <span class="cal-sheet-title" id="cal-sheet-title"></span>
+          <button type="button" class="close" id="cal-close" data-i18n-aria="close" aria-label="Закрыть">×</button>
+        </div>
+        <input id="cal-title" class="cal-title" type="text" maxlength="300" autocomplete="off" data-i18n-ph="calTitlePh" data-i18n-aria="calTitlePh" placeholder="Добавьте название">
+        <div class="kind-choice" id="cal-kind" role="group">
+          <button type="button" value="event" data-i18n="kindEvent">Мероприятие</button>
+          <button type="button" value="task" data-i18n="kindTask">Задача</button>
+        </div>
+        <div class="cal-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          <div class="cal-when">
+            <input type="date" id="cal-day" data-i18n-aria="calDay" aria-label="Дата">
+            <input type="time" id="cal-from" data-i18n-aria="calFrom" aria-label="Начало">
+            <span id="cal-dash">–</span>
+            <input type="time" id="cal-to" data-i18n-aria="calTo" aria-label="Конец">
+            <label class="cal-check"><input type="checkbox" id="cal-allday-box"> <span data-i18n="calAllDay">Весь день</span></label>
+          </div>
+        </div>
+        <div class="cal-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+          <textarea id="cal-notes" rows="2" maxlength="5000" data-i18n-ph="calNotes" data-i18n-aria="calNotes" placeholder="Добавить описание"></textarea>
+        </div>
+        <div class="cal-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.9 1.4-2-.5-1.3.3-2.5 1.7-2.5H17a3.5 3.5 0 0 0 3.5-3.5C20.5 7.3 16.7 3.5 12 3.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></svg>
+          <div class="color-choice" id="cal-colors"></div>
+        </div>
+        <label class="cal-check" id="cal-done-row"><input type="checkbox" id="cal-done"> <span data-i18n="calDone">Выполнено</span></label>
+        <p class="gate-error" id="cal-error" role="alert" hidden></p>
+        <div class="foot">
+          <button type="button" class="strike" id="cal-delete" data-i18n="calDelete" hidden>Удалить</button>
+          <button class="primary" type="submit" data-i18n="calSave">Сохранить</button>
+        </div>
+      </form>
+    </div>
 
     <div class="sheet" id="sheet" hidden>
       <form class="sheet-card stack" id="idea-form">
@@ -807,6 +918,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "Аффирмации", affirmHint: "Повторяйте каждую фразу столько раз в день, сколько выберете — текстом или голосом. Счётчик обнуляется в полночь.", affirmNew: "Новая фраза", add: "Добавить", affirmTitle: "Аффирмации на сегодня", affirmLead: "Прежде чем войти, напишите фразу своими руками.", affirmType: "Напишите эту фразу", affirmWrong: "Не совпадает. Напишите фразу слово в слово.", next: "Дальше", affirmMax: "Можно добавить не больше 10 фраз.", affirmTooLong: "Слишком много текста: все фразы вместе — не больше 40 000 символов.", editBtn: "Изменить",
       uname: "Имя пользователя", identLabel: "Имя пользователя или почта", email: "Почта", unameHint: "3–24 символа: латинские буквы, цифры, _ или .", bRegister: "Создать аккаунт", toRegister: "Нет аккаунта? Зарегистрироваться", toLogin: "Уже есть аккаунт? Войти", tForgot: "Сброс пароля", leadForgot: "Укажите почту аккаунта — пришлём ссылку для нового пароля.", bSendLink: "Отправить ссылку", sentLink: "Если аккаунт с этой почтой есть, письмо уже в пути. Откройте ссылку из письма — появится поле для нового пароля.", tNewPass: "Новый пароль", leadNewPass: "Придумайте новый пароль для аккаунта.", bSavePass: "Сохранить пароль", leadLogin2: "Войдите, чтобы открыть свои идеи на этом устройстве.", leadReg2: "Аккаунт работает на любом устройстве: телефон, компьютер, планшет.", eUname: "Имя пользователя: 3–24 символа, латинские буквы, цифры, _ или .", eUnameTaken: "Это имя пользователя уже занято. Выберите другое.", eEmail: "Проверьте почту: адрес выглядит неправильно.", eEmailTaken: "Аккаунт с этой почтой уже есть. Войдите или сбросьте пароль.", eLogin: "Неверное имя пользователя, почта или пароль.", eConfirm: "Мы отправили письмо на вашу почту. Откройте ссылку из письма, чтобы завершить регистрацию.", eNetwork: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.", eRate: "Слишком много попыток. Подождите минуту и попробуйте снова.", noteServer: "Идеи хранятся в вашем аккаунте и открываются на любом устройстве.", signedAs: "Вы вошли как {u}.", bgTitle: "Фон и карточки", bgHint: "Выберите оформление. Оно сохранится на этом устройстве.", bgStyle: "Стиль {n}",
       rowContact: "Связаться с автором", rowRate: "Оценить и оставить отзыв", rowShare: "Поделиться", shareHint: "Вместе лучше", writeEmail: "Написать на почту", rateQ: "Как вам Overthinker's Ideas?", ratePh: "Что понравилось? Что улучшить?", send: "Отправить", thanks: "Спасибо! Отзыв отправлен.", eRating: "Поставьте оценку: от 1 до 5 звёзд.", linkCopied: "Ссылка скопирована.", shareText: "Записывай мысли, пока не передумал.", starsAria: "{n} из 5",
+      navCal: "Календарь", calToday: "Сегодня", calCreate: "Создать", calPrev: "Предыдущий день", calNext: "Следующий день", kindIdea: "Идея", kindEvent: "Мероприятие", kindTask: "Задача", calTitlePh: "Добавьте название", calAllDay: "Весь день", calNotes: "Добавить описание", calDefault: "По умолчанию", calColorN: "Цвет {n}", calDone: "Выполнено", calSave: "Сохранить", calDelete: "Удалить", calDeleteSure: "Точно удалить?", calEmpty: "На этот день ничего нет. Нажмите на время или «Создать».", calNew: "Новая запись", calEdit: "Изменить запись", eTitle: "Добавьте название.", eTime: "Конец не может быть раньше начала.", calDay: "Дата", calFrom: "Начало", calTo: "Конец",
       codeHint: "По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.", codeNew: "Создать новый код", codeShow: "Показать код", codeHide: "Скрыть код", codeNewConfirm: "Точно? Старый код перестанет работать", codeUnknown: "Этот код был создан до того, как сайт научился его хранить, поэтому показать его нельзя. Создайте новый — старый перестанет работать.", codeMade: "Новый код создан. Сохраните его — старый больше не работает.",
       affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день",
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
@@ -849,6 +961,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "Аффирмациялар", affirmHint: "Әр сөйлемді күніне өзіңіз таңдаған рет қайталаңыз — мәтінмен немесе дауыспен. Есептегіш түн ортасында нөлденеді.", affirmNew: "Жаңа сөйлем", add: "Қосу", affirmTitle: "Бүгінгі аффирмациялар", affirmLead: "Кірмес бұрын сөйлемді өз қолыңызбен жазыңыз.", affirmType: "Осы сөйлемді жазыңыз", affirmWrong: "Сәйкес келмейді. Сөйлемді сөзбе-сөз жазыңыз.", next: "Әрі қарай", affirmMax: "10 сөйлемнен артық қосуға болмайды.", affirmTooLong: "Мәтін тым көп: барлық сөйлем бірге 40 000 таңбадан аспауы керек.", editBtn: "Өзгерту",
       uname: "Пайдаланушы аты", identLabel: "Пайдаланушы аты немесе пошта", email: "Пошта", unameHint: "3–24 таңба: латын әріптері, сандар, _ немесе .", bRegister: "Аккаунт құру", toRegister: "Аккаунтыңыз жоқ па? Тіркелу", toLogin: "Аккаунтыңыз бар ма? Кіру", tForgot: "Құпиясөзді қалпына келтіру", leadForgot: "Аккаунт поштасын енгізіңіз — жаңа құпиясөзге сілтеме жібереміз.", bSendLink: "Сілтеме жіберу", sentLink: "Бұл поштамен аккаунт болса, хат жіберілді. Хаттағы сілтемені ашыңыз — жаңа құпиясөз өрісі шығады.", tNewPass: "Жаңа құпиясөз", leadNewPass: "Аккаунтқа жаңа құпиясөз ойлап табыңыз.", bSavePass: "Құпиясөзді сақтау", leadLogin2: "Идеяларыңызды осы құрылғыда ашу үшін кіріңіз.", leadReg2: "Аккаунт кез келген құрылғыда жұмыс істейді: телефон, компьютер, планшет.", eUname: "Пайдаланушы аты: 3–24 таңба, латын әріптері, сандар, _ немесе .", eUnameTaken: "Бұл пайдаланушы аты бос емес. Басқасын таңдаңыз.", eEmail: "Поштаны тексеріңіз: мекенжай қате сияқты.", eEmailTaken: "Бұл поштамен аккаунт бар. Кіріңіз немесе құпиясөзді қалпына келтіріңіз.", eLogin: "Пайдаланушы аты, пошта немесе құпиясөз қате.", eConfirm: "Поштаңызға хат жібердік. Тіркелуді аяқтау үшін хаттағы сілтемені ашыңыз.", eNetwork: "Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көріңіз.", eRate: "Әрекет тым көп. Бір минут күтіп, қайталап көріңіз.", noteServer: "Идеялар аккаунтыңызда сақталады және кез келген құрылғыда ашылады.", signedAs: "Сіз {u} ретінде кірдіңіз.", bgTitle: "Фон және карточкалар", bgHint: "Безендіруді таңдаңыз. Ол осы құрылғыда сақталады.", bgStyle: "Стиль {n}",
       rowContact: "Авторға жазу", rowRate: "Бағалау және пікір қалдыру", rowShare: "Бөлісу", shareHint: "Бірге жақсырақ", writeEmail: "Поштаға жазу", rateQ: "Overthinker's Ideas ұнай ма?", ratePh: "Не ұнады? Нені жақсартуға болады?", send: "Жіберу", thanks: "Рақмет! Пікір жіберілді.", eRating: "Баға қойыңыз: 1-ден 5 жұлдызға дейін.", linkCopied: "Сілтеме көшірілді.", shareText: "Ойыңды өзгертпей тұрып жазып ал.", starsAria: "{n} / 5",
+      navCal: "Күнтізбе", calToday: "Бүгін", calCreate: "Құру", calPrev: "Алдыңғы күн", calNext: "Келесі күн", kindIdea: "Идея", kindEvent: "Іс-шара", kindTask: "Тапсырма", calTitlePh: "Атауын қосыңыз", calAllDay: "Күні бойы", calNotes: "Сипаттама қосу", calDefault: "Әдепкі", calColorN: "Түс {n}", calDone: "Орындалды", calSave: "Сақтау", calDelete: "Жою", calDeleteSure: "Шынымен жою керек пе?", calEmpty: "Бұл күнге ештеңе жоқ. Уақытты немесе «Құру» батырмасын басыңыз.", calNew: "Жаңа жазба", calEdit: "Жазбаны өзгерту", eTitle: "Атауын қосыңыз.", eTime: "Аяқталуы басталуынан ерте болмауы керек.", calDay: "Күні", calFrom: "Басы", calTo: "Соңы",
       codeHint: "Бұл код арқылы ескі құпиясөзді ұмытсаңыз, жаңасын қоюға болады. Оны сенімді жерде сақтаңыз.", codeNew: "Жаңа код жасау", codeShow: "Кодты көрсету", codeHide: "Кодты жасыру", codeNewConfirm: "Сенімдісіз бе? Ескі код жұмыс істемей қалады", codeUnknown: "Бұл код сайт оны сақтауды үйренбей тұрып жасалған, сондықтан оны көрсету мүмкін емес. Жаңасын жасаңыз — ескісі жұмыс істемей қалады.", codeMade: "Жаңа код жасалды. Оны сақтаңыз — ескісі енді жұмыс істемейді.",
       affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет",
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
@@ -891,6 +1004,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "Affirmations", affirmHint: "Repeat each phrase as many times a day as you choose, by typing or by voice. The counter resets at midnight.", affirmNew: "New phrase", add: "Add", affirmTitle: "Today's affirmations", affirmLead: "Before you go in, type the phrase yourself.", affirmType: "Type this phrase", affirmWrong: "That does not match. Type the phrase word for word.", next: "Next", affirmMax: "You can add up to 10 phrases.", affirmTooLong: "Too much text: all phrases together can be up to 40,000 characters.", editBtn: "Edit",
       uname: "Username", identLabel: "Username or email", email: "Email", unameHint: "3–24 characters: Latin letters, digits, _ or .", bRegister: "Create account", toRegister: "No account? Sign up", toLogin: "Already have an account? Sign in", tForgot: "Reset password", leadForgot: "Enter your account email and we'll send a link to set a new password.", bSendLink: "Send link", sentLink: "If an account with this email exists, the email is on its way. Open the link in it to set a new password.", tNewPass: "New password", leadNewPass: "Choose a new password for your account.", bSavePass: "Save password", leadLogin2: "Sign in to open your ideas on this device.", leadReg2: "Your account works on any device: phone, computer, tablet.", eUname: "Username: 3–24 characters, Latin letters, digits, _ or .", eUnameTaken: "That username is taken. Choose another one.", eEmail: "Check the email address: it doesn't look right.", eEmailTaken: "An account with this email already exists. Sign in or reset the password.", eLogin: "Wrong username, email or password.", eConfirm: "We sent an email to your address. Open the link in it to finish signing up.", eNetwork: "Can't reach the server. Check your internet and try again.", eRate: "Too many attempts. Wait a minute and try again.", noteServer: "Ideas are kept in your account and open on any device.", signedAs: "Signed in as {u}.", bgTitle: "Background and cards", bgHint: "Pick a look. It is saved on this device.", bgStyle: "Style {n}",
       rowContact: "Contact the author", rowRate: "Rate and leave feedback", rowShare: "Share", shareHint: "Better together", writeEmail: "Write an email", rateQ: "How do you like Overthinker's Ideas?", ratePh: "What do you like? What should be better?", send: "Send", thanks: "Thank you! Your feedback was sent.", eRating: "Choose a rating from 1 to 5 stars.", linkCopied: "Link copied.", shareText: "Write your thoughts down before you rethink them.", starsAria: "{n} of 5",
+      navCal: "Calendar", calToday: "Today", calCreate: "Create", calPrev: "Previous day", calNext: "Next day", kindIdea: "Idea", kindEvent: "Event", kindTask: "Task", calTitlePh: "Add title", calAllDay: "All day", calNotes: "Add description", calDefault: "Default", calColorN: "Colour {n}", calDone: "Done", calSave: "Save", calDelete: "Delete", calDeleteSure: "Delete for sure?", calEmpty: "Nothing on this day. Tap a time or “Create”.", calNew: "New entry", calEdit: "Edit entry", eTitle: "Add a title.", eTime: "The end can't be earlier than the start.", calDay: "Date", calFrom: "Start", calTo: "End",
       codeHint: "This code lets you set a new password if you forget the old one. Keep it somewhere safe.", codeNew: "Create a new code", codeShow: "Show code", codeHide: "Hide code", codeNewConfirm: "Sure? The old code will stop working", codeUnknown: "This code was made before the site could keep a copy, so it cannot be shown. Create a new one; the old one will stop working.", codeMade: "New code created. Save it; the old one no longer works.",
       affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day",
       contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
@@ -933,6 +1047,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "Affirmations", affirmHint: "Répétez chaque phrase autant de fois par jour que vous le souhaitez, à l'écrit ou à voix haute. Le compteur repart à zéro à minuit.", affirmNew: "Nouvelle phrase", add: "Ajouter", affirmTitle: "Affirmations du jour", affirmLead: "Avant d'entrer, écrivez la phrase vous-même.", affirmType: "Écrivez cette phrase", affirmWrong: "Cela ne correspond pas. Écrivez la phrase mot pour mot.", next: "Suivant", affirmMax: "Vous pouvez ajouter 10 phrases au maximum.", affirmTooLong: "Trop de texte : toutes les phrases réunies ne peuvent pas dépasser 40 000 caractères.", editBtn: "Modifier",
       uname: "Nom d'utilisateur", identLabel: "Nom d'utilisateur ou e-mail", email: "E-mail", unameHint: "3 à 24 caractères : lettres latines, chiffres, _ ou .", bRegister: "Créer un compte", toRegister: "Pas de compte ? S'inscrire", toLogin: "Déjà un compte ? Se connecter", tForgot: "Réinitialiser le mot de passe", leadForgot: "Indiquez l'e-mail du compte : nous enverrons un lien pour choisir un nouveau mot de passe.", bSendLink: "Envoyer le lien", sentLink: "Si un compte existe avec cet e-mail, le message est en route. Ouvrez le lien pour choisir un nouveau mot de passe.", tNewPass: "Nouveau mot de passe", leadNewPass: "Choisissez un nouveau mot de passe pour votre compte.", bSavePass: "Enregistrer le mot de passe", leadLogin2: "Connectez-vous pour ouvrir vos idées sur cet appareil.", leadReg2: "Votre compte fonctionne sur tous vos appareils : téléphone, ordinateur, tablette.", eUname: "Nom d'utilisateur : 3 à 24 caractères, lettres latines, chiffres, _ ou .", eUnameTaken: "Ce nom d'utilisateur est déjà pris. Choisissez-en un autre.", eEmail: "Vérifiez l'adresse e-mail : elle semble incorrecte.", eEmailTaken: "Un compte existe déjà avec cet e-mail. Connectez-vous ou réinitialisez le mot de passe.", eLogin: "Nom d'utilisateur, e-mail ou mot de passe incorrect.", eConfirm: "Nous avons envoyé un e-mail à votre adresse. Ouvrez le lien pour terminer l'inscription.", eNetwork: "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.", eRate: "Trop de tentatives. Attendez une minute et réessayez.", noteServer: "Les idées sont conservées dans votre compte et s'ouvrent sur tous vos appareils.", signedAs: "Connecté en tant que {u}.", bgTitle: "Fond et cartes", bgHint: "Choisissez un style. Il est enregistré sur cet appareil.", bgStyle: "Style {n}",
       rowContact: "Contacter l'auteur", rowRate: "Noter et donner un avis", rowShare: "Partager", shareHint: "Mieux ensemble", writeEmail: "Écrire un e-mail", rateQ: "Comment trouvez-vous Overthinker's Ideas ?", ratePh: "Qu'est-ce qui vous plaît ? Que faut-il améliorer ?", send: "Envoyer", thanks: "Merci ! Votre avis a été envoyé.", eRating: "Choisissez une note de 1 à 5 étoiles.", linkCopied: "Lien copié.", shareText: "Note tes pensées avant de changer d'avis.", starsAria: "{n} sur 5",
+      navCal: "Calendrier", calToday: "Aujourd'hui", calCreate: "Créer", calPrev: "Jour précédent", calNext: "Jour suivant", kindIdea: "Idée", kindEvent: "Événement", kindTask: "Tâche", calTitlePh: "Ajouter un titre", calAllDay: "Toute la journée", calNotes: "Ajouter une description", calDefault: "Par défaut", calColorN: "Couleur {n}", calDone: "Terminé", calSave: "Enregistrer", calDelete: "Supprimer", calDeleteSure: "Vraiment supprimer ?", calEmpty: "Rien ce jour-là. Touchez une heure ou « Créer ».", calNew: "Nouvelle entrée", calEdit: "Modifier l'entrée", eTitle: "Ajoutez un titre.", eTime: "La fin ne peut pas précéder le début.", calDay: "Date", calFrom: "Début", calTo: "Fin",
       codeHint: "Ce code permet de définir un nouveau mot de passe si vous oubliez l'ancien. Conservez-le en lieu sûr.", codeNew: "Créer un nouveau code", codeShow: "Afficher le code", codeHide: "Masquer le code", codeNewConfirm: "Sûr ? L'ancien code ne fonctionnera plus", codeUnknown: "Ce code a été créé avant que le site puisse en garder une copie : il ne peut pas être affiché. Créez-en un nouveau ; l'ancien ne fonctionnera plus.", codeMade: "Nouveau code créé. Conservez-le : l'ancien ne fonctionne plus.",
       affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour",
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
@@ -975,6 +1090,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "肯定语", affirmHint: "每句话每天按你设定的次数重复，可以打字或用语音。计数在午夜清零。", affirmNew: "新句子", add: "添加", affirmTitle: "今天的肯定语", affirmLead: "进入之前，请亲手写下这句话。", affirmType: "写下这句话", affirmWrong: "不一致。请逐字写下这句话。", next: "下一步", affirmMax: "最多可以添加 10 句。", affirmTooLong: "文字太多：所有句子合计不能超过 40,000 个字符。", editBtn: "编辑",
       uname: "用户名", identLabel: "用户名或邮箱", email: "邮箱", unameHint: "3–24 个字符：拉丁字母、数字、_ 或 .", bRegister: "创建账户", toRegister: "没有账户？注册", toLogin: "已有账户？登录", tForgot: "重置密码", leadForgot: "输入账户邮箱，我们会发送设置新密码的链接。", bSendLink: "发送链接", sentLink: "如果该邮箱有账户，邮件已发出。打开邮件中的链接即可设置新密码。", tNewPass: "新密码", leadNewPass: "为账户设置新密码。", bSavePass: "保存密码", leadLogin2: "登录后即可在此设备上查看你的想法。", leadReg2: "账户可在任何设备上使用：手机、电脑、平板。", eUname: "用户名：3–24 个字符，拉丁字母、数字、_ 或 .", eUnameTaken: "该用户名已被占用，请换一个。", eEmail: "请检查邮箱地址，格式似乎不对。", eEmailTaken: "该邮箱已有账户。请登录或重置密码。", eLogin: "用户名、邮箱或密码错误。", eConfirm: "我们已向你的邮箱发送邮件。打开其中的链接即可完成注册。", eNetwork: "无法连接服务器。请检查网络后重试。", eRate: "尝试次数过多，请稍等一分钟再试。", noteServer: "想法保存在你的账户中，可在任何设备上打开。", signedAs: "当前登录：{u}。", bgTitle: "背景与卡片", bgHint: "选择一种样式，会保存在此设备上。", bgStyle: "样式 {n}",
       rowContact: "联系作者", rowRate: "评分与反馈", rowShare: "分享", shareHint: "一起变得更好", writeEmail: "发送邮件", rateQ: "你觉得 Overthinker's Ideas 怎么样？", ratePh: "喜欢什么？哪里需要改进？", send: "发送", thanks: "谢谢！反馈已发送。", eRating: "请选择 1 到 5 星的评分。", linkCopied: "链接已复制。", shareText: "在改变主意之前，把想法记下来。", starsAria: "{n}/5",
+      navCal: "日历", calToday: "今天", calCreate: "创建", calPrev: "前一天", calNext: "后一天", kindIdea: "想法", kindEvent: "活动", kindTask: "任务", calTitlePh: "添加标题", calAllDay: "全天", calNotes: "添加说明", calDefault: "默认", calColorN: "颜色 {n}", calDone: "已完成", calSave: "保存", calDelete: "删除", calDeleteSure: "确定删除？", calEmpty: "这一天还没有安排。点击某个时间或“创建”。", calNew: "新建", calEdit: "编辑", eTitle: "请添加标题。", eTime: "结束时间不能早于开始时间。", calDay: "日期", calFrom: "开始", calTo: "结束",
       codeHint: "忘记密码时，可以用这个恢复码设置新密码。请把它保存在安全的地方。", codeNew: "生成新恢复码", codeShow: "显示恢复码", codeHide: "隐藏恢复码", codeNewConfirm: "确定吗？旧恢复码将失效", codeUnknown: "这个恢复码是在网站能保存副本之前生成的，所以无法显示。请生成一个新的，旧的将失效。", codeMade: "新恢复码已生成。请保存好，旧的已失效。",
       affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数",
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
@@ -1017,6 +1133,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       affirmations: "Afirmaciones", affirmHint: "Repite cada frase las veces al día que elijas, escribiéndola o por voz. El contador se reinicia a medianoche.", affirmNew: "Nueva frase", add: "Añadir", affirmTitle: "Afirmaciones de hoy", affirmLead: "Antes de entrar, escribe la frase tú mismo.", affirmType: "Escribe esta frase", affirmWrong: "No coincide. Escribe la frase palabra por palabra.", next: "Siguiente", affirmMax: "Puedes añadir hasta 10 frases.", affirmTooLong: "Demasiado texto: todas las frases juntas no pueden superar los 40 000 caracteres.", editBtn: "Editar",
       uname: "Nombre de usuario", identLabel: "Nombre de usuario o correo", email: "Correo", unameHint: "3–24 caracteres: letras latinas, dígitos, _ o .", bRegister: "Crear cuenta", toRegister: "¿No tienes cuenta? Regístrate", toLogin: "¿Ya tienes cuenta? Entra", tForgot: "Restablecer contraseña", leadForgot: "Escribe el correo de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.", bSendLink: "Enviar enlace", sentLink: "Si existe una cuenta con este correo, el mensaje ya va en camino. Abre el enlace para crear una contraseña nueva.", tNewPass: "Contraseña nueva", leadNewPass: "Elige una contraseña nueva para tu cuenta.", bSavePass: "Guardar contraseña", leadLogin2: "Entra para abrir tus ideas en este dispositivo.", leadReg2: "Tu cuenta funciona en cualquier dispositivo: teléfono, ordenador, tableta.", eUname: "Nombre de usuario: 3–24 caracteres, letras latinas, dígitos, _ o .", eUnameTaken: "Ese nombre de usuario ya está en uso. Elige otro.", eEmail: "Revisa el correo: la dirección no parece correcta.", eEmailTaken: "Ya existe una cuenta con este correo. Entra o restablece la contraseña.", eLogin: "Nombre de usuario, correo o contraseña incorrectos.", eConfirm: "Te enviamos un correo. Abre el enlace para terminar el registro.", eNetwork: "No hay conexión con el servidor. Revisa internet e inténtalo de nuevo.", eRate: "Demasiados intentos. Espera un minuto e inténtalo de nuevo.", noteServer: "Las ideas se guardan en tu cuenta y se abren en cualquier dispositivo.", signedAs: "Has entrado como {u}.", bgTitle: "Fondo y tarjetas", bgHint: "Elige un estilo. Se guarda en este dispositivo.", bgStyle: "Estilo {n}",
       rowContact: "Escribir al autor", rowRate: "Valorar y opinar", rowShare: "Compartir", shareHint: "Mejor juntos", writeEmail: "Escribir un correo", rateQ: "¿Qué te parece Overthinker's Ideas?", ratePh: "¿Qué te gusta? ¿Qué mejorarías?", send: "Enviar", thanks: "¡Gracias! Tu opinión se ha enviado.", eRating: "Elige una valoración de 1 a 5 estrellas.", linkCopied: "Enlace copiado.", shareText: "Anota tus ideas antes de cambiar de opinión.", starsAria: "{n} de 5",
+      navCal: "Calendario", calToday: "Hoy", calCreate: "Crear", calPrev: "Día anterior", calNext: "Día siguiente", kindIdea: "Idea", kindEvent: "Evento", kindTask: "Tarea", calTitlePh: "Añade un título", calAllDay: "Todo el día", calNotes: "Añadir descripción", calDefault: "Predeterminado", calColorN: "Color {n}", calDone: "Hecha", calSave: "Guardar", calDelete: "Eliminar", calDeleteSure: "¿Eliminar de verdad?", calEmpty: "No hay nada este día. Toca una hora o «Crear».", calNew: "Nueva entrada", calEdit: "Editar entrada", eTitle: "Añade un título.", eTime: "El final no puede ser antes del inicio.", calDay: "Fecha", calFrom: "Inicio", calTo: "Fin",
       codeHint: "Con este código puedes crear una nueva contraseña si olvidas la anterior. Guárdalo en un lugar seguro.", codeNew: "Crear un código nuevo", codeShow: "Mostrar código", codeHide: "Ocultar código", codeNewConfirm: "¿Seguro? El código anterior dejará de funcionar", codeUnknown: "Este código se creó antes de que el sitio pudiera guardar una copia, así que no se puede mostrar. Crea uno nuevo; el anterior dejará de funcionar.", codeMade: "Código nuevo creado. Guárdalo; el anterior ya no funciona.",
       affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día",
       contactTitle: "¿Tienes preguntas?", contactText: "Si tienes alguna pregunta, escribe un correo.", phoneLabel: "Teléfono", emailLabel: "Correo", creatorLabel: "Creado por"
@@ -1097,7 +1214,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     voiceNote.hidden = true;
     if (mode !== "wait" && !gate.hidden) gateTexts();
     if (listening) voiceLabel.textContent = t("voiceStop");
-    if (user) { render(); renderAffirm(); profileState(); fillAccountLine(); }
+    if (user) { render(); renderAffirm(); renderCal(); profileState(); fillAccountLine(); }
     buildSwatches();
     buildStars();
   }
@@ -1234,13 +1351,14 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 
   function show(next) {
     view = next;
-    ["home", "archive", "affirm", "settings"].forEach(function (v) {
+    ["home", "archive", "cal", "affirm", "settings"].forEach(function (v) {
       $("view-" + v).hidden = v !== next;
       if (v === next) $("tab-" + v).setAttribute("aria-current", "page");
       else $("tab-" + v).removeAttribute("aria-current");
     });
     if (next === "settings") fillSettings();
     if (next === "affirm") renderAffirm(); else stopAffirmVoice();
+    if (next === "cal") renderCal();
   }
   function openSheet() {
     $("sheet").hidden = false;
@@ -1307,6 +1425,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   $("tab-archive").addEventListener("click", function () { show("archive"); });
   $("tab-settings").addEventListener("click", function () { show("settings"); });
   $("tab-affirm").addEventListener("click", function () { show("affirm"); });
+  $("tab-cal").addEventListener("click", function () { show("cal"); });
   $("see-all").addEventListener("click", function () { show("archive"); });
   $("add").addEventListener("click", openSheet);
   $("quick").addEventListener("click", openSheet);
@@ -1525,7 +1644,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       var p = await sb.from("profiles").select("username,first_name,last_name,affirm_goal").eq("id", u.id).maybeSingle();
       if (p.error) throw p.error;
       profile = p.data || { username: (u.user_metadata && u.user_metadata.username) || "", first_name: "", last_name: "", affirm_goal: 10 };
-      await Promise.all([loadIdeas(), loadAffirm()]);
+      await Promise.all([loadIdeas(), loadAffirm(), loadCal()]);
     } catch (err) {
       user = null;
       showGate("login");
@@ -1549,7 +1668,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     closeSheet();
     try { await sb.auth.signOut(); } catch (e) {}
     user = null; profile = null;
-    ideasData = []; affirmData = []; progress = {}; progressDay = null; goalDraft = null;
+    ideasData = []; affirmData = []; progress = {}; progressDay = null; goalDraft = null; calData = [];
     lastRemoved = null;
     toast.hidden = true;
     input.value = "";
@@ -1704,6 +1823,221 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     if (res.error) return say("set-pass-msg", passwordProblem(res.error));
     $("set-pass").value = ""; $("set-pass2").value = "";
     say("set-pass-msg", t("passChanged"));
+  });
+
+  // --- Calendar: ideas, events and tasks on a day timeline, each with its own colour (Google Calendar style).
+  var CAL_COLORS = ["#B4577A", "#D35671", "#D88C83", "#D45D45", "#E07047", "#DD8443", "#E19E48", "#E5BD58",
+    "#DAC161", "#BFC66B", "#92B169", "#5F9269", "#6CB389", "#5A9B8F", "#5B9BD5", "#7189E0",
+    "#8790C6", "#6E6EBF", "#AFA2D3", "#A07DB1", "#9C59B6", "#957568", "#8A8A8A", "#A89E92"];
+  var HOUR_PX = 48;
+  var CAL_FIELDS = "id,kind,title,notes,starts_at,ends_at,all_day,color,done";
+  var calData = [];
+  var calDay = dayStart(Date.now()), calScrolled = null;
+  var calEditing = null, calKind = "event", calColor = "default", calDeleteArmed = false;
+  function pad2(n) { return String(n).padStart(2, "0"); }
+  function minutesOf(ms) { var d = new Date(ms); return d.getHours() * 60 + d.getMinutes(); }
+  function dateInput(ms) { var d = new Date(ms); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  function timeInput(ms) { var d = new Date(ms); return pad2(d.getHours()) + ":" + pad2(d.getMinutes()); }
+  function localMs(day, time) {
+    var p = day.split("-"), q = (time || "00:00").split(":");
+    return new Date(+p[0], +p[1] - 1, +p[2], +q[0], +q[1]).getTime();
+  }
+  function colorOf(it) { return it.color && it.color !== "default" ? it.color : "var(--green)"; }
+  function rowToItem(r) {
+    return { id: r.id, kind: r.kind, title: r.title, notes: r.notes || "", start: Date.parse(r.starts_at),
+      end: r.ends_at ? Date.parse(r.ends_at) : null, allDay: r.all_day, color: r.color, done: r.done };
+  }
+  // Never blocks sign-in: if the table is not there yet, the calendar is simply empty.
+  async function loadCal() {
+    try {
+      var res = await sb.from("events").select(CAL_FIELDS).order("starts_at", { ascending: true }).limit(5000);
+      calData = res.error ? [] : res.data.map(rowToItem);
+    } catch (e) { calData = []; }
+  }
+  function itemEl(it, timed) {
+    var node = el("button", "cal-item kind-" + it.kind + (it.done ? " done" : "") + (timed ? " timed" : ""));
+    node.type = "button";
+    node.style.setProperty("--c", colorOf(it));
+    var mark = it.kind === "task" ? (it.done ? "☑ " : "☐ ") : it.kind === "idea" ? "✦ " : "";
+    node.appendChild(el("span", "cal-item-title", mark + it.title));
+    if (!it.allDay) node.appendChild(el("span", "cal-item-time", clock(it.start) + (it.kind === "event" && it.end ? " – " + clock(it.end) : "")));
+    node.addEventListener("click", function (e) { e.stopPropagation(); openCal(it); });
+    return node;
+  }
+  function renderCal() {
+    var today = dayStart(Date.now());
+    $("cal-date").textContent = new Date(calDay).toLocaleDateString(LOCALE[lang], { weekday: "long", day: "numeric", month: "long" });
+    var dow = (new Date(calDay).getDay() + 6) % 7, monday = shiftDay(calDay, -dow), week = $("cal-week");
+    week.textContent = "";
+    for (var i = 0; i < 7; i++) (function (d) {
+      var b = el("button", "cal-daychip" + (d === calDay ? " on" : "") + (d === today ? " today" : ""));
+      b.type = "button";
+      b.appendChild(el("span", null, new Date(d).toLocaleDateString(LOCALE[lang], { weekday: "short" })));
+      b.appendChild(el("b", null, String(new Date(d).getDate())));
+      if (calData.some(function (it) { return dayStart(it.start) === d; })) b.appendChild(el("i", null));
+      b.addEventListener("click", function () { calDay = d; renderCal(); });
+      week.appendChild(b);
+    })(shiftDay(monday, i));
+
+    var items = calData.filter(function (it) { return dayStart(it.start) === calDay; });
+    var allDay = items.filter(function (it) { return it.allDay; });
+    var timed = items.filter(function (it) { return !it.allDay; });
+    var ad = $("cal-allday");
+    ad.textContent = "";
+    ad.hidden = !allDay.length;
+    allDay.forEach(function (it) { ad.appendChild(itemEl(it, false)); });
+
+    var grid = $("cal-grid");
+    grid.textContent = "";
+    for (var hr = 0; hr < 24; hr++) (function (hr) {
+      var row = el("div", "cal-hour");
+      row.style.top = hr * HOUR_PX + "px";
+      row.appendChild(el("span", "cal-hour-label", pad2(hr) + ":00"));
+      row.addEventListener("click", function () { openCal(null, hr); });
+      grid.appendChild(row);
+    })(hr);
+
+    // Overlapping items share the width side by side, like in Google Calendar.
+    var blocks = timed.map(function (it) {
+      var s = minutesOf(it.start);
+      var e = it.kind === "event" && it.end ? Math.min(24 * 60, s + Math.max(20, (it.end - it.start) / 60000)) : s + 30;
+      return { it: it, s: s, e: e };
+    }).sort(function (x, y) { return x.s - y.s || y.e - x.e; });
+    var clusters = [], cur = null;
+    blocks.forEach(function (b) {
+      if (!cur || b.s >= cur.end) { cur = { items: [], end: b.e, lanes: [] }; clusters.push(cur); }
+      var lane = -1;
+      for (var l = 0; l < cur.lanes.length; l++) if (cur.lanes[l] <= b.s) { lane = l; break; }
+      if (lane === -1) { lane = cur.lanes.length; cur.lanes.push(b.e); } else cur.lanes[lane] = b.e;
+      b.lane = lane;
+      cur.items.push(b);
+      cur.end = Math.max(cur.end, b.e);
+    });
+    clusters.forEach(function (c) {
+      c.items.forEach(function (b) {
+        var node = itemEl(b.it, true), share = 1 / c.lanes.length;
+        node.style.top = (b.s / 60 * HOUR_PX) + "px";
+        node.style.height = Math.max(22, (b.e - b.s) / 60 * HOUR_PX - 2) + "px";
+        node.style.left = "calc(3.4rem + (100% - 3.9rem) * " + (b.lane * share) + ")";
+        node.style.width = "calc((100% - 3.9rem) * " + share + " - 3px)";
+        grid.appendChild(node);
+      });
+    });
+    if (calDay === today) {
+      var now = el("div", "cal-now");
+      now.style.top = (minutesOf(Date.now()) / 60 * HOUR_PX) + "px";
+      grid.appendChild(now);
+    }
+    $("cal-empty").hidden = items.length > 0;
+    if (calScrolled !== calDay) {
+      calScrolled = calDay;
+      var first = timed.length ? Math.min.apply(null, timed.map(function (it) { return minutesOf(it.start); }))
+        : calDay === today ? minutesOf(Date.now()) : 8 * 60;
+      $("cal-scroll").scrollTop = Math.max(0, first / 60 * HOUR_PX - HOUR_PX);
+    }
+  }
+  function buildColors() {
+    var box = $("cal-colors");
+    box.textContent = "";
+    ["default"].concat(CAL_COLORS).forEach(function (c, i) {
+      var b = el("button", "color-dot");
+      b.type = "button";
+      b.value = c;
+      b.style.setProperty("--c", c === "default" ? "var(--green)" : c);
+      b.setAttribute("aria-label", c === "default" ? t("calDefault") : t("calColorN", { n: i }));
+      b.setAttribute("aria-pressed", c === calColor ? "true" : "false");
+      b.addEventListener("click", function () { calColor = c; buildColors(); });
+      box.appendChild(b);
+    });
+  }
+  function calFormState() {
+    markChoice("cal-kind", calKind);
+    var isEvent = calKind === "event", allDay = $("cal-allday-box").checked;
+    $("cal-from").hidden = allDay;
+    $("cal-to").hidden = !isEvent || allDay;
+    $("cal-dash").hidden = !isEvent || allDay;
+    $("cal-done-row").hidden = calKind !== "task";
+    $("cal-sheet-title").textContent = t(calEditing ? "calEdit" : "calNew");
+    buildColors();
+  }
+  function openCal(it, hour) {
+    calEditing = it || null;
+    calDeleteArmed = false;
+    var startHour = hour != null ? hour : calDay === dayStart(Date.now()) ? Math.min(23, new Date().getHours() + 1) : 9;
+    var start = it ? it.start : new Date(calDay).setHours(startHour, 0, 0, 0);
+    var end = it && it.end ? it.end : start + 3600000;
+    calKind = it ? it.kind : "event";
+    calColor = it ? it.color : "default";
+    $("cal-title").value = it ? it.title : "";
+    $("cal-notes").value = it ? it.notes : "";
+    $("cal-day").value = dateInput(start);
+    $("cal-from").value = timeInput(start);
+    $("cal-to").value = timeInput(end);
+    $("cal-allday-box").checked = it ? it.allDay : false;
+    $("cal-done").checked = it ? it.done : false;
+    $("cal-delete").hidden = !it;
+    $("cal-delete").textContent = t("calDelete");
+    $("cal-error").hidden = true;
+    calFormState();
+    $("cal-sheet").hidden = false;
+    try { $("cal-title").focus(); } catch (e) {}
+  }
+  function closeCal() { $("cal-sheet").hidden = true; calEditing = null; }
+  function calFail(text) { $("cal-error").textContent = text; $("cal-error").hidden = false; }
+  $("cal-kind").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (b) { calKind = b.value; calFormState(); }
+  });
+  $("cal-allday-box").addEventListener("change", calFormState);
+  $("cal-close").addEventListener("click", closeCal);
+  $("cal-sheet").addEventListener("click", function (e) { if (e.target === $("cal-sheet")) closeCal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("cal-sheet").hidden) closeCal(); });
+  $("cal-create").addEventListener("click", function () { openCal(null); });
+  $("cal-today").addEventListener("click", function () { calDay = dayStart(Date.now()); renderCal(); });
+  $("cal-prev").addEventListener("click", function () { calDay = shiftDay(calDay, -1); renderCal(); });
+  $("cal-next").addEventListener("click", function () { calDay = shiftDay(calDay, 1); renderCal(); });
+  $("cal-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var title = $("cal-title").value.trim();
+    if (!title) return calFail(t("eTitle"));
+    var day = $("cal-day").value || dateInput(calDay);
+    var allDay = $("cal-allday-box").checked;
+    var start = localMs(day, allDay ? "00:00" : ($("cal-from").value || "09:00"));
+    var end = null;
+    if (calKind === "event") {
+      end = allDay ? localMs(day, "23:59") : localMs(day, $("cal-to").value || timeInput(start + 3600000));
+      if (end < start) return calFail(t("eTime"));
+    }
+    var row = {
+      kind: calKind, title: title.slice(0, 300), notes: $("cal-notes").value.trim().slice(0, 5000),
+      starts_at: new Date(start).toISOString(), ends_at: end ? new Date(end).toISOString() : null,
+      all_day: allDay, color: calColor, done: calKind === "task" && $("cal-done").checked
+    };
+    if (busy || !user) return;
+    busy = true;
+    var res = calEditing
+      ? await sb.from("events").update(row).eq("id", calEditing.id).select(CAL_FIELDS).single()
+      : await sb.from("events").insert(row).select(CAL_FIELDS).single();
+    busy = false;
+    if (res.error) return calFail(t(errKey(res.error)));
+    var item = rowToItem(res.data);
+    calData = calData.filter(function (x) { return x.id !== item.id; }).concat([item]);
+    calDay = dayStart(item.start);
+    calScrolled = null;
+    closeCal();
+    renderCal();
+  });
+  $("cal-delete").addEventListener("click", async function () {
+    if (!calEditing || busy) return;
+    if (!calDeleteArmed) { calDeleteArmed = true; $("cal-delete").textContent = t("calDeleteSure"); return; }
+    busy = true;
+    var id = calEditing.id;
+    var res = await sb.from("events").delete().eq("id", id);
+    busy = false;
+    if (res.error) return calFail(t(errKey(res.error)));
+    calData = calData.filter(function (x) { return x.id !== id; });
+    closeCal();
+    renderCal();
   });
 
   // --- Contact, rating and sharing (Settings)
