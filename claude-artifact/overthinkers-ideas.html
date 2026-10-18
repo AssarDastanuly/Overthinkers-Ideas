@@ -1,0 +1,1804 @@
+<title>Overthinker's Ideas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Unbounded:wght@600&display=swap">
+<style>
+/* Layout: a phone-style app in one centered column — greeting, a quick-capture row, a
+   featured green stat card beside two small ones, a 7-day activity chart, recent ideas;
+   a floating bottom nav with a raised "+" that opens the composer sheet. */
+:root {
+  --bg: #f2f6f3;
+  --surface: #ffffff;
+  --surface-2: #f2f6f3;
+  --ink: #0e1a13;
+  --green: #12b76a;
+  --green-deep: #067647;
+  --mint: #d9f6e5;
+  --muted: #64746b;
+  --line: #e1e8e3;
+  --on-green: #ffffff;
+  --btn-ink: #ffffff;
+  --scrim: rgba(14, 26, 19, 0.45);
+  --shadow: 0 1px 2px rgba(14, 26, 19, 0.04), 0 14px 30px -16px rgba(14, 26, 19, 0.2);
+  /* Montserrat carries the full Kazakh alphabet, so names and ideas keep one letterform. */
+  --brand: "Unbounded", "Montserrat", system-ui, sans-serif;
+  --display: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b110e; --surface: #151d18; --surface-2: #1c2620; --ink: #eff5f1; --green: #22c97a; --green-deep: #5be3a0;
+    --mint: #17382a; --muted: #93a49a; --line: #26332b; --on-green: #05170d; --btn-ink: #05170d;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 30px -16px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b110e; --surface: #151d18; --surface-2: #1c2620; --ink: #eff5f1; --green: #22c97a; --green-deep: #5be3a0;
+  --mint: #17382a; --muted: #93a49a; --line: #26332b; --on-green: #05170d; --btn-ink: #05170d;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 30px -16px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 1rem; line-height: 1.5;
+  padding-inline: 16px; padding-block: 1rem 7.5rem;
+}
+.page { max-width: 36rem; margin-inline: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+#app, .view { display: flex; flex-direction: column; gap: 1.25rem; }
+button { font: inherit; cursor: pointer; color: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+h2, h3, p { margin: 0; }
+
+/* Top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 2.75rem; }
+.brand { display: flex; align-items: center; gap: 0.55rem; font-family: var(--brand); font-weight: 600; font-size: 0.82rem; letter-spacing: -0.01em; min-width: 0; }
+.brand i { width: 0.7rem; height: 0.7rem; border-radius: 50%; border: 3px solid var(--green); flex: none; }
+.brand span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.top-right { display: flex; align-items: center; gap: 0.5rem; flex: none; }
+.bar-tag { font-size: 0.8rem; color: var(--muted); }
+.lang { font: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 0.45rem 0.6rem; }
+@media (max-width: 30rem) { .bar-tag { display: none; } }
+.pill-btn { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 0.95rem; }
+.pill-btn:hover { border-color: var(--green); color: var(--green-deep); }
+
+/* Greeting */
+.hello { display: flex; flex-direction: column; gap: 0.1rem; }
+.hello span { color: var(--muted); font-size: 1.05rem; }
+.hello h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.5rem, 6vw, 2rem); letter-spacing: -0.02em; line-height: 1.15; overflow-wrap: anywhere; }
+
+/* Cards */
+.card { background: var(--surface); border-radius: 1.4rem; box-shadow: var(--shadow); padding: 1.15rem; }
+.card-title { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.quick {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 1.2rem; padding: 0.9rem 0.9rem 0.9rem 1.15rem;
+  color: var(--muted); font-size: 1.02rem;
+}
+.quick:hover { border-color: var(--green); }
+.quick b { width: 2.2rem; height: 2.2rem; border-radius: 0.8rem; background: var(--mint); color: var(--green-deep); display: grid; place-items: center; font-size: 1.3rem; font-weight: 500; flex: none; }
+
+.stats { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0.85rem; }
+.stat { display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem; }
+.stat .num { font-family: var(--display); font-weight: 800; font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat.feature { grid-row: span 2; background: var(--green); color: var(--on-green); position: relative; overflow: hidden; min-height: 9.5rem; }
+.stat.feature .card-title { color: var(--on-green); opacity: 0.85; }
+.stat.feature .num { font-size: clamp(2.6rem, 13vw, 3.6rem); }
+.stat.feature small { font-size: 0.85rem; opacity: 0.9; }
+.stat.feature::after { content: ""; position: absolute; right: -2.2rem; top: -2.2rem; width: 7rem; height: 7rem; border-radius: 50%; border: 1.1rem solid var(--on-green); opacity: 0.14; }
+
+/* Chart */
+.chart-card { display: flex; flex-direction: column; gap: 0.9rem; }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+.chart-head h3 { font-size: 1rem; font-weight: 700; }
+.chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.5rem; }
+.bar-col { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.75rem; color: var(--muted); }
+.bar-val { height: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+.bar-track { height: 6rem; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.bar { width: 100%; max-width: 2.2rem; background: var(--mint); border-radius: 0.6rem; min-height: 0.45rem; }
+.bar-col.now .bar { background: var(--green); }
+.bar-col.now .bar-day { color: var(--green-deep); font-weight: 700; }
+
+/* Lists */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.section-head h3, .section-head h2 { font-size: 1.05rem; font-weight: 700; }
+.section-head h2 { font-family: var(--display); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
+.link { background: none; border: 0; padding: 0; font-size: 0.88rem; font-weight: 600; color: var(--green-deep); }
+.link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.count { font-size: 0.88rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.65rem; }
+.daybox { background: var(--surface); border-radius: 1.4rem; box-shadow: var(--shadow); padding: 1rem 1.1rem 0.35rem; }
+.group { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; font-size: 0.95rem; font-weight: 700; padding-bottom: 0.75rem; }
+.group .count { font-weight: 500; }
+.day-list { list-style: none; margin: 0; padding: 0; }
+.daybox .plate { background: none; box-shadow: none; border-radius: 0; padding: 0.8rem 0; border-top: 1px solid var(--line); }
+.plate { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.85rem; align-items: start; background: var(--surface); border-radius: 1.15rem; box-shadow: var(--shadow); padding: 0.95rem 1rem; }
+.numeral { font-size: 0.75rem; font-weight: 700; color: var(--green-deep); background: var(--mint); border-radius: 0.6rem; padding: 0.3rem 0.5rem; font-variant-numeric: tabular-nums; }
+.plate-body { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+.plate-text { white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 500; line-height: 1.45; }
+.plate-meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted); }
+.strike { background: none; border: 0; padding: 0.1rem 0; font-size: 0.8rem; color: var(--muted); }
+.strike:hover { color: var(--green-deep); text-decoration: underline; text-underline-offset: 3px; }
+.empty { text-align: center; border: 2px dashed var(--line); border-radius: 1.4rem; padding: 2rem 1.15rem; display: flex; flex-direction: column; gap: 0.3rem; color: var(--muted); }
+.empty strong { color: var(--ink); font-size: 1.02rem; }
+.search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 0.75rem 1rem; }
+
+/* Gate */
+.stack { display: flex; flex-direction: column; gap: 1rem; }
+.gate h2 { font-family: var(--display); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; }
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+.field label { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+.field input[readonly] { background: transparent; border-color: transparent; padding-inline: 0; font-weight: 600; }
+.field textarea { resize: vertical; min-height: 6.5rem; line-height: 1.45; }
+.field input, .field textarea { width: 100%; font: inherit; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.75rem 0.95rem; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.foot.end { justify-content: flex-end; }
+.foot.end > .hint { margin-right: auto; }
+.view .card h3 { font-size: 1.05rem; font-weight: 700; }
+.affirm-text { font-size: 1.2rem; font-weight: 700; line-height: 1.35; background: var(--mint); color: var(--green-deep); border-radius: 1rem; padding: 1rem; overflow-wrap: anywhere; white-space: pre-wrap; max-height: 45vh; overflow-y: auto; user-select: none; -webkit-user-select: none; }
+.affirm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.affirm-list:empty { display: none; }
+.affirm-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; background: var(--surface-2); border-radius: 0.9rem; padding: 0.65rem 0.9rem; }
+.affirm-list span { min-width: 0; overflow-wrap: anywhere; font-weight: 500; white-space: pre-wrap; max-height: 7.5rem; overflow-y: auto; }
+.tab { min-width: 0; width: 100%; padding-inline: 0; font-size: clamp(0.6rem, 2.6vw, 0.72rem); letter-spacing: -0.01em; }
+.tab span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.voice-pick { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.affirm-card { gap: 0.8rem; }
+.goal-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.stepper button { background: none; border: 0; width: 2.5rem; height: 2.5rem; font-size: 1.2rem; font-weight: 700; color: var(--green-deep); border-radius: 999px; }
+.stepper input { width: 4rem; text-align: center; border: 0; background: transparent; font: inherit; font-weight: 700; color: var(--ink); -moz-appearance: textfield; appearance: textfield; }
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.bar-line { flex: 1; min-width: 8rem; height: 0.5rem; border-radius: 999px; background: var(--mint); overflow: hidden; }
+.bar-line i { display: block; height: 100%; background: var(--green); border-radius: inherit; }
+.affirm-progress { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.dots { display: flex; gap: 4px; flex: 1; min-width: 8rem; }
+.dot { flex: 1; height: 0.5rem; border-radius: 999px; background: var(--mint); }
+.dot.on { background: var(--green); }
+.affirm-card textarea { width: 100%; font: inherit; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.75rem 0.95rem; resize: vertical; min-height: 5rem; line-height: 1.45; }
+.affirm-card .voice { margin-right: auto; }
+.affirm-done { font-weight: 700; color: var(--green-deep); }
+.choice { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.choice button { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 0.55rem 1rem; font-weight: 600; font-size: 0.92rem; }
+.choice button:hover { border-color: var(--green); }
+.choice button[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--btn-ink); }
+.voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-right: auto; }
+.voice { display: flex; align-items: center; gap: 0.45rem; background: var(--mint); color: var(--green-deep); border: 0; border-radius: 1rem; font-weight: 700; font-size: 0.92rem; padding: 0.7rem 1rem; }
+.voice svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.voice.live { background: var(--green); color: var(--btn-ink); }
+#voice-lang, #affirm-voice-lang { font: inherit; font-size: 0.88rem; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.55rem 0.6rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .voice.live svg { animation: listen 1s ease-in-out infinite alternate; }
+  @keyframes listen { from { transform: scale(1); } to { transform: scale(1.25); } }
+}
+.hint { font-size: 0.88rem; color: var(--muted); }
+.primary { background: var(--green); color: var(--btn-ink); border: 0; border-radius: 1rem; font-weight: 700; padding: 0.8rem 1.5rem; }
+.primary:hover:not(:disabled) { filter: brightness(1.07); }
+.primary:disabled { opacity: 0.4; cursor: default; }
+.gate-error { color: var(--green-deep); font-weight: 700; font-size: 0.92rem; }
+.gate-wait { text-align: center; color: var(--muted); padding-block: 1.25rem; }
+.forgot { display: flex; flex-direction: column; gap: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.9rem; align-items: flex-start; }
+.code-panel { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--mint); border-radius: 1rem; padding: 1rem; }
+.code-panel code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; color: var(--green-deep); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; min-width: 0; }
+#back-login { align-self: flex-start; }
+.forgot-row { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; }
+
+/* Bottom nav */
+.nav {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  width: min(28rem, calc(100% - 32px));
+  background: var(--surface); border: 1px solid var(--line); border-radius: 1.6rem; box-shadow: var(--shadow);
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); justify-items: center; align-items: center; padding: 0.45rem 0.6rem; z-index: 5;
+}
+.tab { background: none; border: 0; display: flex; flex-direction: column; align-items: center; gap: 0.1rem; padding: 0.35rem; font-size: 0.72rem; font-weight: 600; color: var(--muted); border-radius: 1rem; }
+.tab svg, .add svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-current="page"] { color: var(--green-deep); }
+.add { width: 3.4rem; height: 3.4rem; border-radius: 1.2rem; border: 0; background: var(--green); color: var(--btn-ink); display: grid; place-items: center; margin-top: -1.5rem; box-shadow: 0 10px 20px -8px var(--green); }
+.add:hover { filter: brightness(1.07); }
+
+/* Composer sheet */
+.sheet { position: fixed; inset: 0; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+.sheet-card { width: 100%; max-width: 34rem; background: var(--surface); border-radius: 1.6rem; padding: 1.15rem; box-shadow: var(--shadow); }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; }
+.sheet-head label { font-weight: 700; }
+.close { background: var(--surface-2); border: 0; width: 2.2rem; height: 2.2rem; border-radius: 0.8rem; font-size: 1.2rem; line-height: 1; }
+#idea-input { width: 100%; min-height: 8rem; resize: vertical; font: inherit; font-size: 1.2rem; font-weight: 500; line-height: 1.4; color: var(--ink); background: transparent; border: 0; padding: 0; outline: none; }
+#idea-input::placeholder { color: var(--muted); font-weight: 400; opacity: 0.8; }
+kbd { font-family: inherit; font-size: 0.78rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.05rem 0.4rem; }
+@media (min-width: 40rem) { .sheet { align-items: center; } }
+
+.colophon { text-align: center; color: var(--muted); font-size: 0.8rem; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px)); z-index: 6;
+  background: var(--ink); color: var(--bg); border-radius: 1rem; padding: 0.55rem 0.6rem 0.55rem 1rem;
+  display: flex; gap: 0.9rem; align-items: center; font-size: 0.92rem; max-width: calc(100% - 32px);
+}
+.toast button { background: var(--green); color: var(--btn-ink); border: 0; border-radius: 0.7rem; font-weight: 700; font-size: 0.82rem; padding: 0.35rem 0.8rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .plate.fresh { animation: pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.3); }
+  .sheet-card { animation: rise 0.22s ease-out; }
+  @keyframes pop { from { transform: scale(0.94); opacity: 0.3; } to { transform: none; opacity: 1; } }
+  @keyframes rise { from { transform: translateY(1.5rem); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+
+.site-foot { text-align: center; font-size: 0.8rem; color: var(--muted); display: flex; flex-direction: column; gap: 0.2rem; padding-top: 1.25rem; }
+.site-foot p { margin: 0; }
+.site-foot a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.site-foot a:hover { color: var(--green-deep); text-decoration-color: currentColor; }
+/* Refinement pass: one sheet of faintly squared paper; flat surfaces separated by thin lines
+   instead of stacked shadows. Shadow stays only on what floats (nav, sheet, toast) and on the
+   single green card, so the eye goes there first. */
+:root { --grid: rgba(18, 183, 106, 0.075); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --grid: rgba(46, 224, 138, 0.05); } }
+:root[data-theme="dark"] { --grid: rgba(46, 224, 138, 0.05); }
+body {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: center top;
+}
+.card, .daybox { box-shadow: none; border: 1px solid var(--line); border-radius: 1.25rem; }
+.stat.feature { border-color: transparent; box-shadow: 0 18px 34px -22px var(--green); }
+.daybox .plate { border: 0; border-top: 1px solid var(--line); }
+.plate { transition: none; }
+.plate:hover { transform: none; }
+.quick { border-style: dashed; border-width: 1.5px; background: var(--surface); }
+.quick:hover { border-style: solid; }
+.hello h2 { font-size: clamp(1.75rem, 7vw, 2.4rem); letter-spacing: -0.03em; line-height: 1.1; }
+.hello span { font-size: 1rem; }
+.section-head h2 { font-size: 1.6rem; letter-spacing: -0.025em; }
+.view .card h3, .section-head h3, .chart-head h3 { font-size: 1.02rem; letter-spacing: -0.01em; }
+.primary { border-radius: 0.9rem; }
+.primary:hover:not(:disabled) { filter: none; background: var(--green-deep); color: var(--surface); }
+.page { gap: 1.75rem; }
+#app, .view { gap: 1.1rem; }
+.archive .list, .list { gap: 0.9rem; }
+.affirm-text { border-radius: 0.9rem; }
+.group { font-size: 1rem; }
+.nav { box-shadow: 0 12px 30px -14px rgba(14, 26, 19, 0.35); }
+</style>
+
+<div class="page">
+  <header class="top">
+    <h1 class="brand"><i aria-hidden="true"></i><span>overthinker's ideas</span></h1>
+    <div class="top-right">
+      <span class="bar-tag" id="bar-tag" data-i18n="tag">личный архив</span>
+      <select class="lang" id="lang" data-i18n-aria="langAria" aria-label="Язык">
+        <option value="ru">RU</option>
+        <option value="kk">ҚАЗ</option>
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="zh">中文</option>
+        <option value="es">ES</option>
+      </select>
+      <span id="greet" hidden></span>
+    </div>
+  </header>
+
+  <!-- Gate: registration on the first visit, sign-in afterwards -->
+  <section class="card gate" id="gate" data-i18n-aria="gateAria" aria-label="Вход в архив">
+    <form class="stack" id="gate-form" novalidate>
+      <h2 id="gate-title" data-i18n="tLogin">Вход</h2>
+      <p class="gate-wait" id="gate-wait" data-i18n="opening">Открываем архив…</p>
+      <div class="stack" id="gate-fields" hidden>
+        <p class="hint" id="gate-lead"></p>
+        <div class="field" id="field-name">
+          <label for="gate-name" data-i18n="name">Имя</label>
+          <input id="gate-name" type="text" maxlength="40" autocomplete="given-name">
+        </div>
+        <div class="field" id="field-surname">
+          <label for="gate-surname" data-i18n="surname">Фамилия</label>
+          <input id="gate-surname" type="text" maxlength="40" autocomplete="family-name">
+        </div>
+        <div class="code-panel" id="code-panel" hidden>
+          <code id="code-value"></code>
+          <button type="button" class="pill-btn" id="code-copy" data-i18n="copy">Скопировать</button>
+        </div>
+        <div class="field" id="field-code">
+          <label for="gate-code" data-i18n="recCode">Код восстановления</label>
+          <input id="gate-code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        </div>
+        <div class="field" id="field-pass">
+          <label for="gate-pass" id="gate-pass-label" data-i18n="pass">Пароль</label>
+          <input id="gate-pass" type="password" autocomplete="current-password">
+        </div>
+        <div class="field" id="field-pass2">
+          <label for="gate-pass2" data-i18n="pass2">Пароль ещё раз</label>
+          <input id="gate-pass2" type="password" autocomplete="new-password">
+        </div>
+        <p class="gate-error" id="gate-error" role="alert" hidden></p>
+        <div class="foot">
+          <span class="hint" id="gate-hint"></span>
+          <button class="primary" id="gate-submit" type="submit" data-i18n="signIn">Войти</button>
+        </div>
+        <button type="button" class="strike" id="back-login" data-i18n="backLogin" hidden>Назад ко входу</button>
+        <div class="forgot" id="forgot" hidden>
+          <button type="button" class="strike" id="forgot-open" data-i18n="forgot">Забыли пароль?</button>
+          <div class="stack" id="forgot-confirm" hidden>
+            <p class="hint" id="forgot-text"></p>
+            <div class="forgot-row">
+              <button type="button" class="link" id="forgot-code" data-i18n="byCode">Восстановить по коду</button>
+              <button type="button" class="strike" id="forgot-yes" data-i18n="wipe">Стереть всё и начать заново</button>
+              <button type="button" class="strike" id="forgot-no" data-i18n="cancel">Отмена</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <!-- Home -->
+    <div class="view" id="view-home">
+      <div class="hello">
+        <span data-i18n="hello">Привет,</span>
+        <h2 id="greet-name"></h2>
+      </div>
+
+      <button type="button" class="quick" id="quick"><span data-i18n="quick">Что придумал? Запиши сразу</span> <b aria-hidden="true">+</b></button>
+
+      <div class="stats">
+        <div class="card stat feature">
+          <span class="card-title" data-i18n="total">Всего идей</span>
+          <span class="num" id="stat-total">0</span>
+          <small id="stat-last" data-i18n="none">Пока ни одной</small>
+        </div>
+        <div class="card stat">
+          <span class="card-title" data-i18n="today">Сегодня</span>
+          <span class="num" id="stat-today">0</span>
+        </div>
+        <div class="card stat">
+          <span class="card-title" data-i18n="week">На этой неделе</span>
+          <span class="num" id="stat-week">0</span>
+        </div>
+      </div>
+
+      <section class="card chart-card" data-i18n-aria="chartAria" aria-label="Активность за 7 дней">
+        <div class="chart-head">
+          <h3 data-i18n="activity">Активность</h3>
+          <span class="card-title" data-i18n="perDay">идей в день, эта неделя</span>
+        </div>
+        <div class="chart" id="chart" role="img"></div>
+      </section>
+
+      <section class="stack" data-i18n-aria="recent" aria-label="Последние идеи">
+        <div class="section-head">
+          <h3 data-i18n="recent">Последние идеи</h3>
+          <button type="button" class="link" id="see-all" data-i18n="all">Весь архив</button>
+        </div>
+        <div class="empty" id="home-empty">
+          <strong data-i18n="emptyT">Здесь пока пусто</strong>
+          <span data-i18n="emptyHome">Нажмите «+» и запишите первую идею.</span>
+        </div>
+        <ol class="list" id="recent"></ol>
+      </section>
+    </div>
+
+    <!-- Archive -->
+    <div class="view" id="view-archive" hidden>
+      <div class="section-head">
+        <h2 data-i18n="archive">Архив</h2>
+        <span class="count" id="count"></span>
+      </div>
+      <input class="search" id="search" type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="Поиск по идеям" aria-label="Поиск по идеям" autocomplete="off">
+      <div class="empty" id="empty">
+        <strong data-i18n="emptyT">Здесь пока пусто</strong>
+        <span data-i18n="emptyArch">Первая идея появится здесь, как только вы её запишете.</span>
+      </div>
+      <div class="empty" id="no-match" hidden>
+        <strong data-i18n="noMatchT">Ничего не найдено</strong>
+        <span data-i18n="noMatchS">Попробуйте другое слово.</span>
+      </div>
+      <ol class="list" id="list"></ol>
+    </div>
+
+    <!-- Affirmations -->
+    <div class="view" id="view-affirm" hidden>
+      <div class="section-head">
+        <h2 data-i18n="affirmations">Аффирмации</h2>
+        <span class="count" id="affirm-count"></span>
+      </div>
+      <p class="hint" data-i18n="affirmHint">Повторяйте каждую фразу столько раз в день, сколько выберете — текстом или голосом. Счётчик обнуляется в полночь.</p>
+      <div class="goal-row">
+        <label class="hint" for="affirm-goal" data-i18n="affirmGoal">Сколько раз в день</label>
+        <div class="stepper">
+          <button type="button" id="goal-minus" aria-label="−1">−</button>
+          <input id="affirm-goal" type="number" min="1" max="1000" inputmode="numeric" value="10">
+          <button type="button" id="goal-plus" aria-label="+1">+</button>
+        </div>
+      </div>
+      <div class="voice-pick" id="affirm-voice-pick" hidden>
+        <label class="hint" for="affirm-voice-lang" data-i18n="voiceLang">Язык речи</label>
+        <select id="affirm-voice-lang"></select>
+      </div>
+      <div class="empty" id="affirm-empty">
+        <strong data-i18n="emptyT">Здесь пока пусто</strong>
+        <span data-i18n="affirmEmpty">Добавьте первую фразу ниже.</span>
+      </div>
+      <ol class="list" id="affirm-list"></ol>
+      <form class="card stack" id="affirm-form" novalidate>
+        <div class="field">
+          <label for="affirm-new" data-i18n="affirmNew">Новая фраза</label>
+          <textarea id="affirm-new" maxlength="10000" rows="4" autocomplete="off"></textarea>
+        </div>
+        <div class="foot end">
+          <span class="hint" id="affirm-msg" role="status" hidden></span>
+          <button class="primary" type="submit" data-i18n="add">Добавить</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Settings -->
+    <div class="view" id="view-settings" hidden>
+      <div class="section-head">
+        <h2 data-i18n="settings">Настройки</h2>
+      </div>
+      <form class="card stack" id="profile-form" novalidate>
+        <h3 data-i18n="profile">Профиль</h3>
+        <div class="field">
+          <label for="set-name" data-i18n="name">Имя</label>
+          <input id="set-name" type="text" maxlength="40" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="set-surname" data-i18n="surname">Фамилия</label>
+          <input id="set-surname" type="text" maxlength="40" autocomplete="family-name">
+        </div>
+        <div class="foot end">
+          <span class="hint" id="set-profile-msg" role="status" hidden></span>
+          <button class="primary" type="submit" id="profile-btn">Изменить</button>
+        </div>
+      </form>
+      <section class="card stack">
+        <h3 data-i18n="language">Язык</h3>
+        <div class="choice" id="lang-choice">
+          <button type="button" value="ru">Русский</button>
+          <button type="button" value="kk">Қазақша</button>
+          <button type="button" value="en">English</button>
+          <button type="button" value="fr">Français</button>
+          <button type="button" value="zh">中文</button>
+          <button type="button" value="es">Español</button>
+        </div>
+      </section>
+      <section class="card stack">
+        <h3 data-i18n="theme">Тема</h3>
+        <div class="choice" id="theme-choice">
+          <button type="button" value="system" data-i18n="themeSystem">Как в системе</button>
+          <button type="button" value="light" data-i18n="themeLight">Светлая</button>
+          <button type="button" value="dark" data-i18n="themeDark">Тёмная</button>
+        </div>
+      </section>
+      <form class="card stack" id="pass-form" novalidate>
+        <h3 data-i18n="changePass">Смена пароля</h3>
+        <div class="field">
+          <label for="set-pass" data-i18n="newPass">Новый пароль</label>
+          <input id="set-pass" type="password" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="set-pass2" data-i18n="pass2">Пароль ещё раз</label>
+          <input id="set-pass2" type="password" autocomplete="new-password">
+        </div>
+        <div class="foot end">
+          <span class="hint" id="set-pass-msg" role="status" hidden></span>
+          <button class="primary" type="submit" data-i18n="bChange">Сменить пароль</button>
+        </div>
+      </form>
+      <section class="card stack">
+        <h3 data-i18n="recCode">Код восстановления</h3>
+        <p class="hint" data-i18n="codeHint">По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.</p>
+        <div class="code-panel" id="set-code-panel" hidden>
+          <code id="set-code-value"></code>
+          <button type="button" class="pill-btn" id="set-code-copy" data-i18n="copy">Скопировать</button>
+        </div>
+        <p class="hint" id="set-code-msg" role="status" hidden></p>
+        <div class="foot end">
+          <button type="button" class="strike" id="set-code-new" data-i18n="codeNew">Создать новый код</button>
+          <button type="button" class="primary" id="set-code-show" data-i18n="codeShow">Показать код</button>
+        </div>
+      </section>
+      <section class="card stack">
+        <h3 data-i18n="account">Аккаунт</h3>
+        <div class="foot end">
+          <span class="hint" data-i18n="logoutHint">Чтобы снова открыть архив, понадобится пароль.</span>
+          <button type="button" class="pill-btn" id="lock" data-i18n="logout">Выйти</button>
+        </div>
+      </section>
+      <footer class="site-foot">
+        <p data-i18n="contactText">Если у вас есть вопросы, пишите на почту.</p>
+        <p><span data-i18n="emailLabel">Почта</span>: <a href="mailto:assar.dastanuly.dev@gmail.com">assar.dastanuly.dev@gmail.com</a></p>
+        <p>© 2025 Assar Dastanuly</p>
+      </footer>
+    </div>
+
+    <nav class="nav" data-i18n-aria="navAria" aria-label="Разделы">
+      <button type="button" class="tab" id="tab-home" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>
+        <span data-i18n="home">Главная</span>
+      </button>
+      <button type="button" class="tab" id="tab-archive">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>
+        <span data-i18n="archive">Архив</span>
+      </button>
+      <button type="button" class="add" id="add" data-i18n-aria="newIdea" aria-label="Новая идея">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button type="button" class="tab" id="tab-affirm">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+        <span data-i18n="affirmations">Аффирмации</span>
+      </button>
+      <button type="button" class="tab" id="tab-settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.5"/><circle cx="8" cy="17" r="2.5"/></svg>
+        <span data-i18n="settings">Настройки</span>
+      </button>
+    </nav>
+
+    <div class="sheet" id="sheet" hidden>
+      <form class="sheet-card stack" id="idea-form">
+        <div class="sheet-head">
+          <label for="idea-input" data-i18n="newIdea">Новая идея</label>
+          <button type="button" class="close" id="sheet-close" data-i18n-aria="close" aria-label="Закрыть">×</button>
+        </div>
+        <textarea id="idea-input" data-i18n-ph="ph" placeholder="Пришла мысль? Сюда её, не раздумывая…" autocomplete="off"></textarea>
+        <p class="hint" id="voice-note" role="status" hidden></p>
+        <div class="foot end">
+          <div class="voice-row" id="voice-row" hidden>
+            <button type="button" class="voice" id="voice" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+              <span id="voice-label" data-i18n="voice">Голосом</span>
+            </button>
+            <select id="voice-lang" data-i18n-aria="voiceLang" aria-label="Язык речи">
+              <option value="ru-RU">Русский</option>
+              <option value="kk-KZ">Қазақша</option>
+              <option value="en-US">English</option>
+              <option value="fr-FR">Français</option>
+              <option value="zh-CN">中文</option>
+              <option value="es-ES">Español</option>
+            </select>
+          </div>
+          <button class="primary" id="idea-save" type="submit" data-i18n="save" disabled>Записать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="colophon">
+    <span id="storage-note">Идеи шифруются вашим паролем.</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span id="toast-text"></span>
+  <button type="button" id="toast-undo" data-i18n="undo">Вернуть</button>
+</div>
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+
+
+  // --- Interface languages
+  var LANG_KEY = "overthinkers-lang";
+  var LOCALE = { ru: "ru-RU", kk: "kk-KZ", en: "en-US", fr: "fr-FR", zh: "zh-CN", es: "es-ES" };
+  var I18N = {
+    ru: {
+      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", opening: "Открываем архив…",
+      name: "Имя", surname: "Фамилия", copy: "Скопировать", copied: "Скопировано", recCode: "Код восстановления",
+      pass: "Пароль", newPass: "Новый пароль", pass2: "Пароль ещё раз", signIn: "Войти", backLogin: "Назад ко входу",
+      forgot: "Забыли пароль?", byCode: "Восстановить по коду", wipe: "Стереть всё и начать заново", cancel: "Отмена",
+      hello: "Привет,", quick: "Что придумал? Запиши сразу", total: "Всего идей", none: "Пока ни одной",
+      today: "Сегодня",  week: "На этой неделе", activity: "Активность", perDay: "идей в день, эта неделя",
+      chartAria: "Активность за неделю", recent: "Последние идеи", all: "Весь архив", emptyT: "Здесь пока пусто",
+      emptyHome: "Нажмите «+» и запишите первую идею.", archive: "Архив", search: "Поиск по идеям",
+      emptyArch: "Первая идея появится здесь, как только вы её запишете.", noMatchT: "Ничего не найдено",
+      noMatchS: "Попробуйте другое слово.", navAria: "Разделы", home: "Главная", newIdea: "Новая идея", close: "Закрыть",
+      ph: "Пришла мысль? Сюда её, не раздумывая…", voice: "Голосом", voiceStop: "Слушаю… стоп", voiceLang: "Язык речи",
+      save: "Записать", undo: "Вернуть", erase: "Стереть", eraseAria: "Стереть идею №{n}", erased: "Идея стёрта.",
+      last: "Последняя: {when}", chartSum: "Идей за неделю: {week}, сегодня: {today}", of: "{a} из {b}",
+      noteDefault: "Идеи шифруются вашим паролем.", noteBrowser: "Идеи зашифрованы и хранятся в этом браузере.",
+      noteCloud: "Идеи зашифрованы вашим паролем и хранятся в личном архиве — они откроются на любом устройстве, где вы войдёте.",
+      micBlocked: "Микрофон в этом окне недоступен. Разрешите доступ к микрофону или продиктуйте через клавиатуру телефона.",
+      micSilent: "Ничего не слышно. Нажмите «Голосом» и попробуйте ещё раз.",
+      micLang: "Этот язык здесь не распознаётся. Выберите другой.", micFail: "Не получилось распознать речь. Попробуйте ещё раз.",
+      thinker: "мыслитель", tReg: "Регистрация", tRec: "Восстановление", tLogin: "Вход",
+      bCreate: "Создать архив", bChange: "Сменить пароль", bSaved: "Я сохранил код",
+      forgotWith: "Пароль можно сменить по коду восстановления — идеи останутся. Без кода остаётся только стереть весь архив и зарегистрироваться заново.",
+      forgotWithout: "У этого архива ещё нет кода восстановления. Без пароля остаётся только стереть весь архив и зарегистрироваться заново.",
+      leadReg: "Назовите себя и придумайте пароль — им будут зашифрованы ваши идеи.",
+      leadRec: "Введите код восстановления и придумайте новый пароль. Идеи останутся на месте.",
+      leadCode: "Сохраните этот код в надёжном месте. Если забудете пароль, по нему можно задать новый и не потерять идеи. Код показывается один раз.",
+      leadLogin: "С возвращением, {who}. Введите пароль, чтобы открыть архив.", minPass: "Не короче {n} символов.",
+      eName: "Введите имя.", eSurname: "Введите фамилию.", ePassShort: "Пароль должен быть не короче {n} символов.",
+      ePassMatch: "Пароли не совпадают.", eWrong: "Неверный пароль.", eCodeEmpty: "Введите код восстановления.",
+      eCodeBad: "Код восстановления не подошёл. Проверьте его и попробуйте ещё раз.",
+      eCrypto: "Этот браузер не поддерживает шифрование. Откройте сайт в современном браузере.",
+      eGeneric: "Не получилось. Попробуйте ещё раз.",
+      settings: "Настройки", profile: "Профиль", saveBtn: "Сохранить", saved: "Сохранено.", language: "Язык",
+      theme: "Тема", themeSystem: "Как в системе", themeLight: "Светлая", themeDark: "Тёмная",
+      changePass: "Смена пароля", passChanged: "Пароль изменён.", account: "Аккаунт", logoutHint: "Чтобы снова открыть архив, понадобится пароль.",
+      affirmations: "Аффирмации", affirmHint: "Повторяйте каждую фразу столько раз в день, сколько выберете — текстом или голосом. Счётчик обнуляется в полночь.", affirmNew: "Новая фраза", add: "Добавить", affirmTitle: "Аффирмации на сегодня", affirmLead: "Прежде чем войти, напишите фразу своими руками.", affirmType: "Напишите эту фразу", affirmWrong: "Не совпадает. Напишите фразу слово в слово.", next: "Дальше", affirmMax: "Можно добавить не больше 10 фраз.", affirmTooLong: "Слишком много текста: все фразы вместе — не больше 40 000 символов.", editBtn: "Изменить",
+      codeHint: "По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.", codeNew: "Создать новый код", codeShow: "Показать код", codeHide: "Скрыть код", codeNewConfirm: "Точно? Старый код перестанет работать", codeUnknown: "Этот код был создан до того, как сайт научился его хранить, поэтому показать его нельзя. Создайте новый — старый перестанет работать.", codeMade: "Новый код создан. Сохраните его — старый больше не работает.",
+      affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день",
+      contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
+    },
+    kk: {
+      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", opening: "Мұрағат ашылуда…",
+      name: "Аты", surname: "Тегі", copy: "Көшіру", copied: "Көшірілді", recCode: "Қалпына келтіру коды",
+      pass: "Құпиясөз", newPass: "Жаңа құпиясөз", pass2: "Құпиясөзді қайталаңыз", signIn: "Кіру", backLogin: "Кіруге оралу",
+      forgot: "Құпиясөзді ұмыттыңыз ба?", byCode: "Код арқылы қалпына келтіру", wipe: "Бәрін өшіріп, қайта бастау", cancel: "Бас тарту",
+      hello: "Сәлем,", quick: "Не ойладың? Бірден жаз", total: "Барлық идея", none: "Әзірге жоқ",
+      today: "Бүгін",  week: "Осы аптада", activity: "Белсенділік", perDay: "күніне идея, осы апта",
+      chartAria: "Осы аптадағы белсенділік", recent: "Соңғы идеялар", all: "Бүкіл мұрағат", emptyT: "Әзірге бос",
+      emptyHome: "«+» басып, алғашқы идеяңызды жазыңыз.", archive: "Мұрағат", search: "Идеялардан іздеу",
+      emptyArch: "Алғашқы идеяңыз жазылған бойда осында пайда болады.", noMatchT: "Ештеңе табылмады",
+      noMatchS: "Басқа сөзбен іздеп көріңіз.", navAria: "Бөлімдер", home: "Басты бет", newIdea: "Жаңа идея", close: "Жабу",
+      ph: "Ой келді ме? Ойланбай, осында жаз…", voice: "Дауыспен", voiceStop: "Тыңдап тұрмын… тоқтату", voiceLang: "Сөйлеу тілі",
+      save: "Жазу", undo: "Қайтару", erase: "Өшіру", eraseAria: "№{n} идеяны өшіру", erased: "Идея өшірілді.",
+      last: "Соңғысы: {when}", chartSum: "Осы аптадағы идея: {week}, бүгін: {today}", of: "{b} ішінен {a}",
+      noteDefault: "Идеялар құпиясөзіңізбен шифрланады.", noteBrowser: "Идеялар шифрланып, осы браузерде сақталады.",
+      noteCloud: "Идеялар құпиясөзіңізбен шифрланып, жеке мұрағатта сақталады — кірген кез келген құрылғыда ашылады.",
+      micBlocked: "Бұл терезеде микрофон қолжетімсіз. Микрофонға рұқсат беріңіз немесе телефон пернетақтасы арқылы айтыңыз.",
+      micSilent: "Ештеңе естілмеді. «Дауыспен» батырмасын басып, қайталап көріңіз.",
+      micLang: "Бұл тіл мұнда танылмайды. Басқа тілді таңдаңыз.", micFail: "Сөзді тану мүмкін болмады. Қайталап көріңіз.",
+      thinker: "ойшыл", tReg: "Тіркелу", tRec: "Қалпына келтіру", tLogin: "Кіру",
+      bCreate: "Мұрағат құру", bChange: "Құпиясөзді өзгерту", bSaved: "Кодты сақтадым",
+      forgotWith: "Құпиясөзді қалпына келтіру коды арқылы өзгертуге болады — идеялар сақталады. Код болмаса, бүкіл мұрағатты өшіріп, қайта тіркелу ғана қалады.",
+      forgotWithout: "Бұл мұрағатта әлі қалпына келтіру коды жоқ. Құпиясөзсіз бүкіл мұрағатты өшіріп, қайта тіркелу ғана қалады.",
+      leadReg: "Аты-жөніңізді жазып, құпиясөз ойлап табыңыз — идеяларыңыз сонымен шифрланады.",
+      leadRec: "Қалпына келтіру кодын енгізіп, жаңа құпиясөз ойлап табыңыз. Идеялар орнында қалады.",
+      leadCode: "Бұл кодты сенімді жерге сақтаңыз. Құпиясөзді ұмытсаңыз, осы код арқылы жаңасын қойып, идеяларды жоғалтпайсыз. Код бір рет қана көрсетіледі.",
+      leadLogin: "Қош келдіңіз, {who}. Мұрағатты ашу үшін құпиясөзді енгізіңіз.", minPass: "Кемінде {n} таңба.",
+      eName: "Атыңызды енгізіңіз.", eSurname: "Тегіңізді енгізіңіз.", ePassShort: "Құпиясөз кемінде {n} таңба болуы керек.",
+      ePassMatch: "Құпиясөздер сәйкес келмейді.", eWrong: "Құпиясөз қате.", eCodeEmpty: "Қалпына келтіру кодын енгізіңіз.",
+      eCodeBad: "Қалпына келтіру коды сәйкес келмеді. Тексеріп, қайталап көріңіз.",
+      eCrypto: "Бұл браузер шифрлауды қолдамайды. Сайтты заманауи браузерде ашыңыз.",
+      eGeneric: "Сәтсіз аяқталды. Қайталап көріңіз.",
+      settings: "Баптаулар", profile: "Профиль", saveBtn: "Сақтау", saved: "Сақталды.", language: "Тіл",
+      theme: "Көрініс", themeSystem: "Жүйедегідей", themeLight: "Жарық", themeDark: "Қараңғы",
+      changePass: "Құпиясөзді өзгерту", passChanged: "Құпиясөз өзгертілді.", account: "Аккаунт", logoutHint: "Мұрағатты қайта ашу үшін құпиясөз қажет болады.",
+      affirmations: "Аффирмациялар", affirmHint: "Әр сөйлемді күніне өзіңіз таңдаған рет қайталаңыз — мәтінмен немесе дауыспен. Есептегіш түн ортасында нөлденеді.", affirmNew: "Жаңа сөйлем", add: "Қосу", affirmTitle: "Бүгінгі аффирмациялар", affirmLead: "Кірмес бұрын сөйлемді өз қолыңызбен жазыңыз.", affirmType: "Осы сөйлемді жазыңыз", affirmWrong: "Сәйкес келмейді. Сөйлемді сөзбе-сөз жазыңыз.", next: "Әрі қарай", affirmMax: "10 сөйлемнен артық қосуға болмайды.", affirmTooLong: "Мәтін тым көп: барлық сөйлем бірге 40 000 таңбадан аспауы керек.", editBtn: "Өзгерту",
+      codeHint: "Бұл код арқылы ескі құпиясөзді ұмытсаңыз, жаңасын қоюға болады. Оны сенімді жерде сақтаңыз.", codeNew: "Жаңа код жасау", codeShow: "Кодты көрсету", codeHide: "Кодты жасыру", codeNewConfirm: "Сенімдісіз бе? Ескі код жұмыс істемей қалады", codeUnknown: "Бұл код сайт оны сақтауды үйренбей тұрып жасалған, сондықтан оны көрсету мүмкін емес. Жаңасын жасаңыз — ескісі жұмыс істемей қалады.", codeMade: "Жаңа код жасалды. Оны сақтаңыз — ескісі енді жұмыс істемейді.",
+      affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет",
+      contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
+    },
+    en: {
+      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", opening: "Opening the archive…",
+      name: "First name", surname: "Last name", copy: "Copy", copied: "Copied", recCode: "Recovery code",
+      pass: "Password", newPass: "New password", pass2: "Repeat password", signIn: "Sign in", backLogin: "Back to sign-in",
+      forgot: "Forgot password?", byCode: "Recover with code", wipe: "Erase everything and start over", cancel: "Cancel",
+      hello: "What's up,", quick: "Got an idea? Write it down now", total: "Total ideas", none: "None yet",
+      today: "Today",  week: "This week", activity: "Activity", perDay: "ideas per day, this week",
+      chartAria: "Activity this week", recent: "Latest ideas", all: "Full archive", emptyT: "Nothing here yet",
+      emptyHome: "Tap “+” and write your first idea.", archive: "Archive", search: "Search ideas",
+      emptyArch: "Your first idea will appear here as soon as you write it.", noMatchT: "Nothing found",
+      noMatchS: "Try another word.", navAria: "Sections", home: "Home", newIdea: "New idea", close: "Close",
+      ph: "Had a thought? Put it here before you rethink it…", voice: "Voice", voiceStop: "Listening… stop", voiceLang: "Speech language",
+      save: "Save", undo: "Undo", erase: "Delete", eraseAria: "Delete idea no. {n}", erased: "Idea deleted.",
+      last: "Latest: {when}", chartSum: "Ideas this week: {week}, today: {today}", of: "{a} of {b}",
+      noteDefault: "Ideas are encrypted with your password.", noteBrowser: "Ideas are encrypted and stored in this browser.",
+      noteCloud: "Ideas are encrypted with your password and kept in your personal archive — they open on any device where you sign in.",
+      micBlocked: "The microphone is not available in this window. Allow microphone access or dictate with your phone keyboard.",
+      micSilent: "Nothing was heard. Press “Voice” and try again.",
+      micLang: "This language is not recognized here. Choose another one.", micFail: "Speech could not be recognized. Try again.",
+      thinker: "thinker", tReg: "Sign up", tRec: "Recovery", tLogin: "Sign in",
+      bCreate: "Create archive", bChange: "Change password", bSaved: "I saved the code",
+      forgotWith: "You can change the password with your recovery code and keep your ideas. Without the code, the only option is to erase the whole archive and sign up again.",
+      forgotWithout: "This archive has no recovery code yet. Without the password, the only option is to erase the whole archive and sign up again.",
+      leadReg: "Enter your name and choose a password. It will encrypt your ideas.",
+      leadRec: "Enter your recovery code and choose a new password. Your ideas stay in place.",
+      leadCode: "Keep this code somewhere safe. If you forget your password, it lets you set a new one without losing your ideas. The code is shown only once.",
+      leadLogin: "Welcome back, {who}. Enter your password to open the archive.", minPass: "At least {n} characters.",
+      eName: "Enter your first name.", eSurname: "Enter your last name.", ePassShort: "The password must be at least {n} characters.",
+      ePassMatch: "The passwords do not match.", eWrong: "Wrong password.", eCodeEmpty: "Enter your recovery code.",
+      eCodeBad: "That recovery code did not work. Check it and try again.",
+      eCrypto: "This browser does not support encryption. Open the site in a modern browser.",
+      eGeneric: "That did not work. Try again.",
+      settings: "Settings", profile: "Profile", saveBtn: "Save", saved: "Saved.", language: "Language",
+      theme: "Theme", themeSystem: "System", themeLight: "Light", themeDark: "Dark",
+      changePass: "Change password", passChanged: "Password changed.", account: "Account", logoutHint: "You will need your password to open the archive again.",
+      affirmations: "Affirmations", affirmHint: "Repeat each phrase as many times a day as you choose, by typing or by voice. The counter resets at midnight.", affirmNew: "New phrase", add: "Add", affirmTitle: "Today's affirmations", affirmLead: "Before you go in, type the phrase yourself.", affirmType: "Type this phrase", affirmWrong: "That does not match. Type the phrase word for word.", next: "Next", affirmMax: "You can add up to 10 phrases.", affirmTooLong: "Too much text: all phrases together can be up to 40,000 characters.", editBtn: "Edit",
+      codeHint: "This code lets you set a new password if you forget the old one. Keep it somewhere safe.", codeNew: "Create a new code", codeShow: "Show code", codeHide: "Hide code", codeNewConfirm: "Sure? The old code will stop working", codeUnknown: "This code was made before the site could keep a copy, so it cannot be shown. Create a new one; the old one will stop working.", codeMade: "New code created. Save it; the old one no longer works.",
+      affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day",
+      contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
+    },
+    fr: {
+      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", opening: "Ouverture de l'archive…",
+      name: "Prénom", surname: "Nom", copy: "Copier", copied: "Copié", recCode: "Code de récupération",
+      pass: "Mot de passe", newPass: "Nouveau mot de passe", pass2: "Répétez le mot de passe", signIn: "Se connecter", backLogin: "Retour à la connexion",
+      forgot: "Mot de passe oublié ?", byCode: "Récupérer avec le code", wipe: "Tout effacer et recommencer", cancel: "Annuler",
+      hello: "Salut,", quick: "Une idée ? Notez-la tout de suite", total: "Total des idées", none: "Aucune pour l'instant",
+      today: "Aujourd'hui", week: "Cette semaine", activity: "Activité", perDay: "idées par jour, cette semaine",
+      chartAria: "Activité de la semaine", recent: "Dernières idées", all: "Toute l'archive", emptyT: "Rien ici pour l'instant",
+      emptyHome: "Appuyez sur « + » et notez votre première idée.", archive: "Archive", search: "Rechercher dans les idées",
+      emptyArch: "Votre première idée apparaîtra ici dès que vous l'aurez notée.", noMatchT: "Aucun résultat",
+      noMatchS: "Essayez un autre mot.", navAria: "Sections", home: "Accueil", newIdea: "Nouvelle idée", close: "Fermer",
+      ph: "Une pensée ? Notez-la ici, sans trop réfléchir…", voice: "Dicter", voiceStop: "J'écoute… arrêter", voiceLang: "Langue de la dictée",
+      save: "Noter", undo: "Annuler", erase: "Supprimer", eraseAria: "Supprimer l'idée n° {n}", erased: "Idée supprimée.",
+      last: "Dernière : {when}", chartSum: "Idées cette semaine : {week}, aujourd'hui : {today}", of: "{a} sur {b}",
+      noteDefault: "Les idées sont chiffrées avec votre mot de passe.", noteBrowser: "Les idées sont chiffrées et stockées dans ce navigateur.",
+      noteCloud: "Les idées sont chiffrées avec votre mot de passe et conservées dans votre archive personnelle : elles s'ouvrent sur tout appareil où vous vous connectez.",
+      micBlocked: "Le microphone n'est pas disponible dans cette fenêtre. Autorisez l'accès au microphone ou dictez avec le clavier du téléphone.",
+      micSilent: "Rien n'a été entendu. Appuyez sur « Dicter » et réessayez.",
+      micLang: "Cette langue n'est pas reconnue ici. Choisissez-en une autre.", micFail: "La parole n'a pas pu être reconnue. Réessayez.",
+      thinker: "penseur", tReg: "Inscription", tRec: "Récupération", tLogin: "Connexion",
+      bCreate: "Créer l'archive", bChange: "Changer le mot de passe", bSaved: "J'ai enregistré le code",
+      forgotWith: "Vous pouvez changer le mot de passe avec le code de récupération : les idées sont conservées. Sans le code, il ne reste qu'à effacer toute l'archive et à vous réinscrire.",
+      forgotWithout: "Cette archive n'a pas encore de code de récupération. Sans le mot de passe, il ne reste qu'à effacer toute l'archive et à vous réinscrire.",
+      leadReg: "Indiquez votre nom et choisissez un mot de passe : il chiffrera vos idées.",
+      leadRec: "Saisissez le code de récupération et choisissez un nouveau mot de passe. Vos idées restent en place.",
+      leadCode: "Conservez ce code en lieu sûr. Si vous oubliez le mot de passe, il permet d'en définir un nouveau sans perdre vos idées. Le code n'est affiché qu'une seule fois.",
+      leadLogin: "Bon retour, {who}. Saisissez votre mot de passe pour ouvrir l'archive.", minPass: "Au moins {n} caractères.",
+      eName: "Saisissez votre prénom.", eSurname: "Saisissez votre nom.", ePassShort: "Le mot de passe doit contenir au moins {n} caractères.",
+      ePassMatch: "Les mots de passe ne correspondent pas.", eWrong: "Mot de passe incorrect.", eCodeEmpty: "Saisissez le code de récupération.",
+      eCodeBad: "Ce code de récupération ne fonctionne pas. Vérifiez-le et réessayez.",
+      eCrypto: "Ce navigateur ne prend pas en charge le chiffrement. Ouvrez le site dans un navigateur récent.",
+      eGeneric: "Cela n'a pas fonctionné. Réessayez.",
+      settings: "Réglages", profile: "Profil", saveBtn: "Enregistrer", saved: "Enregistré.", language: "Langue",
+      theme: "Thème", themeSystem: "Système", themeLight: "Clair", themeDark: "Sombre",
+      changePass: "Changer le mot de passe", passChanged: "Mot de passe modifié.", account: "Compte", logoutHint: "Il faudra votre mot de passe pour rouvrir l'archive.",
+      affirmations: "Affirmations", affirmHint: "Répétez chaque phrase autant de fois par jour que vous le souhaitez, à l'écrit ou à voix haute. Le compteur repart à zéro à minuit.", affirmNew: "Nouvelle phrase", add: "Ajouter", affirmTitle: "Affirmations du jour", affirmLead: "Avant d'entrer, écrivez la phrase vous-même.", affirmType: "Écrivez cette phrase", affirmWrong: "Cela ne correspond pas. Écrivez la phrase mot pour mot.", next: "Suivant", affirmMax: "Vous pouvez ajouter 10 phrases au maximum.", affirmTooLong: "Trop de texte : toutes les phrases réunies ne peuvent pas dépasser 40 000 caractères.", editBtn: "Modifier",
+      codeHint: "Ce code permet de définir un nouveau mot de passe si vous oubliez l'ancien. Conservez-le en lieu sûr.", codeNew: "Créer un nouveau code", codeShow: "Afficher le code", codeHide: "Masquer le code", codeNewConfirm: "Sûr ? L'ancien code ne fonctionnera plus", codeUnknown: "Ce code a été créé avant que le site puisse en garder une copie : il ne peut pas être affiché. Créez-en un nouveau ; l'ancien ne fonctionnera plus.", codeMade: "Nouveau code créé. Conservez-le : l'ancien ne fonctionne plus.",
+      affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour",
+      contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
+    },
+    zh: {
+      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", opening: "正在打开档案…",
+      name: "名字", surname: "姓氏", copy: "复制", copied: "已复制", recCode: "恢复码",
+      pass: "密码", newPass: "新密码", pass2: "再次输入密码", signIn: "登录", backLogin: "返回登录",
+      forgot: "忘记密码？", byCode: "用恢复码找回", wipe: "清空全部并重新开始", cancel: "取消",
+      hello: "你好，", quick: "有想法了？马上记下来", total: "想法总数", none: "还没有",
+      today: "今天", week: "本周", activity: "活跃度", perDay: "每天的想法数，本周",
+      chartAria: "本周活跃度", recent: "最近的想法", all: "全部档案", emptyT: "这里还是空的",
+      emptyHome: "点击“+”，记下第一个想法。", archive: "档案", search: "搜索想法",
+      emptyArch: "记下第一个想法后，它会出现在这里。", noMatchT: "没有找到",
+      noMatchS: "换个词试试。", navAria: "栏目", home: "首页", newIdea: "新想法", close: "关闭",
+      ph: "想到什么了？别多想，写在这里…", voice: "语音", voiceStop: "正在听… 停止", voiceLang: "语音语言",
+      save: "记下", undo: "撤销", erase: "删除", eraseAria: "删除第 {n} 个想法", erased: "想法已删除。",
+      last: "最近：{when}", chartSum: "本周想法：{week}，今天：{today}", of: "{b} 条中的 {a} 条",
+      noteDefault: "想法会用你的密码加密。", noteBrowser: "想法已加密，保存在此浏览器中。",
+      noteCloud: "想法用你的密码加密并保存在个人档案中，在任何登录的设备上都能打开。",
+      micBlocked: "此窗口无法使用麦克风。请允许使用麦克风，或用手机键盘的听写功能。",
+      micSilent: "没有听到声音。请点击“语音”再试一次。",
+      micLang: "这里无法识别该语言，请选择其他语言。", micFail: "无法识别语音，请再试一次。",
+      thinker: "思考者", tReg: "注册", tRec: "找回密码", tLogin: "登录",
+      bCreate: "创建档案", bChange: "修改密码", bSaved: "我已保存恢复码",
+      forgotWith: "可以用恢复码修改密码，想法会保留。没有恢复码，就只能清空整个档案并重新注册。",
+      forgotWithout: "这个档案还没有恢复码。没有密码，就只能清空整个档案并重新注册。",
+      leadReg: "填写姓名并设置密码，它将用来加密你的想法。",
+      leadRec: "输入恢复码并设置新密码。你的想法不会丢失。",
+      leadCode: "请把这个恢复码保存在安全的地方。忘记密码时，可以用它设置新密码而不丢失想法。恢复码只显示一次。",
+      leadLogin: "欢迎回来，{who}。输入密码以打开档案。", minPass: "至少 {n} 个字符。",
+      eName: "请输入名字。", eSurname: "请输入姓氏。", ePassShort: "密码至少需要 {n} 个字符。",
+      ePassMatch: "两次输入的密码不一致。", eWrong: "密码错误。", eCodeEmpty: "请输入恢复码。",
+      eCodeBad: "恢复码不正确。请检查后再试一次。",
+      eCrypto: "此浏览器不支持加密。请用较新的浏览器打开网站。",
+      eGeneric: "操作失败，请再试一次。",
+      settings: "设置", profile: "个人资料", saveBtn: "保存", saved: "已保存。", language: "语言",
+      theme: "主题", themeSystem: "跟随系统", themeLight: "浅色", themeDark: "深色",
+      changePass: "修改密码", passChanged: "密码已修改。", account: "账户", logoutHint: "再次打开档案时需要输入密码。",
+      affirmations: "肯定语", affirmHint: "每句话每天按你设定的次数重复，可以打字或用语音。计数在午夜清零。", affirmNew: "新句子", add: "添加", affirmTitle: "今天的肯定语", affirmLead: "进入之前，请亲手写下这句话。", affirmType: "写下这句话", affirmWrong: "不一致。请逐字写下这句话。", next: "下一步", affirmMax: "最多可以添加 10 句。", affirmTooLong: "文字太多：所有句子合计不能超过 40,000 个字符。", editBtn: "编辑",
+      codeHint: "忘记密码时，可以用这个恢复码设置新密码。请把它保存在安全的地方。", codeNew: "生成新恢复码", codeShow: "显示恢复码", codeHide: "隐藏恢复码", codeNewConfirm: "确定吗？旧恢复码将失效", codeUnknown: "这个恢复码是在网站能保存副本之前生成的，所以无法显示。请生成一个新的，旧的将失效。", codeMade: "新恢复码已生成。请保存好，旧的已失效。",
+      affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数",
+      contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
+    },
+    es: {
+      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", opening: "Abriendo el archivo…",
+      name: "Nombre", surname: "Apellido", copy: "Copiar", copied: "Copiado", recCode: "Código de recuperación",
+      pass: "Contraseña", newPass: "Nueva contraseña", pass2: "Repite la contraseña", signIn: "Entrar", backLogin: "Volver al inicio de sesión",
+      forgot: "¿Olvidaste la contraseña?", byCode: "Recuperar con el código", wipe: "Borrar todo y empezar de nuevo", cancel: "Cancelar",
+      hello: "Hola,", quick: "¿Una idea? Anótala ya", total: "Ideas en total", none: "Ninguna todavía",
+      today: "Hoy", week: "Esta semana", activity: "Actividad", perDay: "ideas por día, esta semana",
+      chartAria: "Actividad de la semana", recent: "Últimas ideas", all: "Todo el archivo", emptyT: "Aquí no hay nada todavía",
+      emptyHome: "Pulsa «+» y anota tu primera idea.", archive: "Archivo", search: "Buscar en las ideas",
+      emptyArch: "Tu primera idea aparecerá aquí en cuanto la anotes.", noMatchT: "No se encontró nada",
+      noMatchS: "Prueba con otra palabra.", navAria: "Secciones", home: "Inicio", newIdea: "Nueva idea", close: "Cerrar",
+      ph: "¿Se te ocurrió algo? Escríbelo aquí, sin pensarlo demasiado…", voice: "Por voz", voiceStop: "Escuchando… parar", voiceLang: "Idioma del dictado",
+      save: "Anotar", undo: "Deshacer", erase: "Borrar", eraseAria: "Borrar la idea n.º {n}", erased: "Idea borrada.",
+      last: "Última: {when}", chartSum: "Ideas esta semana: {week}, hoy: {today}", of: "{a} de {b}",
+      noteDefault: "Las ideas se cifran con tu contraseña.", noteBrowser: "Las ideas están cifradas y guardadas en este navegador.",
+      noteCloud: "Las ideas se cifran con tu contraseña y se guardan en tu archivo personal: se abren en cualquier dispositivo donde inicies sesión.",
+      micBlocked: "El micrófono no está disponible en esta ventana. Permite el acceso al micrófono o dicta con el teclado del teléfono.",
+      micSilent: "No se oyó nada. Pulsa «Por voz» e inténtalo de nuevo.",
+      micLang: "Este idioma no se reconoce aquí. Elige otro.", micFail: "No se pudo reconocer la voz. Inténtalo de nuevo.",
+      thinker: "pensador", tReg: "Registro", tRec: "Recuperación", tLogin: "Entrar",
+      bCreate: "Crear archivo", bChange: "Cambiar contraseña", bSaved: "Ya guardé el código",
+      forgotWith: "Puedes cambiar la contraseña con el código de recuperación y conservar tus ideas. Sin el código, solo queda borrar todo el archivo y registrarte de nuevo.",
+      forgotWithout: "Este archivo aún no tiene código de recuperación. Sin la contraseña, solo queda borrar todo el archivo y registrarte de nuevo.",
+      leadReg: "Escribe tu nombre y elige una contraseña: con ella se cifrarán tus ideas.",
+      leadRec: "Introduce el código de recuperación y elige una nueva contraseña. Tus ideas se quedan donde están.",
+      leadCode: "Guarda este código en un lugar seguro. Si olvidas la contraseña, te permite crear una nueva sin perder tus ideas. El código se muestra una sola vez.",
+      leadLogin: "Hola de nuevo, {who}. Introduce tu contraseña para abrir el archivo.", minPass: "Al menos {n} caracteres.",
+      eName: "Escribe tu nombre.", eSurname: "Escribe tu apellido.", ePassShort: "La contraseña debe tener al menos {n} caracteres.",
+      ePassMatch: "Las contraseñas no coinciden.", eWrong: "Contraseña incorrecta.", eCodeEmpty: "Introduce el código de recuperación.",
+      eCodeBad: "Ese código de recuperación no funcionó. Revísalo e inténtalo de nuevo.",
+      eCrypto: "Este navegador no admite cifrado. Abre el sitio en un navegador moderno.",
+      eGeneric: "No funcionó. Inténtalo de nuevo.",
+      settings: "Ajustes", profile: "Perfil", saveBtn: "Guardar", saved: "Guardado.", language: "Idioma",
+      theme: "Tema", themeSystem: "Sistema", themeLight: "Claro", themeDark: "Oscuro",
+      changePass: "Cambiar contraseña", passChanged: "Contraseña cambiada.", account: "Cuenta", logoutHint: "Necesitarás tu contraseña para volver a abrir el archivo.",
+      affirmations: "Afirmaciones", affirmHint: "Repite cada frase las veces al día que elijas, escribiéndola o por voz. El contador se reinicia a medianoche.", affirmNew: "Nueva frase", add: "Añadir", affirmTitle: "Afirmaciones de hoy", affirmLead: "Antes de entrar, escribe la frase tú mismo.", affirmType: "Escribe esta frase", affirmWrong: "No coincide. Escribe la frase palabra por palabra.", next: "Siguiente", affirmMax: "Puedes añadir hasta 10 frases.", affirmTooLong: "Demasiado texto: todas las frases juntas no pueden superar los 40 000 caracteres.", editBtn: "Editar",
+      codeHint: "Con este código puedes crear una nueva contraseña si olvidas la anterior. Guárdalo en un lugar seguro.", codeNew: "Crear un código nuevo", codeShow: "Mostrar código", codeHide: "Ocultar código", codeNewConfirm: "¿Seguro? El código anterior dejará de funcionar", codeUnknown: "Este código se creó antes de que el sitio pudiera guardar una copia, así que no se puede mostrar. Crea uno nuevo; el anterior dejará de funcionar.", codeMade: "Código nuevo creado. Guárdalo; el anterior ya no funciona.",
+      affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día",
+      contactTitle: "¿Tienes preguntas?", contactText: "Si tienes alguna pregunta, escribe un correo.", phoneLabel: "Teléfono", emailLabel: "Correo", creatorLabel: "Creado por"
+    }
+  };
+  var lang = (function () {
+    var saved = null;
+    try { saved = localStorage.getItem(LANG_KEY); } catch (e) {}
+    if (I18N[saved]) return saved;
+    var nav = String(navigator.language || "ru").slice(0, 2).toLowerCase();
+    return I18N[nav] ? nav : "ru";
+  })();
+  function t(k, vars) {
+    var s = I18N[lang][k];
+    if (s == null) s = I18N.ru[k];
+    if (vars) for (var v in vars) s = s.split("{" + v + "}").join(vars[v]);
+    return s;
+  }
+  function countIdeas(n) {
+    if (lang === "en") return n + (n === 1 ? " idea" : " ideas");
+    if (lang === "kk") return n + " идея";
+    if (lang === "fr") return n + (n > 1 ? " idées" : " idée");
+    if (lang === "es") return n + (n === 1 ? " idea" : " ideas");
+    if (lang === "zh") return n + " 个想法";
+    return n + " " + plural(n);
+  }
+  var noteMode = "default";
+  function setNote() {
+    note.textContent = t(noteMode === "cloud" ? "noteCloud" : noteMode === "browser" ? "noteBrowser" : "noteDefault");
+  }
+  function applyLang() {
+    document.documentElement.lang = lang;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (e) { e.textContent = t(e.getAttribute("data-i18n")); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-ph]"), function (e) { e.placeholder = t(e.getAttribute("data-i18n-ph")); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-aria]"), function (e) { e.setAttribute("aria-label", t(e.getAttribute("data-i18n-aria"))); });
+    $("lang").value = lang;
+    markChoice("lang-choice", lang);
+    $("voice-lang").value = LOCALE[lang];
+    $("affirm-voice-lang").value = LOCALE[lang];
+    setNote();
+  }
+  function setLang(next) {
+    if (!I18N[next]) return;
+    lang = next;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+    applyLang();
+    gateError.hidden = true;
+    voiceNote.hidden = true;
+    if (mode !== "wait" && !gate.hidden) gateTexts();
+    if (listening) voiceLabel.textContent = t("voiceStop");
+    render();
+    renderAffirm();
+    profileState();
+    resetCodeCard();
+  }
+  $("lang").addEventListener("change", function () { setLang($("lang").value); });
+
+  var LOCAL_KEY = "overthinkers-ideas";
+  var ACCOUNT_KEY = "overthinkers-account";
+  var ACCOUNT_DOC = "_account";
+  var CHECK_WORD = "cogito ergo scribo";
+  var MIN_PASS = 6;
+
+  var gate = $("gate"), gateTitle = $("gate-title"), gateForm = $("gate-form"), gateWait = $("gate-wait");
+  var gateFields = $("gate-fields"), gateLead = $("gate-lead"), gateHint = $("gate-hint");
+  var fieldName = $("field-name"), fieldPass2 = $("field-pass2");
+  var gateName = $("gate-name"), gatePass = $("gate-pass"), gatePass2 = $("gate-pass2");
+  var gateError = $("gate-error"), gateSubmit = $("gate-submit");
+  var forgot = $("forgot"), forgotOpen = $("forgot-open"), forgotConfirm = $("forgot-confirm");
+  var app = $("app"), greet = $("greet"), greetName = $("greet-name");
+  var form = $("idea-form"), input = $("idea-input"), saveBtn = $("idea-save");
+  var list = $("list"), empty = $("empty"), count = $("count"), note = $("storage-note");
+  var toast = $("toast"), toastText = $("toast-text"), toastUndo = $("toast-undo");
+
+  var account = null;        // { name, salt, check: {iv, ct}, v }
+  var accountRemote = false; // the account document already lives in the personal archive
+  var key = null;            // AES key derived from the password; only in memory
+  var col = null;            // personal archive collection, once available
+  var localRaw = readJSON(LOCAL_KEY, []);   // records kept in this browser
+  var remoteRaw = [];                        // records kept in the personal archive
+  var plain = {};                            // id -> decrypted text
+  var mode = "wait";
+  var busy = false;
+  var freshId = null, lastRemoved = null, toastTimer = null, refreshSeq = 0;
+
+  if (!Array.isArray(localRaw)) localRaw = [];
+  localRaw = localRaw.filter(function (r) { return r && r.id; });
+
+  function readJSON(k, fallback) {
+    try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; }
+  }
+  function writeJSON(k, v) {
+    try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+  }
+  function newId() { return "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+  // --- Encryption: the password never leaves the page; ideas are stored only as ciphertext.
+  var enc = new TextEncoder(), dec = new TextDecoder();
+  function b64(buf) {
+    var b = new Uint8Array(buf), s = "";
+    for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+    return btoa(s);
+  }
+  function unb64(s) {
+    var bin = atob(s), b = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i);
+    return b;
+  }
+  async function deriveKey(password, salt) {
+    var base = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: 250000, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+  }
+  async function seal(k, text) {
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, k, enc.encode(text));
+    return { iv: b64(iv), ct: b64(ct) };
+  }
+  async function unseal(k, box) {
+    var pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, k, unb64(box.ct));
+    return dec.decode(pt);
+  }
+
+  // The key that encrypts ideas can be stored "wrapped": sealed by a key made from a secret
+  // (a new password, or the recovery code). Whoever knows the secret gets the idea key back.
+  async function wrapKey(secret, k) {
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var box = await seal(await deriveKey(secret, salt), b64(await crypto.subtle.exportKey("raw", k)));
+    return { salt: b64(salt), iv: box.iv, ct: box.ct };
+  }
+  async function unwrapKey(secret, w) {
+    var raw = await unseal(await deriveKey(secret, unb64(w.salt)), w);
+    return crypto.subtle.importKey("raw", unb64(raw), { name: "AES-GCM" }, true, ["encrypt", "decrypt"]);
+  }
+  function newCode() {
+    var alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", bytes = crypto.getRandomValues(new Uint8Array(20)), out = "";
+    for (var n = 0; n < bytes.length; n++) out += (n && n % 5 === 0 ? "-" : "") + alphabet[bytes[n] & 31];
+    return out;
+  }
+  function codeSecret(text) { return String(text).toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+
+  // --- Formatting
+  function plural(n) {
+    var a = n % 10, b = n % 100;
+    if (a === 1 && b !== 11) return "идея";
+    if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return "идеи";
+    return "идей";
+  }
+  // --- Records
+  function records() {
+    var seen = {};
+    return remoteRaw.concat(localRaw).filter(function (r) {
+      if (seen[r.id]) return false;
+      seen[r.id] = true; return true;
+    }).sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+  }
+  async function refresh() {
+    if (!key) return;
+    var seq = ++refreshSeq, k = key, recs = records();
+    for (var n = 0; n < recs.length; n++) {
+      var r = recs[n];
+      if (plain[r.id] !== undefined) continue;
+      if (r.ct && r.iv) {
+        try { plain[r.id] = await unseal(k, r); } catch (e) { plain[r.id] = null; }
+      } else {
+        plain[r.id] = typeof r.text === "string" ? r.text : null; // written before registration existed
+      }
+      if (k !== key) return;
+    }
+    if (seq === refreshSeq) render();
+  }
+
+  // --- Views
+  var view = "home", query = "";
+  function dayStart(ts) { var d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function shiftDay(start, by) { var d = new Date(start); d.setDate(d.getDate() + by); return d.getTime(); }
+  function dayLabel(ts) {
+    var today = dayStart(Date.now()), d = dayStart(ts);
+    if (d === today) return t("today");
+    var date = new Date(ts); // every other day as 21.05.2021
+    return String(date.getDate()).padStart(2, "0") + "." + String(date.getMonth() + 1).padStart(2, "0") + "." + date.getFullYear();
+  }
+  function clock(ts) { return new Date(ts).toLocaleTimeString(LOCALE[lang], { hour: "2-digit", minute: "2-digit" }); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function ideaRow(idea, withDay) {
+    var li = el("li", "plate" + (idea.id === freshId ? " fresh" : ""));
+    li.appendChild(el("span", "numeral", "#" + String(idea.n).padStart(2, "0")));
+    var body = el("div", "plate-body");
+    body.appendChild(el("p", "plate-text", idea.text));
+    var meta = el("div", "plate-meta");
+    meta.appendChild(el("span", null, (withDay ? dayLabel(idea.ts) + ", " : "") + clock(idea.ts)));
+    var del = el("button", "strike", t("erase"));
+    del.type = "button";
+    del.setAttribute("aria-label", t("eraseAria", { n: idea.n }));
+    del.addEventListener("click", removeIdea.bind(null, idea));
+    meta.appendChild(del);
+    body.appendChild(meta);
+    li.appendChild(body);
+    return li;
+  }
+
+  // One box for one day: a heading with the day and its count, then that day's ideas as rows.
+  function dayBox(ts, items, total) {
+    var li = el("li", "daybox");
+    var head = el("div", "group");
+    head.appendChild(el("span", null, dayLabel(ts)));
+    head.appendChild(el("span", "count", countIdeas(total)));
+    li.appendChild(head);
+    var inner = el("ol", "day-list");
+    items.forEach(function (it) { inner.appendChild(ideaRow(it, false)); });
+    li.appendChild(inner);
+    return li;
+  }
+
+  function render() {
+    var perDay = {}; // ideas are numbered within their own day: #01, #02, …
+    var ideas = key ? records().filter(function (r) { return typeof plain[r.id] === "string"; }).map(function (r) {
+      var day = dayStart(r.ts);
+      perDay[day] = (perDay[day] || 0) + 1;
+      return { id: r.id, ts: r.ts, text: plain[r.id], n: perDay[day] };
+    }) : [];
+    var today = dayStart(Date.now());
+
+    // Numbers and the 7-day chart
+    var days = [];
+    // The calendar week, Monday to Sunday; days still ahead stay empty.
+    var dow = (new Date(today).getDay() + 6) % 7, monday = shiftDay(today, -dow);
+    for (var step = 0; step < 7; step++) days.push({ start: shiftDay(monday, step), count: 0 });
+    ideas.forEach(function (it) {
+      var s = dayStart(it.ts);
+      days.forEach(function (d) { if (d.start === s) d.count++; });
+    });
+    var week = days.reduce(function (sum, d) { return sum + d.count; }, 0);
+    var max = Math.max.apply(null, days.map(function (d) { return d.count; }).concat(1));
+    $("stat-total").textContent = ideas.length;
+    $("stat-today").textContent = days[dow].count;
+    $("stat-week").textContent = week;
+    $("stat-last").textContent = ideas.length
+      ? t("last", { when: dayLabel(ideas[ideas.length - 1].ts).toLowerCase() + ", " + clock(ideas[ideas.length - 1].ts) })
+      : t("none");
+    var chart = $("chart");
+    chart.textContent = "";
+    chart.setAttribute("aria-label", t("chartSum", { week: week, today: days[dow].count }));
+    days.forEach(function (d, i) {
+      var colEl = el("div", "bar-col" + (i === dow ? " now" : ""));
+      colEl.appendChild(el("span", "bar-val", d.count || ""));
+      var track = el("div", "bar-track"), bar = el("div", "bar");
+      bar.style.height = Math.round(d.count / max * 100) + "%";
+      track.appendChild(bar);
+      colEl.appendChild(track);
+      colEl.appendChild(el("span", "bar-day", new Date(d.start).toLocaleDateString(LOCALE[lang], { weekday: "short" })));
+      chart.appendChild(colEl);
+    });
+
+    // Home: the three latest
+    var recent = $("recent");
+    recent.textContent = "";
+    if (ideas.length) {
+      // The latest day in one box, showing its last five ideas in order.
+      var lastDay = dayStart(ideas[ideas.length - 1].ts);
+      var ofDay = ideas.filter(function (it) { return dayStart(it.ts) === lastDay; });
+      recent.appendChild(dayBox(ideas[ideas.length - 1].ts, ofDay.slice(-5), ofDay.length));
+    }
+    $("home-empty").hidden = ideas.length > 0;
+
+    // Archive: everything, newest first, grouped by day
+    var q = query.trim().toLowerCase();
+    var shown = q ? ideas.filter(function (it) { return it.text.toLowerCase().indexOf(q) !== -1; }) : ideas;
+    empty.hidden = ideas.length > 0;
+    $("no-match").hidden = !(ideas.length > 0 && shown.length === 0);
+    count.textContent = ideas.length ? (q ? t("of", { a: shown.length, b: ideas.length }) : countIdeas(ideas.length)) : "";
+    list.textContent = "";
+    // One box per day, newest day first; inside a box the day's ideas run #01, #02, …
+    var boxes = [], byDay = {};
+    shown.forEach(function (it) {
+      var day = dayStart(it.ts);
+      if (!byDay[day]) { byDay[day] = { ts: it.ts, items: [] }; boxes.push(byDay[day]); }
+      byDay[day].items.push(it);
+    });
+    boxes.reverse().forEach(function (box) { list.appendChild(dayBox(box.ts, box.items, box.items.length)); });
+    freshId = null;
+  }
+
+  function show(next) {
+    view = next;
+    ["home", "archive", "affirm", "settings"].forEach(function (v) {
+      $("view-" + v).hidden = v !== next;
+      if (v === next) $("tab-" + v).setAttribute("aria-current", "page");
+      else $("tab-" + v).removeAttribute("aria-current");
+    });
+    if (next === "settings") fillSettings();
+    if (next === "affirm") renderAffirm(); else stopAffirmVoice();
+  }
+  function openSheet() {
+    $("sheet").hidden = false;
+    try { input.focus(); } catch (e) {}
+  }
+  function closeSheet() { stopVoice(); $("sheet").hidden = true; }
+
+  // --- Voice input: speech goes straight into the idea field; it is saved like typed text.
+  var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var listening = null, voiceBase = "";
+  var voiceBtn = $("voice"), voiceLabel = $("voice-label"), voiceNote = $("voice-note");
+  function stopVoice() {
+    if (listening) { try { listening.stop(); } catch (e) {} }
+  }
+  function voiceIdle() {
+    listening = null;
+    voiceBtn.classList.remove("live");
+    voiceBtn.setAttribute("aria-pressed", "false");
+    voiceLabel.textContent = t("voice");
+  }
+  function voiceProblem(code) {
+    voiceNote.textContent =
+      code === "not-allowed" || code === "service-not-allowed"
+        ? t("micBlocked")
+        : code === "no-speech" ? t("micSilent")
+        : code === "language-not-supported" ? t("micLang")
+        : t("micFail");
+    voiceNote.hidden = false;
+  }
+  if (SpeechRec) {
+    $("voice-row").hidden = false;
+    voiceBtn.addEventListener("click", function () {
+      if (listening) { stopVoice(); return; }
+      var r = new SpeechRec();
+      r.lang = $("voice-lang").value;
+      r.interimResults = true;
+      r.continuous = true;
+      voiceBase = input.value.trim() ? input.value.replace(/\s+$/, "") + " " : "";
+      r.onresult = function (e) {
+        var said = "";
+        for (var n = 0; n < e.results.length; n++) said += e.results[n][0].transcript;
+        input.value = voiceBase + said;
+        saveBtn.disabled = !input.value.trim();
+      };
+      r.onerror = function (e) { if (e.error !== "aborted") voiceProblem(e.error); };
+      r.onend = voiceIdle;
+      try {
+        r.start();
+        listening = r;
+        voiceNote.hidden = true;
+        voiceBtn.classList.add("live");
+        voiceBtn.setAttribute("aria-pressed", "true");
+        voiceLabel.textContent = t("voiceStop");
+      } catch (err) { voiceProblem("start"); }
+    });
+  }
+  $("tab-home").addEventListener("click", function () { show("home"); });
+  $("tab-archive").addEventListener("click", function () { show("archive"); });
+  $("tab-settings").addEventListener("click", function () { show("settings"); });
+  $("tab-affirm").addEventListener("click", function () { show("affirm"); });
+  $("see-all").addEventListener("click", function () { show("archive"); });
+  $("add").addEventListener("click", openSheet);
+  $("quick").addEventListener("click", openSheet);
+  $("sheet-close").addEventListener("click", closeSheet);
+  $("sheet").addEventListener("click", function (e) { if (e.target === $("sheet")) closeSheet(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+  $("search").addEventListener("input", function () { query = $("search").value; render(); });
+
+  function keepLocal(rec) {
+    localRaw = localRaw.filter(function (r) { return r.id !== rec.id; });
+    localRaw.push(rec);
+    writeJSON(LOCAL_KEY, localRaw);
+  }
+  function dropLocal(id) {
+    localRaw = localRaw.filter(function (r) { return r.id !== id; });
+    writeJSON(LOCAL_KEY, localRaw);
+  }
+  function browserOnly() { noteMode = "browser"; setNote(); }
+
+  async function pushRecord(rec) {
+    if (!col) return;
+    try {
+      await col.doc(rec.id).set({ ts: rec.ts, iv: rec.iv, ct: rec.ct });
+      dropLocal(rec.id);
+    } catch (e) { browserOnly(); }
+  }
+
+  async function storeIdea(idea) {
+    if (!key) return;
+    plain[idea.id] = idea.text;
+    var box = await seal(key, idea.text);
+    var rec = { id: idea.id, ts: idea.ts, iv: box.iv, ct: box.ct };
+    // Shown at once from this browser; moved to the personal archive when it accepts the write.
+    keepLocal(rec);
+    render();
+    pushRecord(rec);
+  }
+
+  function removeIdea(idea) {
+    dropLocal(idea.id);
+    remoteRaw = remoteRaw.filter(function (r) { return r.id !== idea.id; });
+    delete plain[idea.id];
+    render();
+    if (col) col.doc(idea.id).delete().catch(function () {});
+    lastRemoved = idea;
+    toastText.textContent = t("erased");
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.hidden = true; lastRemoved = null; }, 7000);
+  }
+  toastUndo.addEventListener("click", function () {
+    if (!lastRemoved) return;
+    var idea = lastRemoved; lastRemoved = null;
+    clearTimeout(toastTimer); toast.hidden = true;
+    storeIdea(idea);
+  });
+
+  function submitIdea() {
+    var text = input.value.trim();
+    if (!text || !key) return;
+    var idea = { id: newId(), text: text.slice(0, 20000), ts: Date.now() };
+    freshId = idea.id;
+    input.value = "";
+    saveBtn.disabled = true;
+    storeIdea(idea);
+    closeSheet();
+  }
+  form.addEventListener("submit", function (e) { e.preventDefault(); submitIdea(); });
+  input.addEventListener("input", function () { saveBtn.disabled = !input.value.trim(); });
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); submitIdea(); }
+  });
+
+  // --- Gate
+  function gateTexts() {
+    var reg = mode === "register", rec = mode === "recover", code = mode === "code";
+    $("forgot-text").textContent = t(account && account.recovery ? "forgotWith" : "forgotWithout");
+    $("gate-pass-label").textContent = t(rec ? "newPass" : "pass");
+    gateTitle.textContent = t(reg ? "tReg" : rec ? "tRec" : code ? "recCode" : "tLogin");
+    gateSubmit.textContent = t(reg ? "bCreate" : rec ? "bChange" : code ? "bSaved" : "signIn");
+    gateLead.textContent = reg ? t("leadReg") : rec ? t("leadRec") : code ? t("leadCode")
+      : t("leadLogin", { who: (account && account.name) || t("thinker") });
+    gateHint.textContent = reg || rec ? t("minPass", { n: MIN_PASS }) : "";
+  }
+  function showGate(next) {
+    mode = next;
+    var reg = next === "register", rec = next === "recover", code = next === "code";
+    gate.hidden = false; app.hidden = true; greet.hidden = true; $("bar-tag").hidden = false; $("lang").hidden = false;
+    gateWait.hidden = true; gateFields.hidden = false;
+    gateError.hidden = true;
+    forgotConfirm.hidden = true; forgotOpen.hidden = false;
+    gatePass.value = ""; gatePass2.value = ""; $("gate-code").value = "";
+    fieldName.hidden = !reg; $("field-surname").hidden = !reg;
+    $("field-code").hidden = !rec;
+    $("field-pass").hidden = code;
+    fieldPass2.hidden = !(reg || rec);
+    $("code-panel").hidden = !code;
+    $("back-login").hidden = !rec;
+    forgot.hidden = next !== "login";
+    $("forgot-code").hidden = !(account && account.recovery);
+    gatePass.autocomplete = reg || rec ? "new-password" : "current-password";
+    gateTexts();
+    try { (reg ? gateName : rec ? $("gate-code") : code ? gateSubmit : gatePass).focus({ preventScroll: true }); } catch (e) {}
+  }
+  function showCode(code) {
+    showGate("code");
+    $("code-value").textContent = code;
+    $("code-copy").textContent = t("copy");
+  }
+  function fail(msg) { gateError.textContent = msg; gateError.hidden = false; }
+
+  async function register() {
+    var name = gateName.value.trim(), pass = gatePass.value;
+    var surname = $("gate-surname").value.trim();
+    if (!name) return fail(t("eName"));
+    if (!surname) return fail(t("eSurname"));
+    if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
+    if (pass !== gatePass2.value) return fail(t("ePassMatch"));
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var k = await deriveKey(pass, salt);
+    var code = newCode();
+    account = {
+      name: name.slice(0, 40), surname: surname.slice(0, 40), salt: b64(salt),
+      check: await seal(k, CHECK_WORD), recovery: await wrapKey(codeSecret(code), k), codeBox: await seal(k, code), v: 2
+    };
+    key = k;
+    await saveAccount();
+    showCode(code);
+  }
+  async function login() {
+    var k;
+    try {
+      k = account.wrap ? await unwrapKey(gatePass.value, account.wrap) : await deriveKey(gatePass.value, unb64(account.salt));
+      if ((await unseal(k, account.check)) !== CHECK_WORD) throw new Error("mismatch");
+    } catch (e) { return fail(t("eWrong")); }
+    if (!account.recovery) {
+      // Archives created before recovery codes existed get one on the next sign-in.
+      var code = newCode();
+      account = Object.assign({}, account, { recovery: await wrapKey(codeSecret(code), k), codeBox: await seal(k, code) });
+      key = k;
+      await saveAccount();
+      return showCode(code);
+    }
+    key = k;
+    if (!accountRemote) await saveAccount();
+    await proceed();
+  }
+  async function recover() {
+    var pass = gatePass.value, k;
+    if (!codeSecret($("gate-code").value)) return fail(t("eCodeEmpty"));
+    if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
+    if (pass !== gatePass2.value) return fail(t("ePassMatch"));
+    try {
+      k = await unwrapKey(codeSecret($("gate-code").value), account.recovery);
+      if ((await unseal(k, account.check)) !== CHECK_WORD) throw new Error("mismatch");
+    } catch (e) { return fail(t("eCodeBad")); }
+    account = Object.assign({}, account, { wrap: await wrapKey(pass, k), v: 2 });
+    key = k;
+    await saveAccount();
+    await proceed();
+  }
+  async function saveAccount() {
+    if (col) {
+      try {
+        await col.doc(ACCOUNT_DOC).set(account);
+        accountRemote = true;
+        writeJSON(ACCOUNT_KEY, null);
+        return;
+      } catch (e) { col = null; }
+    }
+    writeJSON(ACCOUNT_KEY, account);
+  }
+
+  function enter() {
+    gate.hidden = true; app.hidden = false;
+    gatePass.value = ""; gatePass2.value = "";
+    greetName.textContent = account.name + (account.surname ? " " + account.surname : "");
+    $("bar-tag").hidden = true;
+    $("lang").hidden = true;
+    greet.hidden = false;
+    if (col) { noteMode = "cloud"; setNote(); }
+    else browserOnly();
+    render();
+    refresh().then(upgradeRecords);
+    saveBtn.disabled = !input.value.trim();
+    show("home");
+  }
+
+  // Encrypt ideas written before registration existed, and carry over ones still waiting in this browser.
+  async function upgradeRecords() {
+    var k = key;
+    var recs = records();
+    for (var n = 0; n < recs.length; n++) {
+      var r = recs[n];
+      if (k !== key) return;
+      var isLocal = localRaw.some(function (l) { return l.id === r.id; });
+      if (!r.ct) {
+        if (typeof r.text !== "string") continue;
+        var box = await seal(k, r.text);
+        var rec = { id: r.id, ts: r.ts || Date.now(), iv: box.iv, ct: box.ct };
+        if (isLocal || !col) { keepLocal(rec); await pushRecord(rec); }
+        else { try { await col.doc(rec.id).set({ ts: rec.ts, iv: rec.iv, ct: rec.ct }); } catch (e) {} }
+      } else if (isLocal) {
+        await pushRecord(r);
+      }
+    }
+  }
+
+  function lock() {
+    key = null; plain = {}; lastRemoved = null; refreshSeq++; affirmations = [];
+    toast.hidden = true; input.value = ""; closeSheet();
+    render();
+    showGate("login");
+  }
+  $("lock").addEventListener("click", lock);
+
+  gateForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (busy || mode === "wait") return;
+    if (!window.crypto || !crypto.subtle) return fail(t("eCrypto"));
+    gateError.hidden = true;
+    busy = true; gateSubmit.disabled = true;
+    try {
+      if (mode === "register") await register();
+      else if (mode === "recover") await recover();
+      else if (mode === "code") await proceed();
+      else await login();
+    } catch (err) {
+      fail(t("eGeneric"));
+    }
+    busy = false; gateSubmit.disabled = false;
+  });
+
+  $("forgot-code").addEventListener("click", function () { showGate("recover"); });
+  $("back-login").addEventListener("click", function () { showGate("login"); });
+  $("code-copy").addEventListener("click", function () {
+    var text = $("code-value").textContent, btn = $("code-copy");
+    function pick() { try { var r = document.createRange(); r.selectNodeContents($("code-value")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = t("copied"); }, pick);
+    } catch (e) { pick(); }
+  });
+  forgotOpen.addEventListener("click", function () { forgotConfirm.hidden = false; forgotOpen.hidden = true; });
+  $("forgot-no").addEventListener("click", function () { forgotConfirm.hidden = true; forgotOpen.hidden = false; });
+  $("forgot-yes").addEventListener("click", async function () {
+    if (busy) return;
+    busy = true;
+    var doomed = remoteRaw.slice();
+    if (col) {
+      for (var n = 0; n < doomed.length; n++) { try { await col.doc(doomed[n].id).delete(); } catch (e) {} }
+      try { await col.doc(ACCOUNT_DOC).delete(); } catch (e) {}
+    }
+    remoteRaw = []; localRaw = []; plain = {}; account = null; accountRemote = false; key = null;
+    writeJSON(LOCAL_KEY, null); writeJSON(ACCOUNT_KEY, null);
+    busy = false;
+    showGate("register");
+  });
+
+  // --- Settings: profile, language, theme, password
+  var THEME_KEY = "overthinkers-theme";
+  var hostTheme = document.documentElement.getAttribute("data-theme");
+  var theme = (function () {
+    try { var v = localStorage.getItem(THEME_KEY); return v === "light" || v === "dark" ? v : "system"; } catch (e) { return "system"; }
+  })();
+  function markChoice(groupId, value) {
+    Array.prototype.forEach.call($(groupId).querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-pressed", b.value === value ? "true" : "false");
+    });
+  }
+  function applyTheme() {
+    var root = document.documentElement, want = theme === "system" ? hostTheme : theme;
+    if (want) root.setAttribute("data-theme", want); else root.removeAttribute("data-theme");
+    markChoice("theme-choice", theme);
+  }
+  // The profile is shown locked; "Edit" unlocks the fields and the same button then saves.
+  var profileEditing = false;
+  function profileState() {
+    $("set-name").readOnly = !profileEditing;
+    $("set-surname").readOnly = !profileEditing;
+    $("profile-btn").textContent = t(profileEditing ? "saveBtn" : "editBtn");
+  }
+  // Recovery code card: shows the current code (kept sealed with the idea key) or makes a new one.
+  var codeConfirm = false;
+  function resetCodeCard() {
+    codeConfirm = false;
+    $("set-code-panel").hidden = true;
+    $("set-code-msg").hidden = true;
+    $("set-code-show").textContent = t("codeShow");
+    $("set-code-new").textContent = t("codeNew");
+    $("set-code-copy").textContent = t("copy");
+  }
+  function showCodeValue(code) {
+    $("set-code-value").textContent = code;
+    $("set-code-panel").hidden = false;
+    $("set-code-show").textContent = t("codeHide");
+  }
+  $("set-code-show").addEventListener("click", async function () {
+    if (!$("set-code-panel").hidden) { resetCodeCard(); return; }
+    if (!key || !account) return;
+    if (!account.codeBox) return say("set-code-msg", t("codeUnknown"));
+    try { showCodeValue(await unseal(key, account.codeBox)); $("set-code-msg").hidden = true; }
+    catch (e) { say("set-code-msg", t("codeUnknown")); }
+  });
+  $("set-code-new").addEventListener("click", async function () {
+    if (busy || !key || !account) return;
+    if (!codeConfirm) { codeConfirm = true; $("set-code-new").textContent = t("codeNewConfirm"); return; }
+    busy = true;
+    try {
+      var code = newCode();
+      account = Object.assign({}, account, { recovery: await wrapKey(codeSecret(code), key), codeBox: await seal(key, code) });
+      await saveAccount();
+      resetCodeCard();
+      showCodeValue(code);
+      say("set-code-msg", t("codeMade"));
+    } catch (e) { say("set-code-msg", t("eGeneric")); }
+    busy = false;
+  });
+  $("set-code-copy").addEventListener("click", function () {
+    var btn = $("set-code-copy");
+    function pick() { try { var r = document.createRange(); r.selectNodeContents($("set-code-value")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+    try { navigator.clipboard.writeText($("set-code-value").textContent).then(function () { btn.textContent = t("copied"); }, pick); }
+    catch (e) { pick(); }
+  });
+  function say(id, text) { var e = $(id); e.textContent = text; e.hidden = false; }
+  function fillSettings() {
+    if (!account) return;
+    $("set-name").value = account.name || "";
+    $("set-surname").value = account.surname || "";
+    $("set-pass").value = ""; $("set-pass2").value = "";
+    $("set-profile-msg").hidden = true; $("set-pass-msg").hidden = true; $("affirm-msg").hidden = true;
+    renderAffirm();
+    resetCodeCard();
+    profileEditing = false;
+    profileState();
+  }
+  $("theme-choice").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    theme = b.value;
+    try { localStorage.setItem(THEME_KEY, theme); } catch (err) {}
+    applyTheme();
+  });
+  $("lang-choice").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (b) setLang(b.value);
+  });
+  $("profile-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!profileEditing) {
+      profileEditing = true;
+      profileState();
+      $("set-profile-msg").hidden = true;
+      try { $("set-name").focus(); } catch (err) {}
+      return;
+    }
+    var name = $("set-name").value.trim(), surname = $("set-surname").value.trim();
+    if (!name) return say("set-profile-msg", t("eName"));
+    if (!surname) return say("set-profile-msg", t("eSurname"));
+    if (busy || !key) return;
+    busy = true;
+    account = Object.assign({}, account, { name: name.slice(0, 40), surname: surname.slice(0, 40) });
+    await saveAccount();
+    busy = false;
+    greetName.textContent = account.name + " " + account.surname;
+    say("set-profile-msg", t("saved"));
+    profileEditing = false;
+    profileState();
+  });
+  $("pass-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var pass = $("set-pass").value;
+    if (pass.length < MIN_PASS) return say("set-pass-msg", t("ePassShort", { n: MIN_PASS }));
+    if (pass !== $("set-pass2").value) return say("set-pass-msg", t("ePassMatch"));
+    if (busy || !key) return;
+    busy = true;
+    try {
+      // The idea key stays the same; only the password that unlocks it changes.
+      account = Object.assign({}, account, { wrap: await wrapKey(pass, key), v: 2 });
+      await saveAccount();
+      $("set-pass").value = ""; $("set-pass2").value = "";
+      say("set-pass-msg", t("passChanged"));
+    } catch (err) { say("set-pass-msg", t("eGeneric")); }
+    busy = false;
+  });
+  applyTheme();
+
+  // --- Affirmations: phrases the person types once a day, after the password, before the archive opens.
+  // They are stored encrypted with the same key as the ideas.
+  var affirmations = [], affirmIndex = 0;
+  function todayStamp() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function sameWords(a, b) {
+    function plainText(s) {
+      // Kazakh letters count as their Russian look-alikes (ұ = у, қ = к, …), and ё = е,
+      // so "Дастанұлы" and "Дастанулы" are the same word here.
+      var alike = { "ә": "а", "ғ": "г", "қ": "к", "ң": "н", "ө": "о", "ұ": "у", "ү": "у", "һ": "х", "і": "и", "ё": "е" };
+      return String(s).normalize("NFKC").toLowerCase()
+        .replace(/[әғқңөұүһіё]/g, function (c) { return alike[c]; })
+        .replace(/[.,!?;:"'«»“”„()\-–—…。，！？、]/g, " ").replace(/\s+/g, " ").trim();
+    }
+    return plainText(a) === plainText(b);
+  }
+  async function loadAffirm() {
+    affirmations = account && Array.isArray(account.affirmList)
+      ? account.affirmList.filter(function (s) { return typeof s === "string" && s.trim(); }) : [];
+    if (!account || !account.affirm) return;
+    // Phrases saved by the earlier, encrypted version move into the plain list once.
+    try {
+      var saved = JSON.parse(await unseal(key, account.affirm));
+      if (Array.isArray(saved)) affirmations = affirmations.concat(saved.filter(function (s) { return typeof s === "string" && s.trim(); }));
+    } catch (e) {}
+    await saveAffirm();
+  }
+  async function saveAffirm() {
+    account = Object.assign({}, account, { affirmList: affirmations.slice(), affirm: null });
+    await saveAccount();
+  }
+  async function proceed() {
+    await loadAffirm();
+    enter();
+  }
+  // Today's repetitions per phrase, kept in the account record and reset when the date changes.
+  function affirmCounts() {
+    var done = account && account.affirmDone;
+    var fresh = done && done.day === todayStamp() && Array.isArray(done.counts);
+    return affirmations.map(function (_, i) { return fresh ? Number(done.counts[i]) || 0 : 0; });
+  }
+  var affirmVoice = null, affirmVoiceIdx = -1;
+  function micKey(code) {
+    return code === "not-allowed" || code === "service-not-allowed" ? "micBlocked"
+      : code === "no-speech" ? "micSilent" : code === "language-not-supported" ? "micLang" : "micFail";
+  }
+  function showAffirmError(i, text) {
+    var err = $("affirm-err-" + i);
+    if (err) { err.textContent = text; err.hidden = false; }
+  }
+  // Daily goal: how many times each phrase should be repeated (1–1000, 10 by default).
+  var goalDraft = null, goalTimer = null;
+  function affirmGoal() {
+    var g = goalDraft != null ? goalDraft : account && Number(account.affirmGoal);
+    return g >= 1 ? Math.min(1000, Math.round(g)) : 10;
+  }
+  function setGoal(n) {
+    n = Math.max(1, Math.min(1000, Math.round(Number(n) || 1)));
+    goalDraft = n;
+    $("affirm-goal").value = n;
+    renderAffirm();
+    clearTimeout(goalTimer);
+    goalTimer = setTimeout(async function () {
+      if (!account || !key) return;
+      account = Object.assign({}, account, { affirmGoal: n });
+      await saveAccount();
+    }, 700);
+  }
+  $("goal-minus").addEventListener("click", function () { setGoal(affirmGoal() - 1); });
+  $("goal-plus").addEventListener("click", function () { setGoal(affirmGoal() + 1); });
+  $("affirm-goal").addEventListener("change", function () { setGoal($("affirm-goal").value); });
+  function renderAffirm() {
+    var listEl = $("affirm-list"), counts = affirmCounts(), finished = 0, goal = affirmGoal();
+    if (document.activeElement !== $("affirm-goal")) $("affirm-goal").value = goal;
+    listEl.textContent = "";
+    affirmations.forEach(function (text, i) {
+      var c = counts[i], done = c >= goal;
+      if (done) finished++;
+      var li = el("li", "card stack affirm-card");
+      li.appendChild(el("p", "affirm-text", text));
+      var row = el("div", "affirm-progress"), bar = el("div", "bar-line"), fill = el("i", null);
+      fill.style.width = Math.min(100, Math.round(c / goal * 100)) + "%";
+      bar.appendChild(fill);
+      row.appendChild(bar);
+      row.appendChild(el("span", "count", c + " / " + goal));
+      var del = el("button", "strike", t("erase"));
+      del.type = "button";
+      del.addEventListener("click", function () {
+        if (del.getAttribute("data-armed")) { removeAffirm(i); return; }
+        del.setAttribute("data-armed", "1");
+        del.textContent = t("eraseSure");
+      });
+      row.appendChild(del);
+      li.appendChild(row);
+      if (done) li.appendChild(el("p", "affirm-done", t("affirmDoneDay")));
+      var area = document.createElement("textarea");
+      area.id = "affirm-answer-" + i; area.rows = 3; area.spellcheck = false;
+      area.placeholder = t("affirmRepeatPh");
+      area.setAttribute("aria-label", t("affirmRepeatPh"));
+      area.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); repeatAffirm(i); }
+      });
+      li.appendChild(area);
+      var err = el("p", "gate-error");
+      err.id = "affirm-err-" + i; err.hidden = true; err.setAttribute("role", "alert");
+      li.appendChild(err);
+      var foot = el("div", "foot end");
+      if (SpeechRec) {
+        var live = affirmVoiceIdx === i;
+        var mic = el("button", "voice" + (live ? " live" : ""), t(live ? "voiceStop" : "voice"));
+        mic.type = "button";
+        mic.setAttribute("aria-pressed", live ? "true" : "false");
+        mic.addEventListener("click", function () { toggleAffirmVoice(i); });
+        foot.appendChild(mic);
+      }
+      var go = el("button", "primary", t("repeatBtn"));
+      go.type = "button";
+      go.addEventListener("click", function () { repeatAffirm(i); });
+      foot.appendChild(go);
+      li.appendChild(foot);
+      listEl.appendChild(li);
+    });
+    $("affirm-empty").hidden = affirmations.length > 0;
+    $("affirm-voice-pick").hidden = !SpeechRec || !affirmations.length;
+    $("affirm-count").textContent = affirmations.length ? t("affirmToday", { a: finished, b: affirmations.length }) : "";
+  }
+  async function repeatAffirm(i) {
+    var area = $("affirm-answer-" + i);
+    if (!area || !area.value.trim() || busy || !key) return;
+    if (!sameWords(area.value, affirmations[i])) return showAffirmError(i, t("affirmWrong"));
+    var counts = affirmCounts();
+    counts[i] = counts[i] + 1;
+    busy = true;
+    account = Object.assign({}, account, { affirmDone: { day: todayStamp(), counts: counts } });
+    await saveAccount();
+    busy = false;
+    renderAffirm();
+    var again = $("affirm-answer-" + i);
+    if (again) try { again.focus(); } catch (e) {}
+  }
+  async function removeAffirm(i) {
+    if (busy || !key) return;
+    stopAffirmVoice();
+    var counts = affirmCounts();
+    counts.splice(i, 1);
+    affirmations.splice(i, 1);
+    busy = true;
+    account = Object.assign({}, account, { affirmList: affirmations.slice(), affirm: null, affirmDone: { day: todayStamp(), counts: counts } });
+    await saveAccount();
+    busy = false;
+    renderAffirm();
+  }
+  function stopAffirmVoice() {
+    if (affirmVoice) { try { affirmVoice.stop(); } catch (e) {} }
+  }
+  // Speak the phrase; when listening stops, what was heard is checked like typed text.
+  function toggleAffirmVoice(i) {
+    if (affirmVoice) { stopAffirmVoice(); return; }
+    var r = new SpeechRec(), heard = "", problem = null;
+    r.lang = $("affirm-voice-lang").value;
+    r.interimResults = true;
+    r.continuous = true;
+    r.onresult = function (e) {
+      heard = "";
+      for (var n = 0; n < e.results.length; n++) heard += e.results[n][0].transcript;
+      var a = $("affirm-answer-" + i);
+      if (a) a.value = heard;
+    };
+    r.onerror = function (e) { if (e.error !== "aborted") problem = micKey(e.error); };
+    r.onend = function () {
+      affirmVoice = null; affirmVoiceIdx = -1;
+      renderAffirm();
+      var a = $("affirm-answer-" + i);
+      if (a) a.value = heard;
+      if (problem) showAffirmError(i, t(problem));
+      else if (heard.trim()) repeatAffirm(i);
+    };
+    try {
+      r.start();
+      affirmVoice = r; affirmVoiceIdx = i;
+      renderAffirm();
+    } catch (err) { showAffirmError(i, t("micFail")); }
+  }
+  $("affirm-voice-lang").innerHTML = $("voice-lang").innerHTML;
+  $("affirm-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var text = $("affirm-new").value.trim().slice(0, 10000);
+    if (!text || busy || !key) return;
+    if (affirmations.length >= 10) return say("affirm-msg", t("affirmMax"));
+    // All phrases share one stored record, so their combined length is capped as well.
+    var total = affirmations.reduce(function (sum, s) { return sum + s.length; }, text.length);
+    if (total > 40000) return say("affirm-msg", t("affirmTooLong"));
+    busy = true;
+    affirmations.push(text);
+    await saveAffirm();
+    busy = false;
+    $("affirm-new").value = "";
+    $("affirm-msg").hidden = true;
+    renderAffirm();
+  });
+
+  // --- Personal archive: each person's account and ideas live in their own private subtree.
+  async function connect() {
+    if (!window.claude || !window.claude.use) return;
+    var db = await window.claude.use("db");
+    var user = await window.claude.use("user");
+    if (!db || !user) return;
+    var uid = await user.id();
+    if (!uid) return;
+    var c = db.collection("data/users/" + uid);
+    var snap = await c.doc(ACCOUNT_DOC).get();
+    if (snap.exists) { account = snap.data(); accountRemote = true; }
+    col = c;
+    c.limit(1000).onSnapshot(function (s) {
+      remoteRaw = s.docs.filter(function (doc) { return doc.id !== ACCOUNT_DOC; }).map(function (doc) {
+        var d = doc.data() || {};
+        return { id: doc.id, ts: Number(d.ts) || 0, iv: d.iv, ct: d.ct, text: d.text };
+      });
+      refresh();
+    }, function () {
+      col = null;
+      browserOnly();
+    });
+  }
+
+  applyLang();
+  connect().catch(function () { col = null; }).then(function () {
+    if (!account) {
+      var cached = readJSON(ACCOUNT_KEY, null);
+      if (cached && cached.salt && cached.check) account = cached;
+    }
+    showGate(account ? "login" : "register");
+  });
+})();
+</script>

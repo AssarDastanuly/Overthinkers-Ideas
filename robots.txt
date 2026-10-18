@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://overthinkers-ideas.vercel.app/sitemap.xml
