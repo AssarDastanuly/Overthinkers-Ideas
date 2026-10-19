@@ -462,6 +462,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .add { width: 3.2rem; height: 3.2rem; }
 .cal-create { padding: 0.6rem 1.1rem; }
 .cal-nav { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.gcal-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+.gcal-bar svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--green-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.gcal-state { font-size: 0.88rem; font-weight: 600; color: var(--green-deep); }
+.gcal-note { flex-basis: 100%; margin: 0; }
 .cal-arrow { background: var(--surface); border: 0; width: 2.3rem; height: 2.3rem; border-radius: 50%; font-size: 1.35rem; line-height: 1; color: var(--ink); box-shadow: var(--shadow); }
 .cal-date { font-weight: 800; font-size: 1.05rem; }
 .cal-date::first-letter { text-transform: uppercase; }
@@ -672,6 +676,14 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       <div class="section-head">
         <h2 data-i18n="navCal">Календарь</h2>
         <button type="button" class="primary cal-create" id="cal-create">+ <span data-i18n="calCreate">Создать</span></button>
+      </div>
+      <div class="gcal-bar" id="gcal-bar" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 14.5l2 2 4-4"/></svg>
+        <button type="button" class="pill-btn" id="gcal-link" data-i18n="gcalLink">Привязать Google Calendar</button>
+        <span class="gcal-state" id="gcal-state" data-i18n="gcalLinked" hidden>Google Calendar привязан</span>
+        <button type="button" class="pill-btn" id="gcal-sync" hidden></button>
+        <button type="button" class="strike" id="gcal-unlink" data-i18n="gcalUnlink" hidden>Отвязать</button>
+        <p class="hint gcal-note" id="gcal-note" role="status" hidden></p>
       </div>
       <div class="cal-nav">
         <button type="button" class="pill-btn" id="cal-today" data-i18n="calToday">Сегодня</button>
@@ -975,7 +987,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "Календарь", calToday: "Сегодня", calCreate: "Создать", calPrev: "Предыдущий день", calNext: "Следующий день", kindIdea: "Идея", kindEvent: "Мероприятие", kindTask: "Задача", calTitlePh: "Добавьте название", calAllDay: "Весь день", calNotes: "Добавить описание", calDefault: "По умолчанию", calColorN: "Цвет {n}", calDone: "Выполнено", calSave: "Сохранить", calDelete: "Удалить", calDeleteSure: "Точно удалить?", calEmpty: "На этот день ничего нет. Нажмите на время или «Создать».", calNew: "Новая запись", calEdit: "Изменить запись", eTitle: "Добавьте название.", eTime: "Конец не может быть раньше начала.", calDay: "Дата", calFrom: "Начало", calTo: "Конец",
       aboutTitle: "Блокнот для идей, календарь и аффирмации", aboutLead: "Overthinker's Ideas — бесплатный онлайн-блокнот для тех, у кого слишком много мыслей. Запишите идею за секунду, пока не передумали, и найдите её потом в архиве по дням.", aboutIdeasT: "Идеи", aboutIdeas: "желаю, чтобы у вас были идеи, которые меняют жизнь в хорошую сторону.", aboutCalT: "Календарь", aboutCal: "желаю, чтобы вы были продуктивнее.", aboutAffT: "Аффирмации", aboutAff: "желаю, чтобы вы достигали своих целей.", aboutNote: "Не накручивайте себя — записывайте свои планы и идеи здесь. У меня тоже была эта проблема, поэтому и появился этот сайт. Пользуйтесь и делайте жизнь позитивнее!", aboutAuthor: "Founder",
       codeHint: "По этому коду можно задать новый пароль, если забудете старый. Храните его в надёжном месте.", codeNew: "Создать новый код", codeShow: "Показать код", codeHide: "Скрыть код", codeNewConfirm: "Точно? Старый код перестанет работать", codeUnknown: "Этот код был создан до того, как сайт научился его хранить, поэтому показать его нельзя. Создайте новый — старый перестанет работать.", codeMade: "Новый код создан. Сохраните его — старый больше не работает.",
-      affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день",
+      affirmEmpty: "Добавьте первую фразу ниже.", affirmRepeatPh: "Повторите фразу…", repeatBtn: "Повторить", affirmDoneDay: "Цель на сегодня выполнена — можно продолжать.", affirmToday: "Сегодня готово: {a} из {b}", eraseSure: "Точно стереть?", affirmGoal: "Сколько раз в день", gcalLink: "Привязать Google Calendar", gcalLinked: "Google Calendar привязан", gcalSync: "Обновить", gcalSyncing: "Синхронизация…", gcalUnlink: "Отвязать", gcalDone: "Готово: ваши записи в Google Calendar, события из Google здесь.", gcalErr: "Не получилось связаться с Google. Попробуйте ещё раз.", gcalDenied: "Без разрешения на календарь привязка не работает.", gcalInApp: "Внутри Instagram вход через Google не работает. Откройте сайт в Safari или Chrome (••• → «Открыть во внешнем браузере»).", gcalUnlinked: "Календарь отвязан. Уже отправленные записи остались в Google Calendar.", gcalUntitled: "(без названия)", gcalOpen: "Открыть в Google Calendar",
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
     },
     kk: {
@@ -1019,7 +1031,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "Күнтізбе", calToday: "Бүгін", calCreate: "Құру", calPrev: "Алдыңғы күн", calNext: "Келесі күн", kindIdea: "Идея", kindEvent: "Іс-шара", kindTask: "Тапсырма", calTitlePh: "Атауын қосыңыз", calAllDay: "Күні бойы", calNotes: "Сипаттама қосу", calDefault: "Әдепкі", calColorN: "Түс {n}", calDone: "Орындалды", calSave: "Сақтау", calDelete: "Жою", calDeleteSure: "Шынымен жою керек пе?", calEmpty: "Бұл күнге ештеңе жоқ. Уақытты немесе «Құру» батырмасын басыңыз.", calNew: "Жаңа жазба", calEdit: "Жазбаны өзгерту", eTitle: "Атауын қосыңыз.", eTime: "Аяқталуы басталуынан ерте болмауы керек.", calDay: "Күні", calFrom: "Басы", calTo: "Соңы",
       aboutTitle: "Идеяларға арналған дәптер, күнтізбе және аффирмациялар", aboutLead: "Overthinker's Ideas — ойы тым көп адамдарға арналған тегін онлайн-дәптер. Идеяны ойыңыз өзгермей тұрып бір секундта жазып алыңыз, кейін оны мұрағаттан күн бойынша табасыз.", aboutIdeasT: "Идеялар", aboutIdeas: "өміріңізді жақсы жаққа өзгертетін идеялар көп болсын.", aboutCalT: "Күнтізбе", aboutCal: "өнімдірек болуыңызға тілектеспін.", aboutAffT: "Аффирмациялар", aboutAff: "мақсаттарыңызға жетуіңізге тілектеспін.", aboutNote: "Өзіңізді қинамаңыз — жоспарларыңыз бен идеяларыңызды осында жазыңыз. Менде де осындай мәселе болды, сондықтан бұл сайт пайда болды. Қолданыңыз және өміріңізді позитивті етіңіз!", aboutAuthor: "Founder",
       codeHint: "Бұл код арқылы ескі құпиясөзді ұмытсаңыз, жаңасын қоюға болады. Оны сенімді жерде сақтаңыз.", codeNew: "Жаңа код жасау", codeShow: "Кодты көрсету", codeHide: "Кодты жасыру", codeNewConfirm: "Сенімдісіз бе? Ескі код жұмыс істемей қалады", codeUnknown: "Бұл код сайт оны сақтауды үйренбей тұрып жасалған, сондықтан оны көрсету мүмкін емес. Жаңасын жасаңыз — ескісі жұмыс істемей қалады.", codeMade: "Жаңа код жасалды. Оны сақтаңыз — ескісі енді жұмыс істемейді.",
-      affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет",
+      affirmEmpty: "Алғашқы сөйлемді төменде қосыңыз.", affirmRepeatPh: "Сөйлемді қайталаңыз…", repeatBtn: "Қайталау", affirmDoneDay: "Бүгінгі мақсат орындалды — жалғастыруға болады.", affirmToday: "Бүгін дайын: {b} ішінен {a}", eraseSure: "Шынымен өшіру?", affirmGoal: "Күніне неше рет", gcalLink: "Google Calendar-ды байланыстыру", gcalLinked: "Google Calendar байланыстырылды", gcalSync: "Жаңарту", gcalSyncing: "Синхрондау…", gcalUnlink: "Ажырату", gcalDone: "Дайын: жазбаларыңыз Google Calendar-да, Google оқиғалары осында.", gcalErr: "Google-мен байланыс орнамады. Қайталап көріңіз.", gcalDenied: "Күнтізбеге рұқсатсыз байланыстыру жұмыс істемейді.", gcalInApp: "Instagram ішінде Google арқылы кіру жұмыс істемейді. Сайтты Safari немесе Chrome-да ашыңыз (••• → «Сыртқы браузерде ашу»).", gcalUnlinked: "Күнтізбе ажыратылды. Жіберілген жазбалар Google Calendar-да қалды.", gcalUntitled: "(атауы жоқ)", gcalOpen: "Google Calendar-да ашу",
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
     },
     en: {
@@ -1063,7 +1075,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "Calendar", calToday: "Today", calCreate: "Create", calPrev: "Previous day", calNext: "Next day", kindIdea: "Idea", kindEvent: "Event", kindTask: "Task", calTitlePh: "Add title", calAllDay: "All day", calNotes: "Add description", calDefault: "Default", calColorN: "Colour {n}", calDone: "Done", calSave: "Save", calDelete: "Delete", calDeleteSure: "Delete for sure?", calEmpty: "Nothing on this day. Tap a time or “Create”.", calNew: "New entry", calEdit: "Edit entry", eTitle: "Add a title.", eTime: "The end can't be earlier than the start.", calDay: "Date", calFrom: "Start", calTo: "End",
       aboutTitle: "A notebook for ideas, a calendar and affirmations", aboutLead: "Overthinker's Ideas is a free online notebook for people with too many thoughts. Write an idea down in a second, before you change your mind, and find it later in the archive by day.", aboutIdeasT: "Ideas", aboutIdeas: "I wish you ideas that change your life for the better.", aboutCalT: "Calendar", aboutCal: "I wish you to be more productive.", aboutAffT: "Affirmations", aboutAff: "I wish you to reach your goals.", aboutNote: "Don't overthink it — write your plans and ideas down here. I had the same problem, and that's why this site exists. Use it and make your life more positive!", aboutAuthor: "Founder",
       codeHint: "This code lets you set a new password if you forget the old one. Keep it somewhere safe.", codeNew: "Create a new code", codeShow: "Show code", codeHide: "Hide code", codeNewConfirm: "Sure? The old code will stop working", codeUnknown: "This code was made before the site could keep a copy, so it cannot be shown. Create a new one; the old one will stop working.", codeMade: "New code created. Save it; the old one no longer works.",
-      affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day",
+      affirmEmpty: "Add your first phrase below.", affirmRepeatPh: "Repeat the phrase…", repeatBtn: "Repeat", affirmDoneDay: "Today's goal is done. You can keep going.", affirmToday: "Done today: {a} of {b}", eraseSure: "Really delete?", affirmGoal: "Times per day", gcalLink: "Link Google Calendar", gcalLinked: "Google Calendar linked", gcalSync: "Refresh", gcalSyncing: "Syncing…", gcalUnlink: "Unlink", gcalDone: "Done: your entries are in Google Calendar, and Google events are here.", gcalErr: "Couldn't reach Google. Please try again.", gcalDenied: "Linking needs permission to your calendar.", gcalInApp: "Google sign-in doesn't work inside Instagram. Open the site in Safari or Chrome (••• → “Open in external browser”).", gcalUnlinked: "Calendar unlinked. Entries already sent stay in Google Calendar.", gcalUntitled: "(no title)", gcalOpen: "Open in Google Calendar",
       contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
     },
     fr: {
@@ -1107,7 +1119,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "Calendrier", calToday: "Aujourd'hui", calCreate: "Créer", calPrev: "Jour précédent", calNext: "Jour suivant", kindIdea: "Idée", kindEvent: "Événement", kindTask: "Tâche", calTitlePh: "Ajouter un titre", calAllDay: "Toute la journée", calNotes: "Ajouter une description", calDefault: "Par défaut", calColorN: "Couleur {n}", calDone: "Terminé", calSave: "Enregistrer", calDelete: "Supprimer", calDeleteSure: "Vraiment supprimer ?", calEmpty: "Rien ce jour-là. Touchez une heure ou « Créer ».", calNew: "Nouvelle entrée", calEdit: "Modifier l'entrée", eTitle: "Ajoutez un titre.", eTime: "La fin ne peut pas précéder le début.", calDay: "Date", calFrom: "Début", calTo: "Fin",
       aboutTitle: "Un carnet d'idées, un calendrier et des affirmations", aboutLead: "Overthinker's Ideas est un carnet en ligne gratuit pour ceux qui ont trop de pensées. Notez une idée en une seconde, avant de changer d'avis, et retrouvez-la plus tard dans l'archive, jour par jour.", aboutIdeasT: "Idées", aboutIdeas: "je vous souhaite des idées qui changent votre vie en mieux.", aboutCalT: "Calendrier", aboutCal: "je vous souhaite plus de productivité.", aboutAffT: "Affirmations", aboutAff: "je vous souhaite d'atteindre vos objectifs.", aboutNote: "Ne vous prenez pas la tête : notez vos projets et vos idées ici. J'ai eu le même problème, c'est pour ça que ce site existe. Utilisez-le et rendez votre vie plus positive !", aboutAuthor: "Founder",
       codeHint: "Ce code permet de définir un nouveau mot de passe si vous oubliez l'ancien. Conservez-le en lieu sûr.", codeNew: "Créer un nouveau code", codeShow: "Afficher le code", codeHide: "Masquer le code", codeNewConfirm: "Sûr ? L'ancien code ne fonctionnera plus", codeUnknown: "Ce code a été créé avant que le site puisse en garder une copie : il ne peut pas être affiché. Créez-en un nouveau ; l'ancien ne fonctionnera plus.", codeMade: "Nouveau code créé. Conservez-le : l'ancien ne fonctionne plus.",
-      affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour",
+      affirmEmpty: "Ajoutez votre première phrase ci-dessous.", affirmRepeatPh: "Répétez la phrase…", repeatBtn: "Répéter", affirmDoneDay: "Objectif du jour atteint. Vous pouvez continuer.", affirmToday: "Terminées aujourd'hui : {a} sur {b}", eraseSure: "Vraiment supprimer ?", affirmGoal: "Fois par jour", gcalLink: "Lier Google Agenda", gcalLinked: "Google Agenda lié", gcalSync: "Actualiser", gcalSyncing: "Synchronisation…", gcalUnlink: "Délier", gcalDone: "C'est fait : vos entrées sont dans Google Agenda, et les événements Google sont ici.", gcalErr: "Impossible de joindre Google. Réessayez.", gcalDenied: "La liaison nécessite l'accès à votre agenda.", gcalInApp: "La connexion Google ne fonctionne pas dans Instagram. Ouvrez le site dans Safari ou Chrome (••• → « Ouvrir dans le navigateur »).", gcalUnlinked: "Agenda délié. Les entrées déjà envoyées restent dans Google Agenda.", gcalUntitled: "(sans titre)", gcalOpen: "Ouvrir dans Google Agenda",
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
     },
     zh: {
@@ -1151,7 +1163,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "日历", calToday: "今天", calCreate: "创建", calPrev: "前一天", calNext: "后一天", kindIdea: "想法", kindEvent: "活动", kindTask: "任务", calTitlePh: "添加标题", calAllDay: "全天", calNotes: "添加说明", calDefault: "默认", calColorN: "颜色 {n}", calDone: "已完成", calSave: "保存", calDelete: "删除", calDeleteSure: "确定删除？", calEmpty: "这一天还没有安排。点击某个时间或“创建”。", calNew: "新建", calEdit: "编辑", eTitle: "请添加标题。", eTime: "结束时间不能早于开始时间。", calDay: "日期", calFrom: "开始", calTo: "结束",
       aboutTitle: "想法笔记本、日历和肯定语", aboutLead: "Overthinker's Ideas 是一个免费的在线笔记本，适合想法太多的人。在改变主意之前，一秒钟记下想法，之后可以在按日期整理的档案中找到它。", aboutIdeasT: "想法", aboutIdeas: "愿你拥有让生活变得更好的想法。", aboutCalT: "日历", aboutCal: "愿你更加高效。", aboutAffT: "肯定语", aboutAff: "愿你实现自己的目标。", aboutNote: "别想太多——把你的计划和想法写在这里。我也曾有同样的困扰，所以才有了这个网站。好好使用它，让生活更积极！", aboutAuthor: "Founder",
       codeHint: "忘记密码时，可以用这个恢复码设置新密码。请把它保存在安全的地方。", codeNew: "生成新恢复码", codeShow: "显示恢复码", codeHide: "隐藏恢复码", codeNewConfirm: "确定吗？旧恢复码将失效", codeUnknown: "这个恢复码是在网站能保存副本之前生成的，所以无法显示。请生成一个新的，旧的将失效。", codeMade: "新恢复码已生成。请保存好，旧的已失效。",
-      affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数",
+      affirmEmpty: "在下面添加第一句话。", affirmRepeatPh: "重复这句话…", repeatBtn: "提交", affirmDoneDay: "今天的目标已完成，可以继续。", affirmToday: "今天完成：{a}/{b}", eraseSure: "确定删除？", affirmGoal: "每天次数", gcalLink: "关联 Google 日历", gcalLinked: "已关联 Google 日历", gcalSync: "刷新", gcalSyncing: "正在同步…", gcalUnlink: "取消关联", gcalDone: "完成：你的记录已在 Google 日历中，Google 的日程显示在这里。", gcalErr: "无法连接 Google，请重试。", gcalDenied: "需要日历权限才能关联。", gcalInApp: "在 Instagram 内无法使用 Google 登录。请在 Safari 或 Chrome 中打开本网站（••• → “在外部浏览器中打开”）。", gcalUnlinked: "已取消关联。已发送的记录仍保留在 Google 日历中。", gcalUntitled: "（无标题）", gcalOpen: "在 Google 日历中打开",
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
     },
     es: {
@@ -1195,7 +1207,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       navCal: "Calendario", calToday: "Hoy", calCreate: "Crear", calPrev: "Día anterior", calNext: "Día siguiente", kindIdea: "Idea", kindEvent: "Evento", kindTask: "Tarea", calTitlePh: "Añade un título", calAllDay: "Todo el día", calNotes: "Añadir descripción", calDefault: "Predeterminado", calColorN: "Color {n}", calDone: "Hecha", calSave: "Guardar", calDelete: "Eliminar", calDeleteSure: "¿Eliminar de verdad?", calEmpty: "No hay nada este día. Toca una hora o «Crear».", calNew: "Nueva entrada", calEdit: "Editar entrada", eTitle: "Añade un título.", eTime: "El final no puede ser antes del inicio.", calDay: "Fecha", calFrom: "Inicio", calTo: "Fin",
       aboutTitle: "Un cuaderno de ideas, un calendario y afirmaciones", aboutLead: "Overthinker's Ideas es un cuaderno en línea gratuito para quienes tienen demasiados pensamientos. Anota una idea en un segundo, antes de cambiar de opinión, y encuéntrala después en el archivo por días.", aboutIdeasT: "Ideas", aboutIdeas: "te deseo ideas que cambien tu vida para bien.", aboutCalT: "Calendario", aboutCal: "te deseo más productividad.", aboutAffT: "Afirmaciones", aboutAff: "te deseo que alcances tus metas.", aboutNote: "No te agobies: escribe aquí tus planes e ideas. Yo también tenía ese problema, y por eso nació este sitio. ¡Úsalo y haz tu vida más positiva!", aboutAuthor: "Founder",
       codeHint: "Con este código puedes crear una nueva contraseña si olvidas la anterior. Guárdalo en un lugar seguro.", codeNew: "Crear un código nuevo", codeShow: "Mostrar código", codeHide: "Ocultar código", codeNewConfirm: "¿Seguro? El código anterior dejará de funcionar", codeUnknown: "Este código se creó antes de que el sitio pudiera guardar una copia, así que no se puede mostrar. Crea uno nuevo; el anterior dejará de funcionar.", codeMade: "Código nuevo creado. Guárdalo; el anterior ya no funciona.",
-      affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día",
+      affirmEmpty: "Añade tu primera frase abajo.", affirmRepeatPh: "Repite la frase…", repeatBtn: "Repetir", affirmDoneDay: "Objetivo de hoy cumplido. Puedes seguir.", affirmToday: "Hoy listas: {a} de {b}", eraseSure: "¿Borrar de verdad?", affirmGoal: "Veces al día", gcalLink: "Vincular Google Calendar", gcalLinked: "Google Calendar vinculado", gcalSync: "Actualizar", gcalSyncing: "Sincronizando…", gcalUnlink: "Desvincular", gcalDone: "Listo: tus entradas están en Google Calendar y los eventos de Google, aquí.", gcalErr: "No se pudo conectar con Google. Inténtalo de nuevo.", gcalDenied: "Para vincular hace falta permiso para tu calendario.", gcalInApp: "El acceso con Google no funciona dentro de Instagram. Abre el sitio en Safari o Chrome (••• → «Abrir en el navegador»).", gcalUnlinked: "Calendario desvinculado. Las entradas ya enviadas siguen en Google Calendar.", gcalUntitled: "(sin título)", gcalOpen: "Abrir en Google Calendar",
       contactTitle: "¿Tienes preguntas?", contactText: "Si tienes alguna pregunta, escribe un correo.", phoneLabel: "Teléfono", emailLabel: "Correo", creatorLabel: "Creado por"
     }
   };
@@ -1452,7 +1464,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     });
     if (next === "settings") fillSettings();
     if (next === "affirm") renderAffirm(); else stopAffirmVoice();
-    if (next === "cal") renderCal();
+    if (next === "cal") { renderCal(); if (GOOGLE_CLIENT_ID) loadGis().catch(function () {}); }
   }
   function openSheet() {
     $("sheet").hidden = false;
@@ -1792,6 +1804,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     try { await sb.auth.signOut(); } catch (e) {}
     user = null; profile = null;
     ideasData = []; affirmData = []; progress = {}; progressDay = null; goalDraft = null; calData = [];
+    gcalToken = null; gcalItems = []; gcalWeek = null; gcalNote("");
     lastRemoved = null;
     toast.hidden = true;
     input.value = "";
@@ -1978,17 +1991,22 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     } catch (e) { calData = []; }
   }
   function itemEl(it, timed) {
-    var node = el("button", "cal-item kind-" + it.kind + (it.done ? " done" : "") + (timed ? " timed" : ""));
+    var node = el("button", "cal-item kind-" + it.kind + (it.done ? " done" : "") + (timed ? " timed" : "") + (it.google ? " from-google" : ""));
     node.type = "button";
     node.style.setProperty("--c", colorOf(it));
     var mark = it.kind === "task" ? (it.done ? "☑ " : "☐ ") : it.kind === "idea" ? "✦ " : "";
     node.appendChild(el("span", "cal-item-title", mark + it.title));
     if (!it.allDay) node.appendChild(el("span", "cal-item-time", clock(it.start) + (it.kind === "event" && it.end ? " – " + clock(it.end) : "")));
-    node.addEventListener("click", function (e) { e.stopPropagation(); openCal(it); });
+    if (it.google) node.title = t("gcalOpen");
+    node.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (it.google) window.open(it.link, "_blank", "noopener");
+      else openCal(it);
+    });
     return node;
   }
   function renderCal() {
-    var today = dayStart(Date.now());
+    var today = dayStart(Date.now()), all = calData.concat(gcalItems);
     $("cal-date").textContent = new Date(calDay).toLocaleDateString(LOCALE[lang], { weekday: "long", day: "numeric", month: "long" });
     var dow = (new Date(calDay).getDay() + 6) % 7, monday = shiftDay(calDay, -dow), week = $("cal-week");
     week.textContent = "";
@@ -1997,12 +2015,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       b.type = "button";
       b.appendChild(el("span", null, new Date(d).toLocaleDateString(LOCALE[lang], { weekday: "short" })));
       b.appendChild(el("b", null, String(new Date(d).getDate())));
-      if (calData.some(function (it) { return dayStart(it.start) === d; })) b.appendChild(el("i", null));
+      if (all.some(function (it) { return dayStart(it.start) === d; })) b.appendChild(el("i", null));
       b.addEventListener("click", function () { calDay = d; renderCal(); });
       week.appendChild(b);
     })(shiftDay(monday, i));
 
-    var items = calData.filter(function (it) { return dayStart(it.start) === calDay; });
+    var items = all.filter(function (it) { return dayStart(it.start) === calDay; });
     var allDay = items.filter(function (it) { return it.allDay; });
     var timed = items.filter(function (it) { return !it.allDay; });
     var ad = $("cal-allday");
@@ -2058,6 +2076,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         : calDay === today ? minutesOf(Date.now()) : 8 * 60;
       $("cal-scroll").scrollTop = Math.max(0, first / 60 * HOUR_PX - HOUR_PX);
     }
+    renderGcalBar();
+    if (gcalReady()) gcalPull(false);
   }
   function buildColors() {
     var box = $("cal-colors");
@@ -2149,6 +2169,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     calScrolled = null;
     closeCal();
     renderCal();
+    if (gcalLinked()) gcalPush(item).catch(function () {});
   });
   $("cal-delete").addEventListener("click", async function () {
     if (!calEditing || busy) return;
@@ -2160,6 +2181,156 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     if (res.error) return calFail(t(errKey(res.error)));
     calData = calData.filter(function (x) { return x.id !== id; });
     closeCal();
+    renderCal();
+    if (gcalLinked()) gcalRemove(id).catch(function () {});
+  });
+
+  // --- Google Calendar: linked through Google's own permission window. Google events show in this calendar
+  // (they open in Google Calendar), and entries made here are copied to the person's Google Calendar.
+  // The access token lives only in memory for about an hour; «Обновить» asks Google for a new one.
+  var GOOGLE_CLIENT_ID = "271845972714-3nt08u4vgdtodrokm7m4h4ob8sss38bt.apps.googleusercontent.com";
+  var GCAL_SCOPE = "https://www.googleapis.com/auth/calendar.events";
+  var GCAL_API = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
+  var gcalToken = null, gcalExpires = 0, gcalClient = null, gcalItems = [], gcalWeek = null, gcalBusy = false, gcalThen = null;
+  function gcalLinked() { try { return !!user && localStorage.getItem("gcal-linked:" + user.id) === "1"; } catch (e) { return false; } }
+  function gcalSetLinked(on) {
+    try { if (on) localStorage.setItem("gcal-linked:" + user.id, "1"); else localStorage.removeItem("gcal-linked:" + user.id); } catch (e) {}
+  }
+  function gcalReady() { return !!gcalToken && Date.now() < gcalExpires - 60000; }
+  function gisLoaded() { return !!(window.google && google.accounts && google.accounts.oauth2); }
+  function loadGis() {
+    if (gisLoaded()) return Promise.resolve();
+    if (!loadGis.p) loadGis.p = new Promise(function (ok, no) {
+      var s = document.createElement("script");
+      s.src = "https://accounts.google.com/gsi/client";
+      s.async = true;
+      s.onload = ok;
+      s.onerror = function () { loadGis.p = null; no(new Error("gis")); };
+      document.head.appendChild(s);
+    });
+    return loadGis.p;
+  }
+  function gcalNote(text) { $("gcal-note").textContent = text || ""; $("gcal-note").hidden = !text; }
+  function renderGcalBar() {
+    $("gcal-bar").hidden = !GOOGLE_CLIENT_ID || !user;
+    if ($("gcal-bar").hidden) return;
+    var linked = gcalLinked();
+    $("gcal-link").hidden = linked;
+    $("gcal-state").hidden = !linked;
+    $("gcal-sync").hidden = !linked;
+    $("gcal-unlink").hidden = !linked;
+    $("gcal-sync").disabled = gcalBusy;
+    $("gcal-sync").textContent = t(gcalBusy ? "gcalSyncing" : "gcalSync");
+  }
+  // Has to run straight from a click, or the browser blocks Google's window.
+  function gcalAsk(first, then) {
+    if (!gisLoaded()) { gcalNote(t("gcalErr")); loadGis().catch(function () {}); return; }
+    if (!gcalClient) gcalClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: GCAL_SCOPE,
+      callback: function (r) {
+        var next = gcalThen;
+        gcalThen = null;
+        if (r.error || !google.accounts.oauth2.hasGrantedAllScopes(r, GCAL_SCOPE)) { gcalNote(t("gcalDenied")); renderGcalBar(); return; }
+        gcalToken = r.access_token;
+        gcalExpires = Date.now() + (Number(r.expires_in) || 3600) * 1000;
+        if (next) next();
+      },
+      error_callback: function () { gcalThen = null; renderGcalBar(); } // the window was closed or blocked
+    });
+    gcalThen = then;
+    gcalClient.requestAccessToken({ prompt: first ? "consent" : "" });
+  }
+  async function gcalFetch(url, opts) {
+    opts = opts || {};
+    opts.headers = { Authorization: "Bearer " + gcalToken };
+    if (opts.body) opts.headers["Content-Type"] = "application/json";
+    var r = await fetch(url, opts);
+    if (r.status === 401) { gcalToken = null; renderGcalBar(); throw new Error("auth"); }
+    if (r.status === 404 || r.status === 410 || r.status === 204) return null;
+    if (!r.ok) throw new Error("google " + r.status);
+    return r.json();
+  }
+  function gcalToItem(g) {
+    var allDay = !!g.start.date;
+    return { id: "g:" + g.id, kind: "event", title: g.summary || t("gcalUntitled"), notes: "",
+      start: allDay ? localMs(g.start.date) : Date.parse(g.start.dateTime),
+      end: allDay ? null : Date.parse(g.end.dateTime), allDay: allDay, color: "#7189E0", done: false, google: true, link: g.htmlLink };
+  }
+  // Google events for the shown week; copies of this site's own entries are left out so nothing shows twice.
+  async function gcalPull(force) {
+    var monday = shiftDay(calDay, -((new Date(calDay).getDay() + 6) % 7));
+    if (!gcalReady() || (!force && gcalWeek === monday)) return;
+    gcalWeek = monday;
+    var q = "?singleEvents=true&orderBy=startTime&maxResults=250&timeMin=" + encodeURIComponent(new Date(monday).toISOString()) +
+      "&timeMax=" + encodeURIComponent(new Date(shiftDay(monday, 7)).toISOString());
+    try {
+      var data = await gcalFetch(GCAL_API + q);
+      if (gcalWeek !== monday) return;
+      gcalItems = ((data && data.items) || []).filter(function (g) {
+        return g.status !== "cancelled" && g.start && !(g.extendedProperties && g.extendedProperties.private && g.extendedProperties.private.otId);
+      }).map(gcalToItem);
+      if (view === "cal") renderCal();
+    } catch (e) { gcalWeek = null; }
+  }
+  function gcalBody(it) {
+    var mark = it.kind === "task" ? (it.done ? "☑ " : "☐ ") : it.kind === "idea" ? "✦ " : "";
+    var body = { summary: mark + it.title, description: it.notes || "", extendedProperties: { private: { otId: String(it.id) } } };
+    if (it.allDay) {
+      body.start = { date: dateInput(it.start) };
+      body.end = { date: dateInput(shiftDay(dayStart(it.start), 1)) };
+    } else {
+      var zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      body.start = { dateTime: new Date(it.start).toISOString(), timeZone: zone };
+      body.end = { dateTime: new Date(it.end && it.end > it.start ? it.end : it.start + 1800000).toISOString(), timeZone: zone };
+    }
+    return body;
+  }
+  // Each copy in Google carries the site entry's id, so saving again updates it instead of making a double.
+  async function gcalFind(id) {
+    var data = await gcalFetch(GCAL_API + "?maxResults=1&privateExtendedProperty=" + encodeURIComponent("otId=" + id));
+    return data && data.items && data.items[0];
+  }
+  async function gcalPush(it) {
+    if (!gcalReady()) return;
+    var found = await gcalFind(it.id);
+    if (found) await gcalFetch(GCAL_API + "/" + encodeURIComponent(found.id), { method: "PATCH", body: JSON.stringify(gcalBody(it)) });
+    else await gcalFetch(GCAL_API, { method: "POST", body: JSON.stringify(gcalBody(it)) });
+  }
+  async function gcalRemove(id) {
+    if (!gcalReady()) return;
+    var found = await gcalFind(id);
+    if (found) await gcalFetch(GCAL_API + "/" + encodeURIComponent(found.id), { method: "DELETE" });
+  }
+  // Entries from today on go to Google (up to 200), then this week's Google events are fetched.
+  async function gcalSync() {
+    if (!gcalReady() || gcalBusy) return;
+    gcalBusy = true;
+    renderGcalBar();
+    var ok = true, from = dayStart(Date.now());
+    var upcoming = calData.filter(function (it) { return (it.end || it.start) >= from; }).slice(0, 200);
+    for (var i = 0; i < upcoming.length; i++) {
+      try { await gcalPush(upcoming[i]); } catch (e) { ok = false; if (!gcalToken) break; }
+    }
+    await gcalPull(true);
+    gcalBusy = false;
+    renderGcalBar();
+    gcalNote(t(ok && gcalToken ? "gcalDone" : "gcalErr"));
+  }
+  $("gcal-link").addEventListener("click", function () {
+    if (/Instagram|FBAN|FBAV/i.test(navigator.userAgent)) return gcalNote(t("gcalInApp"));
+    gcalNote("");
+    gcalAsk(true, function () { gcalSetLinked(true); renderGcalBar(); gcalSync(); });
+  });
+  $("gcal-sync").addEventListener("click", function () {
+    gcalNote("");
+    if (gcalReady()) gcalSync(); else gcalAsk(false, gcalSync);
+  });
+  $("gcal-unlink").addEventListener("click", function () {
+    if (gcalToken && gisLoaded()) try { google.accounts.oauth2.revoke(gcalToken, function () {}); } catch (e) {}
+    gcalToken = null; gcalItems = []; gcalWeek = null;
+    gcalSetLinked(false);
+    gcalNote(t("gcalUnlinked"));
     renderCal();
   });
 
