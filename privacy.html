@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Политика конфиденциальности — Overthinker's Ideas</title>
+<meta name="description" content="Какие данные собирает Overthinker's Ideas, как использует доступ к Google Calendar и как удалить данные.">
+<link rel="canonical" href="https://overthinkers-ideas.com/privacy.html">
+<link rel="icon" href="/img/favicon-48.png" type="image/png" sizes="48x48">
+<style>
+:root {
+  --bg: #f2f6f3; --surface: #ffffff; --ink: #0e1a13; --muted: #64746b; --line: #e1e8e3; --green: #12b76a; --green-deep: #067647;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0b110e; --surface: #151d18; --ink: #eff5f1; --muted: #93a49a; --line: #26332b; --green: #22c97a; --green-deep: #5be3a0; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0b110e; --surface: #151d18; --ink: #eff5f1; --muted: #93a49a; --line: #26332b; --green: #22c97a; --green-deep: #5be3a0; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.6; }
+main { max-width: 46rem; margin: 0 auto; padding: 2rem 16px 4rem; }
+a { color: var(--green-deep); }
+.home { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; text-decoration: none; color: var(--ink); }
+.home img { width: 2rem; height: 2rem; border-radius: 0.5rem; }
+.lang { float: right; font-size: 0.9rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 1.25rem; padding: 1.5rem; margin-top: 1.5rem; }
+h1 { font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1.2; margin: 0 0 0.25rem; }
+h2 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+p, li { overflow-wrap: anywhere; }
+.muted { color: var(--muted); font-size: 0.9rem; margin: 0; }
+ul { padding-left: 1.2rem; }
+</style>
+</head>
+<body>
+<main>
+  <a class="home" href="/"><img src="/img/icon-512.png" alt="">Overthinker's Ideas</a>
+  <a class="lang" href="#en">English</a>
+
+  <div class="card" lang="ru">
+    <h1>Политика конфиденциальности</h1>
+    <p class="muted">Обновлено 20 октября 2026 г.</p>
+
+    <p>Overthinker's Ideas (overthinkers-ideas.com) — сайт, где можно быстро записывать идеи, вести календарь и аффирмации. Здесь написано, какие данные сайт хранит и что делает с доступом к Google Calendar.</p>
+
+    <h2>Какие данные мы храним</h2>
+    <ul>
+      <li><b>Аккаунт:</b> имя пользователя, почта, имя и фамилия (если указали). Пароль хранится только в зашифрованном виде.</li>
+      <li><b>Ваши записи:</b> идеи, события и задачи календаря, аффирмации и их счётчики.</li>
+      <li><b>Отзывы:</b> оценка и текст, если вы сами отправили их через настройки.</li>
+    </ul>
+    <p>Данные хранятся в Supabase (база данных и вход в аккаунт). Каждый видит только свои записи, это ограничено правилами базы данных.</p>
+
+    <h2>Статистика посещений</h2>
+    <p>Сайт использует Vercel Web Analytics: считается только число посещений, страна, тип устройства и откуда пришёл посетитель. Cookies не используются, тексты ваших записей в статистику не попадают.</p>
+
+    <h2>Google Calendar</h2>
+    <p>Привязка календаря необязательна и включается только кнопкой «Привязать Google Calendar». Сайт запрашивает одно разрешение — <code>calendar.events</code> (просмотр и изменение событий) — и использует его только для двух вещей:</p>
+    <ul>
+      <li>показать ваши события из Google Calendar в календаре сайта;</li>
+      <li>создать, изменить или удалить в Google Calendar копии записей, которые вы сами сделали на сайте.</li>
+    </ul>
+    <p>События из Google Calendar обрабатываются только в вашем браузере и <b>не сохраняются</b> на наших серверах. Ключ доступа от Google хранится только в памяти открытой страницы и пропадает через час или при закрытии сайта. Мы не продаём и не передаём данные Google третьим лицам, не используем их для рекламы и для обучения моделей искусственного интеллекта, и люди их не читают.</p>
+    <p>Использование и передача сайтом Overthinker's Ideas информации, полученной через Google API, соответствуют <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, включая требования Limited Use.</p>
+    <p>Отключить доступ можно кнопкой «Отвязать» в календаре сайта или на странице <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Копии записей, уже отправленные в Google Calendar, останутся там, их можно удалить в самом Google Calendar.</p>
+
+    <h2>Чего мы не делаем</h2>
+    <ul>
+      <li>Не продаём данные и не показываем рекламу.</li>
+      <li>Не передаём ваши записи другим людям и компаниям, кроме сервисов, на которых работает сайт (Supabase, Vercel).</li>
+    </ul>
+
+    <h2>Удаление данных</h2>
+    <p>Напишите на <a href="mailto:assar.dastanuly.dev@gmail.com">assar.dastanuly.dev@gmail.com</a> с почты вашего аккаунта, и мы удалим аккаунт и все записи в течение 30 дней.</p>
+
+    <h2>Контакты</h2>
+    <p>Вопросы о конфиденциальности: <a href="mailto:assar.dastanuly.dev@gmail.com">assar.dastanuly.dev@gmail.com</a>.</p>
+  </div>
+
+  <div class="card" lang="en" id="en">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: October 20, 2026</p>
+
+    <p>Overthinker's Ideas (overthinkers-ideas.com) is a website for quickly writing down ideas, keeping a calendar and affirmations. This page explains what data the site keeps and what it does with access to Google Calendar.</p>
+
+    <h2>Data we store</h2>
+    <ul>
+      <li><b>Account:</b> username, email address, and first and last name if you provide them. Passwords are stored only in hashed form.</li>
+      <li><b>Your entries:</b> ideas, calendar events and tasks, affirmations and their counters.</li>
+      <li><b>Feedback:</b> a rating and text, only if you send them from Settings.</li>
+    </ul>
+    <p>Data is stored in Supabase (database and sign-in). Database rules make sure each person can access only their own entries.</p>
+
+    <h2>Visit statistics</h2>
+    <p>The site uses Vercel Web Analytics, which counts page views, country, device type and referrer. It uses no cookies, and the content of your entries is never included.</p>
+
+    <h2>Google Calendar</h2>
+    <p>Linking a calendar is optional and starts only when you press “Link Google Calendar”. The site requests a single permission, <code>calendar.events</code> (view and edit events), and uses it only to:</p>
+    <ul>
+      <li>show your Google Calendar events in the site's calendar;</li>
+      <li>create, update or delete copies, in your Google Calendar, of entries you made on the site.</li>
+    </ul>
+    <p>Google Calendar events are processed only in your browser and are <b>not stored</b> on our servers. The access token from Google is kept only in the memory of the open page and is discarded after one hour or when you close the site. We do not sell or transfer Google user data to third parties, do not use it for advertising or to train artificial intelligence models, and no person reads it.</p>
+    <p>Overthinker's Ideas' use and transfer to any other app of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+    <p>You can remove access with the “Unlink” button in the site's calendar or at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Copies already sent to Google Calendar stay there; you can delete them in Google Calendar.</p>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't sell data or show ads.</li>
+      <li>We don't share your entries with other people or companies, except the services the site runs on (Supabase, Vercel).</li>
+    </ul>
+
+    <h2>Deleting your data</h2>
+    <p>Email <a href="mailto:assar.dastanuly.dev@gmail.com">assar.dastanuly.dev@gmail.com</a> from your account's email address and we will delete your account and all entries within 30 days.</p>
+
+    <h2>Contact</h2>
+    <p>Privacy questions: <a href="mailto:assar.dastanuly.dev@gmail.com">assar.dastanuly.dev@gmail.com</a>.</p>
+  </div>
+</main>
+</body>
+</html>
