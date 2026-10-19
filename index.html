@@ -160,6 +160,10 @@ h2, h3, p { margin: 0; }
 .plate-meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted); }
 .strike { background: none; border: 0; padding: 0.1rem 0; font-size: 0.8rem; color: var(--muted); }
 .strike:hover { color: var(--green-deep); text-decoration: underline; text-underline-offset: 3px; }
+.strike.strong { color: var(--green-deep); font-weight: 700; }
+.strike:disabled { opacity: 0.45; text-decoration: none; }
+.plate-actions { display: flex; gap: 1rem; }
+.plate-edit { width: 100%; font: inherit; font-weight: 500; line-height: 1.45; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.6rem 0.8rem; resize: vertical; min-height: 4.5rem; }
 .empty { text-align: center; border: 2px dashed var(--line); border-radius: 1.4rem; padding: 2rem 1.15rem; display: flex; flex-direction: column; gap: 0.3rem; color: var(--muted); }
 .empty strong { color: var(--ink); font-size: 1.02rem; }
 .search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 0.75rem 1rem; }
@@ -942,7 +946,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Первая идея появится здесь, как только вы её запишете.", noMatchT: "Ничего не найдено",
       noMatchS: "Попробуйте другое слово.", navAria: "Разделы", home: "Главная", newIdea: "Новая идея", close: "Закрыть",
       ph: "Пришла мысль? Сюда её, не раздумывая…", voice: "Голосом", voiceStop: "Слушаю… стоп", voiceLang: "Язык речи",
-      save: "Записать", undo: "Вернуть", erase: "Стереть", eraseAria: "Стереть идею №{n}", erased: "Идея стёрта.",
+      save: "Записать", undo: "Вернуть", erase: "Стереть", eraseAria: "Стереть идею №{n}", edit: "Редактировать", editAria: "Редактировать идею №{n}", erased: "Идея стёрта.",
       last: "Последняя: {when}", chartSum: "Идей за неделю: {week}, сегодня: {today}", of: "{a} из {b}",
       noteDefault: "Идеи шифруются вашим паролем.", noteBrowser: "Идеи зашифрованы и хранятся в этом браузере.",
       noteCloud: "Идеи зашифрованы вашим паролем и хранятся в личном архиве — они откроются на любом устройстве, где вы войдёте.",
@@ -986,7 +990,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Алғашқы идеяңыз жазылған бойда осында пайда болады.", noMatchT: "Ештеңе табылмады",
       noMatchS: "Басқа сөзбен іздеп көріңіз.", navAria: "Бөлімдер", home: "Басты бет", newIdea: "Жаңа идея", close: "Жабу",
       ph: "Ой келді ме? Ойланбай, осында жаз…", voice: "Дауыспен", voiceStop: "Тыңдап тұрмын… тоқтату", voiceLang: "Сөйлеу тілі",
-      save: "Жазу", undo: "Қайтару", erase: "Өшіру", eraseAria: "№{n} идеяны өшіру", erased: "Идея өшірілді.",
+      save: "Жазу", undo: "Қайтару", erase: "Өшіру", eraseAria: "№{n} идеяны өшіру", edit: "Өңдеу", editAria: "№{n} идеяны өңдеу", erased: "Идея өшірілді.",
       last: "Соңғысы: {when}", chartSum: "Осы аптадағы идея: {week}, бүгін: {today}", of: "{b} ішінен {a}",
       noteDefault: "Идеялар құпиясөзіңізбен шифрланады.", noteBrowser: "Идеялар шифрланып, осы браузерде сақталады.",
       noteCloud: "Идеялар құпиясөзіңізбен шифрланып, жеке мұрағатта сақталады — кірген кез келген құрылғыда ашылады.",
@@ -1030,7 +1034,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Your first idea will appear here as soon as you write it.", noMatchT: "Nothing found",
       noMatchS: "Try another word.", navAria: "Sections", home: "Home", newIdea: "New idea", close: "Close",
       ph: "Had a thought? Put it here before you rethink it…", voice: "Voice", voiceStop: "Listening… stop", voiceLang: "Speech language",
-      save: "Save", undo: "Undo", erase: "Delete", eraseAria: "Delete idea no. {n}", erased: "Idea deleted.",
+      save: "Save", undo: "Undo", erase: "Delete", eraseAria: "Delete idea no. {n}", edit: "Edit", editAria: "Edit idea no. {n}", erased: "Idea deleted.",
       last: "Latest: {when}", chartSum: "Ideas this week: {week}, today: {today}", of: "{a} of {b}",
       noteDefault: "Ideas are encrypted with your password.", noteBrowser: "Ideas are encrypted and stored in this browser.",
       noteCloud: "Ideas are encrypted with your password and kept in your personal archive — they open on any device where you sign in.",
@@ -1074,7 +1078,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Votre première idée apparaîtra ici dès que vous l'aurez notée.", noMatchT: "Aucun résultat",
       noMatchS: "Essayez un autre mot.", navAria: "Sections", home: "Accueil", newIdea: "Nouvelle idée", close: "Fermer",
       ph: "Une pensée ? Notez-la ici, sans trop réfléchir…", voice: "Dicter", voiceStop: "J'écoute… arrêter", voiceLang: "Langue de la dictée",
-      save: "Noter", undo: "Annuler", erase: "Supprimer", eraseAria: "Supprimer l'idée n° {n}", erased: "Idée supprimée.",
+      save: "Noter", undo: "Annuler", erase: "Supprimer", eraseAria: "Supprimer l'idée n° {n}", edit: "Modifier", editAria: "Modifier l'idée n° {n}", erased: "Idée supprimée.",
       last: "Dernière : {when}", chartSum: "Idées cette semaine : {week}, aujourd'hui : {today}", of: "{a} sur {b}",
       noteDefault: "Les idées sont chiffrées avec votre mot de passe.", noteBrowser: "Les idées sont chiffrées et stockées dans ce navigateur.",
       noteCloud: "Les idées sont chiffrées avec votre mot de passe et conservées dans votre archive personnelle : elles s'ouvrent sur tout appareil où vous vous connectez.",
@@ -1118,7 +1122,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "记下第一个想法后，它会出现在这里。", noMatchT: "没有找到",
       noMatchS: "换个词试试。", navAria: "栏目", home: "首页", newIdea: "新想法", close: "关闭",
       ph: "想到什么了？别多想，写在这里…", voice: "语音", voiceStop: "正在听… 停止", voiceLang: "语音语言",
-      save: "记下", undo: "撤销", erase: "删除", eraseAria: "删除第 {n} 个想法", erased: "想法已删除。",
+      save: "记下", undo: "撤销", erase: "删除", eraseAria: "删除第 {n} 个想法", edit: "编辑", editAria: "编辑第 {n} 个想法", erased: "想法已删除。",
       last: "最近：{when}", chartSum: "本周想法：{week}，今天：{today}", of: "{b} 条中的 {a} 条",
       noteDefault: "想法会用你的密码加密。", noteBrowser: "想法已加密，保存在此浏览器中。",
       noteCloud: "想法用你的密码加密并保存在个人档案中，在任何登录的设备上都能打开。",
@@ -1162,7 +1166,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Tu primera idea aparecerá aquí en cuanto la anotes.", noMatchT: "No se encontró nada",
       noMatchS: "Prueba con otra palabra.", navAria: "Secciones", home: "Inicio", newIdea: "Nueva idea", close: "Cerrar",
       ph: "¿Se te ocurrió algo? Escríbelo aquí, sin pensarlo demasiado…", voice: "Por voz", voiceStop: "Escuchando… parar", voiceLang: "Idioma del dictado",
-      save: "Anotar", undo: "Deshacer", erase: "Borrar", eraseAria: "Borrar la idea n.º {n}", erased: "Idea borrada.",
+      save: "Anotar", undo: "Deshacer", erase: "Borrar", eraseAria: "Borrar la idea n.º {n}", edit: "Editar", editAria: "Editar la idea n.º {n}", erased: "Idea borrada.",
       last: "Última: {when}", chartSum: "Ideas esta semana: {week}, hoy: {today}", of: "{a} de {b}",
       noteDefault: "Las ideas se cifran con tu contraseña.", noteBrowser: "Las ideas están cifradas y guardadas en este navegador.",
       noteCloud: "Las ideas se cifran con tu contraseña y se guardan en tu archivo personal: se abren en cualquier dispositivo donde inicies sesión.",
@@ -1248,6 +1252,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var progressDay = null;
   var mode = "wait", busy = false;
   var freshId = null, lastRemoved = null, toastTimer = null;
+  var editingId = null, editDraft = "";
 
   function setNote() { note.textContent = user ? t("noteServer") : ""; }
   function applyLang() {
@@ -1311,14 +1316,44 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     var li = el("li", "plate" + (idea.id === freshId ? " fresh" : ""));
     li.appendChild(el("span", "numeral", "#" + String(idea.n).padStart(2, "0")));
     var body = el("div", "plate-body");
-    body.appendChild(el("p", "plate-text", idea.text));
     var meta = el("div", "plate-meta");
     meta.appendChild(el("span", null, (withDay ? dayLabel(idea.ts) + ", " : "") + clock(idea.ts)));
-    var del = el("button", "strike", t("erase"));
-    del.type = "button";
-    del.setAttribute("aria-label", t("eraseAria", { n: idea.n }));
-    del.addEventListener("click", removeIdea.bind(null, idea));
-    meta.appendChild(del);
+    var actions = el("span", "plate-actions");
+    if (idea.id === editingId) {
+      // Editing in place: the text becomes a field with Save and Cancel under it.
+      var area = el("textarea", "plate-edit");
+      area.value = editDraft;
+      area.rows = 3;
+      area.setAttribute("aria-label", t("editAria", { n: idea.n }));
+      area.addEventListener("input", function () { editDraft = area.value; save.disabled = !area.value.trim(); });
+      area.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { e.stopPropagation(); cancelEdit(); }
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); saveEdit(idea); }
+      });
+      body.appendChild(area);
+      var cancel = el("button", "strike", t("cancel"));
+      cancel.type = "button";
+      cancel.addEventListener("click", cancelEdit);
+      var save = el("button", "strike strong", t("saveBtn"));
+      save.type = "button";
+      save.disabled = !editDraft.trim();
+      save.addEventListener("click", function () { saveEdit(idea); });
+      actions.appendChild(cancel);
+      actions.appendChild(save);
+    } else {
+      body.appendChild(el("p", "plate-text", idea.text));
+      var edit = el("button", "strike", t("edit"));
+      edit.type = "button";
+      edit.setAttribute("aria-label", t("editAria", { n: idea.n }));
+      edit.addEventListener("click", function () { startEdit(idea); });
+      var del = el("button", "strike", t("erase"));
+      del.type = "button";
+      del.setAttribute("aria-label", t("eraseAria", { n: idea.n }));
+      del.addEventListener("click", removeIdea.bind(null, idea));
+      actions.appendChild(edit);
+      actions.appendChild(del);
+    }
+    meta.appendChild(actions);
     body.appendChild(meta);
     li.appendChild(body);
     return li;
@@ -1518,6 +1553,35 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     temp.id = res.data.id;
     temp.ts = Date.parse(res.data.created_at);
     render();
+  }
+  function startEdit(idea) {
+    if (String(idea.id).indexOf("tmp-") === 0) return;
+    editingId = idea.id;
+    editDraft = idea.text;
+    render();
+    var area = document.querySelector(".plate-edit");
+    if (area) { area.focus(); area.setSelectionRange(area.value.length, area.value.length); }
+  }
+  function cancelEdit() {
+    editingId = null;
+    render();
+  }
+  // Shown at once; the old text comes back if the server refuses the change.
+  async function saveEdit(idea) {
+    var text = editDraft.trim();
+    var item = ideasData.filter(function (i) { return i.id === idea.id; })[0];
+    if (!text || !item) return;
+    editingId = null;
+    var old = item.text;
+    if (text === old) { render(); return; }
+    item.text = text;
+    render();
+    var res = await sb.from("ideas").update({ text: text }).eq("id", idea.id).select("id");
+    if (res.error || !res.data || !res.data.length) {
+      item.text = old;
+      render();
+      flash(t(res.error ? errKey(res.error) : "eGeneric"));
+    }
   }
   async function removeIdea(idea) {
     if (String(idea.id).indexOf("tmp-") === 0) return;
