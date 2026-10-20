@@ -474,7 +474,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .cal-daychip i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
 .cal-allday { display: flex; flex-direction: column; gap: 0.35rem; }
 .cal-grid-card { padding: 0; max-height: 62vh; overflow-y: auto; }
-.cal-grid { position: relative; height: calc(48px * 24); }
+.cal-grid { position: relative; height: calc(48px * 24); user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.cal-drag { position: absolute; left: 3.4rem; right: 0.5rem; z-index: 3; box-sizing: border-box; pointer-events: none; border: 2px solid var(--green); border-radius: 9px; background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green-deep); font-size: 0.75rem; font-weight: 700; padding: 0.1rem 0.45rem; font-variant-numeric: tabular-nums; }
 .cal-hour { position: absolute; left: 0; right: 0; height: 48px; border-top: 1px solid var(--line); cursor: pointer; }
 .cal-hour:first-child { border-top: 0; }
 .cal-hour-label { position: absolute; left: 0.55rem; top: -0.6rem; font-size: 0.72rem; color: var(--muted); background: var(--surface); padding: 0 0.2rem; font-variant-numeric: tabular-nums; }
@@ -2083,12 +2084,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     $("cal-sheet-title").textContent = t(calEditing ? "calEdit" : "calNew");
     buildColors();
   }
-  function openCal(it, hour) {
+  function openCal(it, hour, range) {
     calEditing = it || null;
     calDeleteArmed = false;
     var startHour = hour != null ? hour : calDay === dayStart(Date.now()) ? Math.min(23, new Date().getHours() + 1) : 9;
-    var start = it ? it.start : new Date(calDay).setHours(startHour, 0, 0, 0);
-    var end = it && it.end ? it.end : start + 3600000;
+    var start = it ? it.start : range ? new Date(calDay).setHours(0, range.s, 0, 0) : new Date(calDay).setHours(startHour, 0, 0, 0);
+    var end = it && it.end ? it.end : range ? new Date(calDay).setHours(0, Math.min(range.e, 24 * 60 - 1), 0, 0) : start + 3600000;
     calKind = it ? it.kind : "event";
     calColor = it ? it.color : "default";
     $("cal-title").value = it ? it.title : "";
@@ -2116,6 +2117,63 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   $("cal-sheet").addEventListener("click", function (e) { if (e.target === $("cal-sheet")) closeCal(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("cal-sheet").hidden) closeCal(); });
   $("cal-create").addEventListener("click", function () { openCal(null); });
+
+  // Dragging down the day grid picks a time in 15-minute steps and opens the form with it.
+  // The mouse drags at once; on touch a long press starts it, so a plain swipe still scrolls.
+  var drag = null, dragJustEnded = false;
+  function gridMinute(clientY) {
+    var y = clientY - $("cal-grid").getBoundingClientRect().top;
+    return Math.max(0, Math.min(24 * 60 - 15, Math.floor(y / HOUR_PX * 4) * 15));
+  }
+  function dragRange(d) { return { s: Math.min(d.a, d.b), e: Math.max(d.a, d.b) + 15 }; }
+  function drawDrag() {
+    var r = dragRange(drag);
+    drag.box.style.top = (r.s / 60 * HOUR_PX) + "px";
+    drag.box.style.height = ((r.e - r.s) / 60 * HOUR_PX) + "px";
+    drag.box.textContent = clock(new Date(calDay).setHours(0, r.s, 0, 0)) + " – " + clock(new Date(calDay).setHours(0, r.e, 0, 0));
+  }
+  function startDrag() {
+    drag.on = true;
+    drag.box = el("div", "cal-drag");
+    $("cal-grid").appendChild(drag.box);
+    drawDrag();
+    try { if (drag.touch && navigator.vibrate) navigator.vibrate(10); } catch (e) {}
+  }
+  function endDrag(e, cancel) {
+    if (!drag || e.pointerId !== drag.id) return;
+    clearTimeout(drag.timer);
+    var d = drag;
+    drag = null;
+    if (!d.on) return;
+    d.box.remove();
+    dragJustEnded = true; // the click that follows the drag must not open the hour under the pointer
+    setTimeout(function () { dragJustEnded = false; }, 0);
+    if (!cancel) openCal(null, null, dragRange(d));
+  }
+  $("cal-grid").addEventListener("pointerdown", function (e) {
+    if (e.button || e.target.closest(".cal-item")) return;
+    var m = gridMinute(e.clientY);
+    drag = { id: e.pointerId, a: m, b: m, y: e.clientY, on: false, touch: e.pointerType !== "mouse", timer: null, box: null };
+    if (drag.touch) drag.timer = setTimeout(function () { if (drag && !drag.on) startDrag(); }, 350);
+  });
+  $("cal-grid").addEventListener("pointermove", function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.on) {
+      var moved = Math.abs(e.clientY - drag.y);
+      if (drag.touch) { if (moved > 8) { clearTimeout(drag.timer); drag = null; } return; } // a swipe: let it scroll
+      if (moved < 6) return;
+      startDrag();
+      try { $("cal-grid").setPointerCapture(e.pointerId); } catch (x) {}
+    }
+    drag.b = gridMinute(e.clientY);
+    drawDrag();
+  });
+  $("cal-grid").addEventListener("pointerup", function (e) { endDrag(e, false); });
+  $("cal-grid").addEventListener("pointercancel", function (e) { endDrag(e, true); });
+  // While a touch drag is on, the finger moves the selection instead of scrolling the day.
+  $("cal-grid").addEventListener("touchmove", function (e) { if (drag && drag.on) e.preventDefault(); }, { passive: false });
+  $("cal-grid").addEventListener("contextmenu", function (e) { if (drag) e.preventDefault(); });
+  $("cal-grid").addEventListener("click", function (e) { if (dragJustEnded) e.stopPropagation(); }, true);
   $("cal-today").addEventListener("click", function () { calDay = dayStart(Date.now()); renderCal(); });
   $("cal-prev").addEventListener("click", function () { calDay = shiftDay(calDay, -1); renderCal(); });
   $("cal-next").addEventListener("click", function () { calDay = shiftDay(calDay, 1); renderCal(); });
