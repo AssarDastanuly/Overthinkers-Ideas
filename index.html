@@ -163,6 +163,13 @@ h2, h3, p { margin: 0; }
 .strike.strong { color: var(--green-deep); font-weight: 700; }
 .strike:disabled { opacity: 0.45; text-decoration: none; }
 .plate-actions { display: flex; gap: 1rem; }
+/* Done marks are always green, even in the blue theme. */
+.check { --done: #1FA463; width: 2rem; height: 2rem; flex: none; display: grid; place-items: center; padding: 0; border-radius: 0.7rem; border: 2px solid color-mix(in srgb, var(--done) 40%, var(--line)); background: var(--surface); cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+.check svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(0.6); transition: opacity 0.15s, transform 0.15s; }
+.check:hover { border-color: var(--done); }
+.check.on { background: var(--done); border-color: var(--done); }
+.check.on svg { opacity: 1; transform: none; }
+.plate.done .plate-text { color: #1FA463; text-decoration: line-through; text-decoration-color: color-mix(in srgb, #1FA463 60%, transparent); }
 .plate-edit { width: 100%; font: inherit; font-weight: 500; line-height: 1.45; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.6rem 0.8rem; resize: vertical; min-height: 4.5rem; }
 .empty { text-align: center; border: 2px dashed var(--line); border-radius: 1.4rem; padding: 2rem 1.15rem; display: flex; flex-direction: column; gap: 0.3rem; color: var(--muted); }
 .empty strong { color: var(--ink); font-size: 1.02rem; }
@@ -947,7 +954,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Первая идея появится здесь, как только вы её запишете.", noMatchT: "Ничего не найдено",
       noMatchS: "Попробуйте другое слово.", navAria: "Разделы", home: "Главная", newIdea: "Новая идея", close: "Закрыть",
       ph: "Пришла мысль? Сюда её, не раздумывая…", voice: "Голосом", voiceStop: "Слушаю… стоп", voiceLang: "Язык речи",
-      save: "Записать", undo: "Вернуть", erase: "Стереть", eraseAria: "Стереть идею №{n}", edit: "Редактировать", editAria: "Редактировать идею №{n}", erased: "Идея стёрта.",
+      save: "Записать", undo: "Вернуть", erase: "Стереть", eraseAria: "Стереть идею №{n}", edit: "Редактировать", editAria: "Редактировать идею №{n}", doneAria: "Отметить идею №{n} сделанной", undoneAria: "Снять отметку с идеи №{n}", erased: "Идея стёрта.",
       last: "Последняя: {when}", chartSum: "Идей за неделю: {week}, сегодня: {today}", of: "{a} из {b}",
       noteDefault: "Идеи шифруются вашим паролем.", noteBrowser: "Идеи зашифрованы и хранятся в этом браузере.",
       noteCloud: "Идеи зашифрованы вашим паролем и хранятся в личном архиве — они откроются на любом устройстве, где вы войдёте.",
@@ -991,7 +998,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Алғашқы идеяңыз жазылған бойда осында пайда болады.", noMatchT: "Ештеңе табылмады",
       noMatchS: "Басқа сөзбен іздеп көріңіз.", navAria: "Бөлімдер", home: "Басты бет", newIdea: "Жаңа идея", close: "Жабу",
       ph: "Ой келді ме? Ойланбай, осында жаз…", voice: "Дауыспен", voiceStop: "Тыңдап тұрмын… тоқтату", voiceLang: "Сөйлеу тілі",
-      save: "Жазу", undo: "Қайтару", erase: "Өшіру", eraseAria: "№{n} идеяны өшіру", edit: "Өңдеу", editAria: "№{n} идеяны өңдеу", erased: "Идея өшірілді.",
+      save: "Жазу", undo: "Қайтару", erase: "Өшіру", eraseAria: "№{n} идеяны өшіру", edit: "Өңдеу", editAria: "№{n} идеяны өңдеу", doneAria: "№{n} идеяны орындалды деп белгілеу", undoneAria: "№{n} идеядан белгіні алу", erased: "Идея өшірілді.",
       last: "Соңғысы: {when}", chartSum: "Осы аптадағы идея: {week}, бүгін: {today}", of: "{b} ішінен {a}",
       noteDefault: "Идеялар құпиясөзіңізбен шифрланады.", noteBrowser: "Идеялар шифрланып, осы браузерде сақталады.",
       noteCloud: "Идеялар құпиясөзіңізбен шифрланып, жеке мұрағатта сақталады — кірген кез келген құрылғыда ашылады.",
@@ -1035,7 +1042,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Your first idea will appear here as soon as you write it.", noMatchT: "Nothing found",
       noMatchS: "Try another word.", navAria: "Sections", home: "Home", newIdea: "New idea", close: "Close",
       ph: "Had a thought? Put it here before you rethink it…", voice: "Voice", voiceStop: "Listening… stop", voiceLang: "Speech language",
-      save: "Save", undo: "Undo", erase: "Delete", eraseAria: "Delete idea no. {n}", edit: "Edit", editAria: "Edit idea no. {n}", erased: "Idea deleted.",
+      save: "Save", undo: "Undo", erase: "Delete", eraseAria: "Delete idea no. {n}", edit: "Edit", editAria: "Edit idea no. {n}", doneAria: "Mark idea no. {n} as done", undoneAria: "Mark idea no. {n} as not done", erased: "Idea deleted.",
       last: "Latest: {when}", chartSum: "Ideas this week: {week}, today: {today}", of: "{a} of {b}",
       noteDefault: "Ideas are encrypted with your password.", noteBrowser: "Ideas are encrypted and stored in this browser.",
       noteCloud: "Ideas are encrypted with your password and kept in your personal archive — they open on any device where you sign in.",
@@ -1079,7 +1086,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Votre première idée apparaîtra ici dès que vous l'aurez notée.", noMatchT: "Aucun résultat",
       noMatchS: "Essayez un autre mot.", navAria: "Sections", home: "Accueil", newIdea: "Nouvelle idée", close: "Fermer",
       ph: "Une pensée ? Notez-la ici, sans trop réfléchir…", voice: "Dicter", voiceStop: "J'écoute… arrêter", voiceLang: "Langue de la dictée",
-      save: "Noter", undo: "Annuler", erase: "Supprimer", eraseAria: "Supprimer l'idée n° {n}", edit: "Modifier", editAria: "Modifier l'idée n° {n}", erased: "Idée supprimée.",
+      save: "Noter", undo: "Annuler", erase: "Supprimer", eraseAria: "Supprimer l'idée n° {n}", edit: "Modifier", editAria: "Modifier l'idée n° {n}", doneAria: "Marquer l'idée n° {n} comme faite", undoneAria: "Marquer l'idée n° {n} comme non faite", erased: "Idée supprimée.",
       last: "Dernière : {when}", chartSum: "Idées cette semaine : {week}, aujourd'hui : {today}", of: "{a} sur {b}",
       noteDefault: "Les idées sont chiffrées avec votre mot de passe.", noteBrowser: "Les idées sont chiffrées et stockées dans ce navigateur.",
       noteCloud: "Les idées sont chiffrées avec votre mot de passe et conservées dans votre archive personnelle : elles s'ouvrent sur tout appareil où vous vous connectez.",
@@ -1123,7 +1130,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "记下第一个想法后，它会出现在这里。", noMatchT: "没有找到",
       noMatchS: "换个词试试。", navAria: "栏目", home: "首页", newIdea: "新想法", close: "关闭",
       ph: "想到什么了？别多想，写在这里…", voice: "语音", voiceStop: "正在听… 停止", voiceLang: "语音语言",
-      save: "记下", undo: "撤销", erase: "删除", eraseAria: "删除第 {n} 个想法", edit: "编辑", editAria: "编辑第 {n} 个想法", erased: "想法已删除。",
+      save: "记下", undo: "撤销", erase: "删除", eraseAria: "删除第 {n} 个想法", edit: "编辑", editAria: "编辑第 {n} 个想法", doneAria: "将第 {n} 个想法标记为已完成", undoneAria: "取消第 {n} 个想法的完成标记", erased: "想法已删除。",
       last: "最近：{when}", chartSum: "本周想法：{week}，今天：{today}", of: "{b} 条中的 {a} 条",
       noteDefault: "想法会用你的密码加密。", noteBrowser: "想法已加密，保存在此浏览器中。",
       noteCloud: "想法用你的密码加密并保存在个人档案中，在任何登录的设备上都能打开。",
@@ -1167,7 +1174,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       emptyArch: "Tu primera idea aparecerá aquí en cuanto la anotes.", noMatchT: "No se encontró nada",
       noMatchS: "Prueba con otra palabra.", navAria: "Secciones", home: "Inicio", newIdea: "Nueva idea", close: "Cerrar",
       ph: "¿Se te ocurrió algo? Escríbelo aquí, sin pensarlo demasiado…", voice: "Por voz", voiceStop: "Escuchando… parar", voiceLang: "Idioma del dictado",
-      save: "Anotar", undo: "Deshacer", erase: "Borrar", eraseAria: "Borrar la idea n.º {n}", edit: "Editar", editAria: "Editar la idea n.º {n}", erased: "Idea borrada.",
+      save: "Anotar", undo: "Deshacer", erase: "Borrar", eraseAria: "Borrar la idea n.º {n}", edit: "Editar", editAria: "Editar la idea n.º {n}", doneAria: "Marcar la idea n.º {n} como hecha", undoneAria: "Desmarcar la idea n.º {n}", erased: "Idea borrada.",
       last: "Última: {when}", chartSum: "Ideas esta semana: {week}, hoy: {today}", of: "{a} de {b}",
       noteDefault: "Las ideas se cifran con tu contraseña.", noteBrowser: "Las ideas están cifradas y guardadas en este navegador.",
       noteCloud: "Las ideas se cifran con tu contraseña y se guardan en tu archivo personal: se abren en cualquier dispositivo donde inicies sesión.",
@@ -1314,8 +1321,14 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     return e;
   }
   function ideaRow(idea, withDay) {
-    var li = el("li", "plate" + (idea.id === freshId ? " fresh" : ""));
-    li.appendChild(el("span", "numeral", "#" + String(idea.n).padStart(2, "0")));
+    var li = el("li", "plate" + (idea.id === freshId ? " fresh" : "") + (idea.done ? " done" : ""));
+    var check = el("button", "check" + (idea.done ? " on" : ""));
+    check.type = "button";
+    check.setAttribute("aria-pressed", idea.done ? "true" : "false");
+    check.setAttribute("aria-label", t(idea.done ? "undoneAria" : "doneAria", { n: idea.n }));
+    check.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    check.addEventListener("click", function () { toggleDone(idea); });
+    li.appendChild(check);
     var body = el("div", "plate-body");
     var meta = el("div", "plate-meta");
     meta.appendChild(el("span", null, (withDay ? dayLabel(idea.ts) + ", " : "") + clock(idea.ts)));
@@ -1378,7 +1391,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     var ideas = ideasData.slice().sort(function (x, y) { return x.ts - y.ts; }).map(function (r) {
       var day = dayStart(r.ts);
       perDay[day] = (perDay[day] || 0) + 1;
-      return { id: r.id, ts: r.ts, text: r.text, n: perDay[day] };
+      return { id: r.id, ts: r.ts, text: r.text, done: !!r.done, n: perDay[day] };
     });
     var today = dayStart(Date.now());
 
@@ -1530,9 +1543,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 
   // --- Ideas
   async function loadIdeas() {
-    var res = await sb.from("ideas").select("id,text,created_at").order("created_at", { ascending: true }).limit(5000);
+    var res = await sb.from("ideas").select("id,text,created_at,done").order("created_at", { ascending: true }).limit(5000);
+    if (res.error) res = await sb.from("ideas").select("id,text,created_at").order("created_at", { ascending: true }).limit(5000);
     if (res.error) throw res.error;
-    ideasData = res.data.map(function (r) { return { id: r.id, text: r.text, ts: Date.parse(r.created_at) }; });
+    ideasData = res.data.map(function (r) { return { id: r.id, text: r.text, ts: Date.parse(r.created_at), done: !!r.done }; });
   }
   // Shown at once; the server copy replaces the temporary one when the save is confirmed.
   async function storeIdea(text, ts) {
@@ -1554,6 +1568,19 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     temp.id = res.data.id;
     temp.ts = Date.parse(res.data.created_at);
     render();
+  }
+  // Shown at once; the mark goes back if the server refuses the change.
+  async function toggleDone(idea) {
+    var item = ideasData.filter(function (i) { return i.id === idea.id; })[0];
+    if (!item || String(item.id).indexOf("tmp-") === 0) return;
+    item.done = !item.done;
+    render();
+    var res = await sb.from("ideas").update({ done: item.done }).eq("id", item.id).select("id");
+    if (res.error || !res.data || !res.data.length) {
+      item.done = !item.done;
+      render();
+      flash(t(res.error ? errKey(res.error) : "eGeneric"));
+    }
   }
   function startEdit(idea) {
     if (String(idea.id).indexOf("tmp-") === 0) return;
