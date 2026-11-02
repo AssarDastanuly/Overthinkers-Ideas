@@ -122,7 +122,6 @@ h2, h3, p { margin: 0; }
 .stats { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0.85rem; }
 .stat { display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem; }
 .stat.upcoming { width: 100%; border: 0; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
-.stat.upcoming small { font-size: 0.85rem; opacity: 0.8; }
 .upcoming-list { list-style: none; margin: 0.15rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .upcoming-list li { display: flex; flex-direction: column; min-width: 0; font-size: 0.92rem; font-weight: 600; line-height: 1.25; }
 .upcoming-list b { font-size: 0.75rem; font-weight: 700; opacity: 0.65; font-variant-numeric: tabular-nums; }
@@ -622,9 +621,9 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
           <small id="stat-last" data-i18n="none">Пока ни одной</small>
         </div>
         <button type="button" class="card stat upcoming" id="upcoming-card">
-          <span class="card-title" data-i18n="upcoming">Скоро</span>
+          <span class="card-title" data-i18n="upcoming">Ближайшие 3 часа</span>
           <ul class="upcoming-list" id="upcoming-list"></ul>
-          <small id="upcoming-empty" data-i18n="noDeadline">Нет задач в календаре</small>
+          <span class="num" id="upcoming-free" data-i18n="free" hidden>Свободно</span>
         </button>
       </div>
 
@@ -940,7 +939,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "Пароль", newPass: "Новый пароль", pass2: "Пароль ещё раз", signIn: "Войти", backLogin: "Назад ко входу",
       forgot: "Забыли пароль?", byCode: "Восстановить по коду", wipe: "Стереть всё и начать заново", cancel: "Отмена",
       hello: "Привет,", quick: "Что придумал? Запиши сразу", total: "Всего идей", none: "Пока ни одной",
-      today: "Сегодня", upcoming: "Скоро", noDeadline: "Нет задач в календаре",  week: "На этой неделе", activity: "Сколько я накручиваю себя", perDay: "идей в день, эта неделя",
+      today: "Сегодня", upcoming: "Ближайшие 3 часа", free: "Свободно",  week: "На этой неделе", activity: "Сколько я накручиваю себя", perDay: "идей в день, эта неделя",
       chartAria: "Активность за неделю", recent: "Последние идеи", all: "Весь архив", emptyT: "Здесь пока пусто",
       emptyHome: "Нажмите «+» и запишите первую идею.", archive: "Архив", search: "Поиск по идеям",
       emptyArch: "Первая идея появится здесь, как только вы её запишете.", noMatchT: "Ничего не найдено",
@@ -984,7 +983,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "Құпиясөз", newPass: "Жаңа құпиясөз", pass2: "Құпиясөзді қайталаңыз", signIn: "Кіру", backLogin: "Кіруге оралу",
       forgot: "Құпиясөзді ұмыттыңыз ба?", byCode: "Код арқылы қалпына келтіру", wipe: "Бәрін өшіріп, қайта бастау", cancel: "Бас тарту",
       hello: "Сәлем,", quick: "Не ойладың? Бірден жаз", total: "Барлық идея", none: "Әзірге жоқ",
-      today: "Бүгін", upcoming: "Жақында", noDeadline: "Күнтізбеде тапсырма жоқ",  week: "Осы аптада", activity: "Қаншалықты көп ойланамын", perDay: "күніне идея, осы апта",
+      today: "Бүгін", upcoming: "Алдағы 3 сағат", free: "Бос",  week: "Осы аптада", activity: "Қаншалықты көп ойланамын", perDay: "күніне идея, осы апта",
       chartAria: "Осы аптадағы белсенділік", recent: "Соңғы идеялар", all: "Бүкіл мұрағат", emptyT: "Әзірге бос",
       emptyHome: "«+» басып, алғашқы идеяңызды жазыңыз.", archive: "Мұрағат", search: "Идеялардан іздеу",
       emptyArch: "Алғашқы идеяңыз жазылған бойда осында пайда болады.", noMatchT: "Ештеңе табылмады",
@@ -1028,7 +1027,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "Password", newPass: "New password", pass2: "Repeat password", signIn: "Sign in", backLogin: "Back to sign-in",
       forgot: "Forgot password?", byCode: "Recover with code", wipe: "Erase everything and start over", cancel: "Cancel",
       hello: "What's up,", quick: "Got an idea? Write it down now", total: "Total ideas", none: "None yet",
-      today: "Today", upcoming: "Coming up", noDeadline: "No tasks in your calendar",  week: "This week", activity: "How much I overthink", perDay: "ideas per day, this week",
+      today: "Today", upcoming: "Next 3 hours", free: "Free",  week: "This week", activity: "How much I overthink", perDay: "ideas per day, this week",
       chartAria: "Activity this week", recent: "Latest ideas", all: "Full archive", emptyT: "Nothing here yet",
       emptyHome: "Tap “+” and write your first idea.", archive: "Archive", search: "Search ideas",
       emptyArch: "Your first idea will appear here as soon as you write it.", noMatchT: "Nothing found",
@@ -1072,7 +1071,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "Mot de passe", newPass: "Nouveau mot de passe", pass2: "Répétez le mot de passe", signIn: "Se connecter", backLogin: "Retour à la connexion",
       forgot: "Mot de passe oublié ?", byCode: "Récupérer avec le code", wipe: "Tout effacer et recommencer", cancel: "Annuler",
       hello: "Salut,", quick: "Une idée ? Notez-la tout de suite", total: "Total des idées", none: "Aucune pour l'instant",
-      today: "Aujourd'hui", upcoming: "À venir", noDeadline: "Aucune tâche dans le calendrier", week: "Cette semaine", activity: "À quel point je réfléchis trop", perDay: "idées par jour, cette semaine",
+      today: "Aujourd'hui", upcoming: "3 prochaines heures", free: "Libre", week: "Cette semaine", activity: "À quel point je réfléchis trop", perDay: "idées par jour, cette semaine",
       chartAria: "Activité de la semaine", recent: "Dernières idées", all: "Toute l'archive", emptyT: "Rien ici pour l'instant",
       emptyHome: "Appuyez sur « + » et notez votre première idée.", archive: "Archive", search: "Rechercher dans les idées",
       emptyArch: "Votre première idée apparaîtra ici dès que vous l'aurez notée.", noMatchT: "Aucun résultat",
@@ -1116,7 +1115,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "密码", newPass: "新密码", pass2: "再次输入密码", signIn: "登录", backLogin: "返回登录",
       forgot: "忘记密码？", byCode: "用恢复码找回", wipe: "清空全部并重新开始", cancel: "取消",
       hello: "你好，", quick: "有想法了？马上记下来", total: "想法总数", none: "还没有",
-      today: "今天", upcoming: "即将到来", noDeadline: "日历中没有任务", week: "本周", activity: "我想太多的程度", perDay: "每天的想法数，本周",
+      today: "今天", upcoming: "接下来 3 小时", free: "空闲", week: "本周", activity: "我想太多的程度", perDay: "每天的想法数，本周",
       chartAria: "本周活跃度", recent: "最近的想法", all: "全部档案", emptyT: "这里还是空的",
       emptyHome: "点击“+”，记下第一个想法。", archive: "档案", search: "搜索想法",
       emptyArch: "记下第一个想法后，它会出现在这里。", noMatchT: "没有找到",
@@ -1160,7 +1159,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       pass: "Contraseña", newPass: "Nueva contraseña", pass2: "Repite la contraseña", signIn: "Entrar", backLogin: "Volver al inicio de sesión",
       forgot: "¿Olvidaste la contraseña?", byCode: "Recuperar con el código", wipe: "Borrar todo y empezar de nuevo", cancel: "Cancelar",
       hello: "Hola,", quick: "¿Una idea? Anótala ya", total: "Ideas en total", none: "Ninguna todavía",
-      today: "Hoy", upcoming: "Próximamente", noDeadline: "No hay tareas en el calendario", week: "Esta semana", activity: "Cuánto pienso de más", perDay: "ideas por día, esta semana",
+      today: "Hoy", upcoming: "Próximas 3 horas", free: "Libre", week: "Esta semana", activity: "Cuánto pienso de más", perDay: "ideas por día, esta semana",
       chartAria: "Actividad de la semana", recent: "Últimas ideas", all: "Todo el archivo", emptyT: "Aquí no hay nada todavía",
       emptyHome: "Pulsa «+» y anota tu primera idea.", archive: "Archivo", search: "Buscar en las ideas",
       emptyArch: "Tu primera idea aparecerá aquí en cuanto la anotes.", noMatchT: "No se encontró nada",
@@ -1402,36 +1401,30 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     return li;
   }
 
-  // The next three unfinished tasks or events; a tap opens the calendar on the first one's day.
+  // What is on in the next 3 hours (up to three items); with nothing planned the card just says «free».
+  var UPCOMING_MS = 3 * 60 * 60 * 1000;
   var upcoming = [];
   function renderUpcoming() {
-    var now = Date.now(), today = dayStart(now), list = $("upcoming-list");
+    var now = Date.now(), list = $("upcoming-list");
     upcoming = calData.filter(function (it) {
-      if (it.kind === "idea" || it.done) return false;
-      // tasks stay until the end of their day; events go once they are over
-      return it.allDay || it.kind === "task" ? dayStart(it.start) >= today : (it.end || it.start) >= now;
+      return it.kind !== "idea" && !it.done && !it.allDay && it.start <= now + UPCOMING_MS && (it.end || it.start) >= now;
     }).sort(function (x, y) { return x.start - y.start; }).slice(0, 3);
     list.textContent = "";
-    $("upcoming-empty").hidden = upcoming.length > 0;
+    var short = new Intl.DateTimeFormat(LOCALE[lang], { hour: "numeric", minute: "2-digit" });
     upcoming.forEach(function (it) {
-      var days = Math.round((dayStart(it.start) - today) / 864e5), day;
-      if (days === 0) day = t("today");
-      else if (days === 1) day = new Intl.RelativeTimeFormat(LOCALE[lang], { numeric: "auto" }).format(1, "day");
-      else day = new Date(it.start).toLocaleDateString(LOCALE[lang], { day: "numeric", month: "short" });
-      day = day.charAt(0).toUpperCase() + day.slice(1);
-      var short = new Intl.DateTimeFormat(LOCALE[lang], { hour: "numeric", minute: "2-digit" }); // «1:00 – 1:45 PM», not «01:00 PM–01:45 PM»
-      var time = it.allDay ? t("calAllDay")
-        : it.kind === "event" && it.end > it.start ? short.formatRange(new Date(it.start), new Date(it.end)) : short.format(new Date(it.start));
+      var time = it.kind === "event" && it.end > it.start ? short.formatRange(new Date(it.start), new Date(it.end)) : short.format(new Date(it.start));
       var li = el("li");
       li.appendChild(el("span", null, it.title));
-      li.appendChild(el("b", null, day + " · " + time));
+      li.appendChild(el("b", null, time));
       list.appendChild(li);
     });
+    $("upcoming-free").hidden = upcoming.length > 0;
   }
   $("upcoming-card").addEventListener("click", function () {
-    if (upcoming.length) calDay = dayStart(upcoming[0].start);
+    calDay = dayStart(Date.now());
     show("cal");
   });
+  setInterval(renderUpcoming, 60000); // the 3-hour window moves with the clock
 
   function render() {
     var perDay = {}; // ideas are numbered within their own day: #01, #02, …
