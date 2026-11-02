@@ -184,7 +184,8 @@ h2, h3, p { margin: 0; }
 .stack { display: flex; flex-direction: column; gap: 1rem; }
 .gate h2 { font-family: var(--display); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; }
 .field { display: flex; flex-direction: column; gap: 0.35rem; }
-.field label { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+.field label, .field .field-label { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+.pass-dots { padding-block: 0.75rem; font-weight: 600; letter-spacing: 0.18em; }
 .field input[readonly] { background: transparent; border-color: transparent; padding-inline: 0; font-weight: 600; }
 .field textarea { resize: vertical; min-height: 6.5rem; line-height: 1.45; }
 .field input, .field textarea { width: 100%; font: inherit; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.75rem 0.95rem; }
@@ -792,17 +793,23 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       </section>
       <form class="card stack" id="pass-form" novalidate>
         <h3 data-i18n="changePass">Смена пароля</h3>
-        <div class="field">
-          <label for="set-pass" data-i18n="newPass">Новый пароль</label>
-          <input id="set-pass" type="password" autocomplete="new-password">
+        <div class="field" id="pass-locked">
+          <span class="field-label" data-i18n="pass">Пароль</span>
+          <span class="pass-dots" aria-hidden="true">••••••••</span>
         </div>
-        <div class="field">
-          <label for="set-pass2" data-i18n="pass2">Пароль ещё раз</label>
-          <input id="set-pass2" type="password" autocomplete="new-password">
+        <div class="stack" id="pass-fields" hidden>
+          <div class="field">
+            <label for="set-pass" data-i18n="newPass">Новый пароль</label>
+            <input id="set-pass" type="password" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label for="set-pass2" data-i18n="pass2">Пароль ещё раз</label>
+            <input id="set-pass2" type="password" autocomplete="new-password">
+          </div>
         </div>
         <div class="foot end">
           <span class="hint" id="set-pass-msg" role="status" hidden></span>
-          <button class="primary" type="submit" data-i18n="bChange">Сменить пароль</button>
+          <button class="primary" type="submit" id="pass-btn">Изменить</button>
         </div>
       </form>
       <section class="card menu-card">
@@ -1318,7 +1325,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     voiceNote.hidden = true;
     if (mode !== "wait" && !gate.hidden) gateTexts();
     if (listening) voiceLabel.textContent = t("voiceStop");
-    if (user) { render(); renderAffirm(); renderCal(); profileState(); fillAccountLine(); }
+    if (user) { render(); renderAffirm(); renderCal(); profileState(); passState(); fillAccountLine(); }
     buildSwatches();
     buildStars();
   }
@@ -2005,6 +2012,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     $("set-surname").readOnly = !profileEditing;
     $("profile-btn").textContent = t(profileEditing ? "saveBtn" : "editBtn");
   }
+  // The password card works the same way: locked dots first, "Edit" opens the two fields.
+  var passEditing = false;
+  function passState() {
+    $("pass-locked").hidden = passEditing;
+    $("pass-fields").hidden = !passEditing;
+    $("pass-btn").textContent = t(passEditing ? "bChange" : "editBtn");
+  }
   function fillAccountLine() {
     if (!user || !profile) return;
     $("set-account").textContent = t("signedAs", { u: "@" + profile.username + (user.email ? ", " + user.email : "") });
@@ -2018,6 +2032,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     $("set-profile-msg").hidden = true; $("set-pass-msg").hidden = true;
     profileEditing = false;
     profileState();
+    passEditing = false;
+    passState();
     fillAccountLine();
   }
   $("theme-choice").addEventListener("click", function (e) {
@@ -2057,6 +2073,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   });
   $("pass-form").addEventListener("submit", async function (e) {
     e.preventDefault();
+    if (!passEditing) {
+      passEditing = true;
+      passState();
+      $("set-pass-msg").hidden = true;
+      try { $("set-pass").focus(); } catch (err) {}
+      return;
+    }
     var pass = $("set-pass").value;
     if (pass.length < MIN_PASS) return say("set-pass-msg", t("ePassShort", { n: MIN_PASS }));
     if (pass !== $("set-pass2").value) return say("set-pass-msg", t("ePassMatch"));
@@ -2066,6 +2089,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     busy = false;
     if (res.error) return say("set-pass-msg", passwordProblem(res.error));
     $("set-pass").value = ""; $("set-pass2").value = "";
+    passEditing = false;
+    passState();
     say("set-pass-msg", t("passChanged"));
   });
 
