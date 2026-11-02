@@ -1395,15 +1395,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     var today = dayStart(Date.now());
     deadlineItem = calData.filter(function (it) { return it.kind !== "idea" && !it.done && dayStart(it.start) >= today; })
       .sort(function (x, y) { return x.start - y.start; })[0] || null;
+    $("deadline-what").hidden = !!deadlineItem; // only the empty state gets a hint
     if (!deadlineItem) {
       $("stat-deadline").textContent = "—";
       $("deadline-what").textContent = t("noDeadline");
       return;
     }
-    var days = Math.round((dayStart(deadlineItem.start) - today) / 864e5);
-    var when = new Intl.RelativeTimeFormat(LOCALE[lang], { numeric: "auto" }).format(days, "day");
-    $("stat-deadline").textContent = days;
-    $("deadline-what").textContent = deadlineItem.title + " · " + when;
+    $("stat-deadline").textContent = Math.round((dayStart(deadlineItem.start) - today) / 864e5);
   }
   $("deadline-card").addEventListener("click", function () {
     if (deadlineItem) calDay = dayStart(deadlineItem.start);
