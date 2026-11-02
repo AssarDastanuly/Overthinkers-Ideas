@@ -533,6 +533,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .brand { font-family: var(--body); font-weight: 800; font-size: 1.08rem; letter-spacing: -0.01em; gap: 0.6rem; }
 .brand img { width: 30px; height: 30px; border-radius: 9px; flex: none; }
 .brand .brand-logo { width: auto; height: 44px; border-radius: 12px; }
+.hero, .author-note, #gate { transform-origin: 50% 50%; will-change: transform, opacity; }
 .hero { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-align: center; padding: 2.2rem 0.5rem 1.4rem; color: var(--ink); }
 .hero h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 9vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; }
 .hero mark { display: inline-block; background: var(--ink); color: var(--bg); padding: 0 0.18em; border-radius: 0.18em; transform: rotate(-2deg); }
@@ -1737,6 +1738,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     gateTexts();
     var first = login ? $("gate-ident") : reg ? $("gate-uname") : forgotMode ? $("gate-email") : $("gate-pass");
     try { first.focus({ preventScroll: true }); } catch (e) {}
+    queueTilt();
   }
   function fail(text) { gateOk.hidden = true; gateError.textContent = text; gateError.hidden = false; }
   function done(text) { gateError.hidden = true; gateOk.textContent = text; gateOk.hidden = false; gateSubmit.hidden = true; }
@@ -1837,8 +1839,32 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   $("to-register").addEventListener("click", function () { showGate("register"); });
   $("hero-start").addEventListener("click", function () {
     showGate("register");
-    gate.scrollIntoView({ behavior: "smooth", block: "start" });
+    // offsetTop ignores the 3D tilt, so the scroll stops exactly at the form
+    window.scrollTo({ top: gate.offsetTop - 16, behavior: "smooth" });
   });
+
+  // 3D scroll on the signed-out page: blocks tilt back as they come up from below and tip forward
+  // as they leave at the top, in both scroll directions. Off when the system asks for less motion.
+  var tiltBlocks = ["hero", "author-note", "gate"].map(function (id) { return $(id); });
+  var tiltQueued = false;
+  function tilt() {
+    tiltQueued = false;
+    var on = !gate.hidden && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var vh = window.innerHeight, mid = vh / 2;
+    tiltBlocks.forEach(function (b) {
+      if (!on || b.hidden) { b.style.transform = ""; b.style.opacity = ""; return; }
+      var r = b.getBoundingClientRect();
+      // 0 while the block covers the middle of the screen, up to ±1 as it moves a screen away
+      var d = r.top > mid ? (r.top - mid) / vh : r.bottom < mid ? (r.bottom - mid) / vh : 0;
+      d = Math.max(-1, Math.min(1, d * 1.6));
+      var a = Math.abs(d);
+      b.style.transform = "perspective(900px) translateY(" + (d * 40).toFixed(1) + "px) rotateX(" + (d * 28).toFixed(1) + "deg) scale(" + (1 - a * 0.1).toFixed(3) + ")";
+      b.style.opacity = (1 - a * 0.55).toFixed(3);
+    });
+  }
+  function queueTilt() { if (!tiltQueued) { tiltQueued = true; requestAnimationFrame(tilt); } }
+  window.addEventListener("scroll", queueTilt, { passive: true });
+  window.addEventListener("resize", queueTilt);
   $("to-login").addEventListener("click", function () { showGate("login"); });
   $("to-forgot").addEventListener("click", function () {
     var ident = $("gate-ident").value.trim();
