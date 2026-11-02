@@ -12,7 +12,7 @@
 <link rel="icon" href="/img/favicon-48.png" type="image/png" sizes="48x48">
 <link rel="icon" href="/img/icon-512.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-<meta name="theme-color" content="#F4F1E8">
+<meta name="theme-color" content="#EDF2EC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="overfocusAI">
 <meta property="og:title" content="overfocusAI">
@@ -319,42 +319,43 @@ body {
 .affirm-text { border-radius: 0.9rem; }
 .group { font-size: 1rem; }
 .nav { box-shadow: 0 12px 30px -14px rgba(14, 26, 19, 0.35); }
-/* Smile Todo look: notebook paper, handwritten titles under a marker stroke, pastel cards,
-   a floating pill nav. The paper, pattern and card colours come from the chosen style
-   (Settings → Background and cards); dark mode swaps them for night paper. */
+/* Green engineering pad: sage paper with a green grid, forest-ink text, the brand green #34a853
+   on cards and the "+", and one step deeper green (#1E7A3C) for buttons and links so actions
+   stand apart from the cards. The paper, pattern and card colours come from the chosen style
+   (Settings → Background and cards); dark mode swaps them for a night-forest pad. */
 :root {
-  --bg: #F4F1E8; --surface: #FBF9F4; --surface-2: #EFEBE2; --ink: #1D1D1F; --muted: #8A877F; --line: #E6E1D6;
-  --green: #1677F2; --green-deep: #1A5FC0; --mint: #DCEAF8; --on-green: #1D1D1F; --btn-ink: #ffffff;
-  --scrim: rgba(40, 36, 28, 0.38);
-  --shadow: 0 1px 0 rgba(60, 50, 30, 0.04), 0 10px 24px -16px rgba(60, 50, 30, 0.28);
+  --bg: #EDF2EC; --surface: #FAFCF9; --surface-2: #E6EEE6; --ink: #10261A; --muted: #5A6D60; --line: #D5E1D6;
+  --green: #1E7A3C; --green-deep: #17602F; --mint: #CFE9D6; --on-green: #10261A; --btn-ink: #ffffff;
+  --scrim: rgba(16, 38, 26, 0.38);
+  --shadow: 0 1px 0 rgba(16, 38, 26, 0.04), 0 10px 24px -16px rgba(16, 38, 26, 0.28);
   --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
   --brand: "Caveat", "Segoe Print", cursive;
   --display: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
   --body: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --paper: #F4F1E8; --paper-img: none; --grid: rgba(120, 165, 210, 0.35); --mark: #B7D3EE;
-  --card-a: #F6D86B; --card-b: #F4A79B; --card-c: #C7DDF0;
+  --paper: #EDF2EC; --paper-img: none; --grid: rgba(52, 168, 83, 0.16); --mark: rgba(52, 168, 83, 0.35);
+  --card-a: #34a853; --card-b: #BFE3C8; --card-c: #DCEBDF;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #161615; --surface: #201F1D; --surface-2: #2A2926; --ink: #F2EFE8; --muted: #A39F96; --line: #34322E;
-    --green: #3B8EEA; --green-deep: #8DC0FA; --mint: #1F3247; --on-green: #F2EFE8; --btn-ink: #ffffff;
+    --bg: #0D1510; --surface: #152019; --surface-2: #1D2A21; --ink: #E6F0E8; --muted: #93A69A; --line: #253529;
+    --green: #34a853; --green-deep: #74D392; --mint: #1B3324; --on-green: #E6F0E8; --btn-ink: #06140B;
     --scrim: rgba(0, 0, 0, 0.6); --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 26px -16px rgba(0, 0, 0, 0.8);
     color-scheme: dark;
   }
   :root:not([data-theme="light"]) body {
-    --paper: #161615; --paper-img: none; --surface: #201F1D; --grid: rgba(255, 255, 255, 0.06); --mark: rgba(59, 142, 234, 0.45);
-    --card-a: #4A3F17; --card-b: #4A2A25; --card-c: #1F3247;
+    --paper: #0D1510; --paper-img: none; --surface: #152019; --grid: rgba(52, 168, 83, 0.09); --mark: rgba(52, 168, 83, 0.4);
+    --card-a: #34a853; --card-b: #1F4A2C; --card-c: #1B3324;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #161615; --surface: #201F1D; --surface-2: #2A2926; --ink: #F2EFE8; --muted: #A39F96; --line: #34322E;
-  --green: #3B8EEA; --green-deep: #8DC0FA; --mint: #1F3247; --on-green: #F2EFE8; --btn-ink: #ffffff;
+  --bg: #0D1510; --surface: #152019; --surface-2: #1D2A21; --ink: #E6F0E8; --muted: #93A69A; --line: #253529;
+  --green: #34a853; --green-deep: #74D392; --mint: #1B3324; --on-green: #E6F0E8; --btn-ink: #06140B;
   --scrim: rgba(0, 0, 0, 0.6); --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 26px -16px rgba(0, 0, 0, 0.8);
   color-scheme: dark;
 }
 :root[data-theme="dark"] body {
-  --paper: #161615; --paper-img: none; --surface: #201F1D; --grid: rgba(255, 255, 255, 0.06); --mark: rgba(59, 142, 234, 0.45);
-  --card-a: #4A3F17; --card-b: #4A2A25; --card-c: #1F3247;
+  --paper: #0D1510; --paper-img: none; --surface: #152019; --grid: rgba(52, 168, 83, 0.09); --mark: rgba(52, 168, 83, 0.4);
+  --card-a: #34a853; --card-b: #1F4A2C; --card-c: #1B3324;
 }
 
 body {
@@ -437,7 +438,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .empty strong { color: var(--muted); font-weight: 600; }
 
 /* Floating pill nav; the + is a round sticker */
-.nav { background: var(--surface); border: 0; border-radius: 999px; box-shadow: 0 10px 30px -12px rgba(60, 50, 30, 0.35); }
+.nav { background: var(--surface); border: 0; border-radius: 999px; box-shadow: 0 10px 30px -12px rgba(16, 38, 26, 0.35); }
 .tab { color: var(--muted); font-size: clamp(0.56rem, 2.45vw, 0.72rem); letter-spacing: -0.02em; }
 .nav { padding-inline: 0.3rem; grid-template-columns: repeat(2, minmax(0, 1fr)) auto repeat(2, minmax(0, 1fr)); }
 .add { margin-inline: 0.15rem; }
@@ -1935,10 +1936,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   // Background and card styles: paper colour, pattern, marker and the three pastel card colours.
   var BG_KEY = "overthinkers-bg";
   var BG_STYLES = [
-    { id: "grid", pattern: "grid", paper: "#F4F1E8", surface: "#FBF9F4", grid: "rgba(120,165,210,.35)", mark: "#B7D3EE", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
-    { id: "lines", pattern: "lines", paper: "#F8F5EE", surface: "#FFFDF8", grid: "rgba(120,165,210,.42)", mark: "#F5C9C1", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
-    { id: "dots", pattern: "dots", paper: "#F3F2EE", surface: "#FCFBF8", grid: "rgba(70,70,70,.22)", mark: "#D6E8C3", a: "#F3E3A1", b: "#E9C3BC", c: "#D3E0EA" },
-    { id: "plain", pattern: "none", paper: "#F7F3EA", surface: "#FFFDF8", grid: "transparent", mark: "#F6D86B", a: "#F6D86B", b: "#F4A79B", c: "#C7DDF0" },
+    { id: "grid", pattern: "grid", paper: "#EDF2EC", surface: "#FAFCF9", grid: "rgba(52,168,83,.16)", mark: "rgba(52,168,83,.35)", a: "#34a853", b: "#BFE3C8", c: "#DCEBDF" },
+    { id: "lines", pattern: "lines", paper: "#F1F5EF", surface: "#FCFDFB", grid: "rgba(52,168,83,.22)", mark: "rgba(52,168,83,.35)", a: "#34a853", b: "#BFE3C8", c: "#DCEBDF" },
+    { id: "dots", pattern: "dots", paper: "#EEF2EE", surface: "#FBFCFB", grid: "rgba(16,38,26,.18)", mark: "rgba(52,168,83,.35)", a: "#34a853", b: "#BFE3C8", c: "#DCEBDF" },
+    { id: "plain", pattern: "none", paper: "#F2F5F1", surface: "#FCFDFB", grid: "transparent", mark: "rgba(52,168,83,.35)", a: "#34a853", b: "#BFE3C8", c: "#DCEBDF" },
     { id: "peach", pattern: "grid", paper: "#FCE9E1", surface: "#FFF7F3", grid: "rgba(232,140,120,.25)", mark: "#F8BFAF", a: "#FBD3AE", b: "#F4A79B", c: "#F6D7E2" },
     { id: "lemon", pattern: "lines", paper: "#FBF4D6", surface: "#FFFCEE", grid: "rgba(214,176,60,.30)", mark: "#F6D86B", a: "#F6D86B", b: "#FBE7A6", c: "#D4E8BF" },
     { id: "mint", pattern: "dots", paper: "#E5F4EB", surface: "#F6FBF8", grid: "rgba(70,160,110,.28)", mark: "#BFE6CE", a: "#C4EAD3", b: "#F6D86B", c: "#CFE6F3" },
