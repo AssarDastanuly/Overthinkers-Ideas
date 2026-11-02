@@ -528,7 +528,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .brand { font-family: var(--body); font-weight: 800; font-size: 1.08rem; letter-spacing: -0.01em; gap: 0.6rem; }
 .brand img { width: 30px; height: 30px; border-radius: 9px; flex: none; }
 .brand .brand-logo { width: auto; height: 44px; border-radius: 12px; }
-.author-note { margin: 0.4rem 0 0; padding: 1rem 1.1rem; background: var(--card-a); border-radius: 18px; color: var(--ink); }
+.author-note { margin: 0; padding: 1rem 1.1rem; background: var(--card-a); border-radius: 18px; color: var(--ink); }
 .author-note p { margin: 0; color: var(--ink); font-family: var(--hand); font-size: 1.35rem; line-height: 1.25; }
 .author-note cite { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; font-weight: 700; opacity: 0.7; }
 </style>
@@ -549,6 +549,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       <span id="greet" hidden></span>
     </div>
   </header>
+
+  <!-- Founder note: first thing a signed-out visitor reads -->
+  <blockquote class="author-note" id="author-note">
+    <p data-i18n="aboutNote">Не накручивайте себя — записывайте свои планы и идеи здесь. У меня тоже была эта проблема, поэтому и появился этот сайт. Пользуйтесь и делайте жизнь позитивнее!</p>
+    <cite>Assar Dastanuly, <span data-i18n="aboutAuthor">Founder</span></cite>
+  </blockquote>
 
   <!-- Gate: sign in, sign up, password reset -->
   <section class="card gate" id="gate" data-i18n-aria="gateAria" aria-label="Вход в архив">
@@ -610,10 +616,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       <li><b data-i18n="aboutCalT">Календарь</b> — <span data-i18n="aboutCal">желаю, чтобы вы были продуктивнее.</span></li>
       <li><b data-i18n="aboutAffT">Аффирмации</b> — <span data-i18n="aboutAff">желаю, чтобы вы достигали своих целей.</span></li>
     </ul>
-    <blockquote class="author-note">
-      <p data-i18n="aboutNote">Не накручивайте себя — записывайте свои планы и идеи здесь. У меня тоже была эта проблема, поэтому и появился этот сайт. Пользуйтесь и делайте жизнь позитивнее!</p>
-      <cite>Assar Dastanuly, <span data-i18n="aboutAuthor">Founder</span></cite>
-    </blockquote>
   </section>
 
   <div id="app" hidden>
@@ -1686,7 +1688,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   function showGate(next) {
     mode = next;
     var reg = next === "register", forgotMode = next === "forgot", reset = next === "reset", login = next === "login";
-    gate.hidden = false; app.hidden = true; $("about").hidden = false;
+    gate.hidden = false; app.hidden = true; $("about").hidden = false; $("author-note").hidden = false;
     $("lang").hidden = false; $("bar-tag").hidden = false;
     gateWait.hidden = true; gateFields.hidden = false;
     gateError.hidden = true; gateOk.hidden = true; gateSubmit.hidden = false;
@@ -1825,6 +1827,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     }
     gate.hidden = true;
     $("about").hidden = true;
+    $("author-note").hidden = true;
     app.hidden = false;
     $("lang").hidden = true;
     $("bar-tag").hidden = true;
