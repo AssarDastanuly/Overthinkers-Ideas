@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://overthinkers-ideas.vercel.app/sitemap.xml
+Sitemap: https://overfocusai.vercel.app/sitemap.xml
