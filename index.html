@@ -533,6 +533,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .brand { font-family: var(--body); font-weight: 800; font-size: 1.08rem; letter-spacing: -0.01em; gap: 0.6rem; }
 .brand img { width: 30px; height: 30px; border-radius: 9px; flex: none; }
 .brand .brand-logo { width: auto; height: 44px; border-radius: 12px; }
+.hero { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-align: center; padding: 2.2rem 0.5rem 1.4rem; color: var(--ink); }
+.hero h1 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 9vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; }
+.hero mark { display: inline-block; background: var(--ink); color: var(--bg); padding: 0 0.18em; border-radius: 0.18em; transform: rotate(-2deg); }
+.hero-q { margin: 0; font-family: var(--hand); font-weight: 700; font-size: clamp(1.7rem, 7vw, 2.2rem); line-height: 1.1; }
+.hero-lead { margin: 0; max-width: 30rem; color: var(--muted); font-size: 1.05rem; }
+.hero .primary { margin-top: 0.4rem; padding: 0.95rem 2rem; border-radius: 999px; font-size: 1.05rem; }
+.hero-source { font-size: 0.78rem; color: var(--muted); }
 .author-note { margin: 0; padding: 1rem 1.1rem; background: var(--card-a); border-radius: 18px; color: var(--ink); }
 .author-note p { margin: 0; color: var(--ink); font-family: var(--hand); font-size: 1.35rem; line-height: 1.25; }
 .author-note cite { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; font-weight: 700; opacity: 0.7; }
@@ -554,6 +561,15 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       <span id="greet" hidden></span>
     </div>
   </header>
+
+  <!-- First screen for signed-out visitors -->
+  <section class="hero" id="hero" hidden>
+    <h1><span data-i18n="heroA">У человека</span> <mark data-i18n="heroNum">6 200</mark> <span data-i18n="heroB">мыслей в день.</span></h1>
+    <p class="hero-q" data-i18n="heroQ">Ты запомнишь все?</p>
+    <p class="hero-lead" data-i18n="heroLead">Запиши мысль за секунду — и она перестанет крутиться в голове.</p>
+    <button type="button" class="primary" id="hero-start" data-i18n="heroCta">Начать бесплатно</button>
+    <a class="hero-source" href="https://www.nature.com/articles/s41467-020-17255-9" target="_blank" rel="noopener" data-i18n="heroSource">По данным Queen's University, 2020</a>
+  </section>
 
   <!-- Founder note: first thing a signed-out visitor reads -->
   <blockquote class="author-note" id="author-note">
@@ -934,7 +950,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var LOCALE = { ru: "ru-RU", kk: "kk-KZ", en: "en-US", fr: "fr-FR", zh: "zh-CN", es: "es-ES" };
   var I18N = {
     ru: {
-      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", showPass: "Показать пароль", opening: "Открываем архив…",
+      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", heroA: "У человека", heroNum: "6 200", heroB: "мыслей в день.", heroQ: "Ты запомнишь все?", heroLead: "Запиши мысль за секунду — и она перестанет крутиться в голове.", heroCta: "Начать бесплатно", heroSource: "По данным Queen's University, 2020", showPass: "Показать пароль", opening: "Открываем архив…",
       name: "Имя", surname: "Фамилия", copy: "Скопировать", copied: "Скопировано", recCode: "Код восстановления",
       pass: "Пароль", newPass: "Новый пароль", pass2: "Пароль ещё раз", signIn: "Войти", backLogin: "Назад ко входу",
       forgot: "Забыли пароль?", byCode: "Восстановить по коду", wipe: "Стереть всё и начать заново", cancel: "Отмена",
@@ -978,7 +994,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
     },
     kk: {
-      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", showPass: "Құпиясөзді көрсету", opening: "Мұрағат ашылуда…",
+      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", heroA: "Адамда күніне", heroNum: "6 200", heroB: "ой болады.", heroQ: "Бәрін есте сақтай аласың ба?", heroLead: "Ойды бір секундта жаз — сонда ол басыңда айнала бермейді.", heroCta: "Тегін бастау", heroSource: "Queen's University деректері, 2020", showPass: "Құпиясөзді көрсету", opening: "Мұрағат ашылуда…",
       name: "Аты", surname: "Тегі", copy: "Көшіру", copied: "Көшірілді", recCode: "Қалпына келтіру коды",
       pass: "Құпиясөз", newPass: "Жаңа құпиясөз", pass2: "Құпиясөзді қайталаңыз", signIn: "Кіру", backLogin: "Кіруге оралу",
       forgot: "Құпиясөзді ұмыттыңыз ба?", byCode: "Код арқылы қалпына келтіру", wipe: "Бәрін өшіріп, қайта бастау", cancel: "Бас тарту",
@@ -1022,7 +1038,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
     },
     en: {
-      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", showPass: "Show password", opening: "Opening the archive…",
+      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", heroA: "A person has", heroNum: "6,200", heroB: "thoughts a day.", heroQ: "Will you remember them all?", heroLead: "Write a thought down in a second, and it stops spinning in your head.", heroCta: "Start for free", heroSource: "Source: Queen's University, 2020", showPass: "Show password", opening: "Opening the archive…",
       name: "First name", surname: "Last name", copy: "Copy", copied: "Copied", recCode: "Recovery code",
       pass: "Password", newPass: "New password", pass2: "Repeat password", signIn: "Sign in", backLogin: "Back to sign-in",
       forgot: "Forgot password?", byCode: "Recover with code", wipe: "Erase everything and start over", cancel: "Cancel",
@@ -1066,7 +1082,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
     },
     fr: {
-      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", showPass: "Afficher le mot de passe", opening: "Ouverture de l'archive…",
+      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", heroA: "Nous avons", heroNum: "6 200", heroB: "pensées par jour.", heroQ: "Tu vas toutes t’en souvenir ?", heroLead: "Note une pensée en une seconde, et elle arrête de tourner dans ta tête.", heroCta: "Commencer gratuitement", heroSource: "Source : Queen's University, 2020", showPass: "Afficher le mot de passe", opening: "Ouverture de l'archive…",
       name: "Prénom", surname: "Nom", copy: "Copier", copied: "Copié", recCode: "Code de récupération",
       pass: "Mot de passe", newPass: "Nouveau mot de passe", pass2: "Répétez le mot de passe", signIn: "Se connecter", backLogin: "Retour à la connexion",
       forgot: "Mot de passe oublié ?", byCode: "Récupérer avec le code", wipe: "Tout effacer et recommencer", cancel: "Annuler",
@@ -1110,7 +1126,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
     },
     zh: {
-      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", showPass: "显示密码", opening: "正在打开档案…",
+      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", heroA: "人每天有", heroNum: "6200", heroB: "个念头。", heroQ: "你能全都记住吗？", heroLead: "一秒记下念头，它就不再在脑海里打转。", heroCta: "免费开始", heroSource: "数据来源：Queen's University，2020", showPass: "显示密码", opening: "正在打开档案…",
       name: "名字", surname: "姓氏", copy: "复制", copied: "已复制", recCode: "恢复码",
       pass: "密码", newPass: "新密码", pass2: "再次输入密码", signIn: "登录", backLogin: "返回登录",
       forgot: "忘记密码？", byCode: "用恢复码找回", wipe: "清空全部并重新开始", cancel: "取消",
@@ -1154,7 +1170,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
     },
     es: {
-      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", showPass: "Mostrar contraseña", opening: "Abriendo el archivo…",
+      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", heroA: "Una persona tiene", heroNum: "6.200", heroB: "pensamientos al día.", heroQ: "¿Los vas a recordar todos?", heroLead: "Anota un pensamiento en un segundo y dejará de dar vueltas en tu cabeza.", heroCta: "Empezar gratis", heroSource: "Fuente: Queen's University, 2020", showPass: "Mostrar contraseña", opening: "Abriendo el archivo…",
       name: "Nombre", surname: "Apellido", copy: "Copiar", copied: "Copiado", recCode: "Código de recuperación",
       pass: "Contraseña", newPass: "Nueva contraseña", pass2: "Repite la contraseña", signIn: "Entrar", backLogin: "Volver al inicio de sesión",
       forgot: "¿Olvidaste la contraseña?", byCode: "Recuperar con el código", wipe: "Borrar todo y empezar de nuevo", cancel: "Cancelar",
@@ -1704,7 +1720,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   function showGate(next) {
     mode = next;
     var reg = next === "register", forgotMode = next === "forgot", reset = next === "reset", login = next === "login";
-    gate.hidden = false; app.hidden = true; $("author-note").hidden = false;
+    gate.hidden = false; app.hidden = true; $("author-note").hidden = false; $("hero").hidden = false;
     $("lang").hidden = false; $("bar-tag").hidden = false;
     gateWait.hidden = true; gateFields.hidden = false;
     gateError.hidden = true; gateOk.hidden = true; gateSubmit.hidden = false;
@@ -1819,6 +1835,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     busy = false; gateSubmit.disabled = false;
   });
   $("to-register").addEventListener("click", function () { showGate("register"); });
+  $("hero-start").addEventListener("click", function () {
+    showGate("register");
+    gate.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   $("to-login").addEventListener("click", function () { showGate("login"); });
   $("to-forgot").addEventListener("click", function () {
     var ident = $("gate-ident").value.trim();
@@ -1847,6 +1867,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     }
     gate.hidden = true;
     $("author-note").hidden = true;
+    $("hero").hidden = true;
     app.hidden = false;
     $("lang").hidden = true;
     $("bar-tag").hidden = true;
