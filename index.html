@@ -565,24 +565,24 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         <p class="hint" id="gate-lead"></p>
         <div class="field" id="field-ident">
           <label for="gate-ident" data-i18n="identLabel">Имя пользователя или почта</label>
-          <input id="gate-ident" type="text" autocomplete="username" autocapitalize="none" spellcheck="false">
+          <input id="gate-ident" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false">
         </div>
         <div class="field" id="field-uname">
           <label for="gate-uname" data-i18n="uname">Имя пользователя</label>
-          <input id="gate-uname" type="text" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false">
+          <input id="gate-uname" name="new-username" type="text" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false">
           <span class="hint" data-i18n="unameHint">3–24 символа: латинские буквы, цифры, _ или .</span>
         </div>
         <div class="field" id="field-email">
           <label for="gate-email" data-i18n="email">Почта</label>
-          <input id="gate-email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false">
+          <input id="gate-email" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false">
         </div>
         <div class="field" id="field-pass">
           <label for="gate-pass" id="gate-pass-label" data-i18n="pass">Пароль</label>
-          <input id="gate-pass" type="password" autocomplete="current-password">
+          <input id="gate-pass" name="password" type="password" autocomplete="current-password">
         </div>
         <div class="field" id="field-pass2">
           <label for="gate-pass2" data-i18n="pass2">Пароль ещё раз</label>
-          <input id="gate-pass2" type="password" autocomplete="new-password">
+          <input id="gate-pass2" name="password-repeat" type="password" autocomplete="new-password">
         </div>
         <p class="gate-error" id="gate-error" role="alert" hidden></p>
         <p class="gate-ok" id="gate-ok" role="status" hidden></p>
@@ -1705,6 +1705,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     return m.indexOf("password") !== -1 ? t("ePassShort", { n: MIN_PASS }) : t(errKey(error));
   }
 
+  // Safari and iCloud Keychain pick the login up from the form; Chrome and Android get told explicitly,
+  // since a sign-in done by script does not always trigger their «Save password?» prompt.
+  function rememberLogin(id, pass) {
+    if (!window.PasswordCredential || !navigator.credentials) return;
+    try { navigator.credentials.store(new PasswordCredential({ id: id, password: pass })).catch(function () {}); } catch (e) {}
+  }
+
   async function login() {
     var ident = $("gate-ident").value.trim(), pass = $("gate-pass").value;
     if (!ident || !pass) return fail(t("eLogin"));
@@ -1721,6 +1728,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       var m = String(res.error.message || "").toLowerCase();
       return fail(t(m.indexOf("not confirmed") !== -1 ? "eConfirm" : m.indexOf("invalid") !== -1 ? "eLogin" : errKey(res.error)));
     }
+    rememberLogin(ident, pass);
     await enter(res.data.user);
   }
   async function register() {
@@ -1747,6 +1755,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       if (m.indexOf("database error") !== -1) return fail(t("eUnameTaken"));
       return fail(passwordProblem(res.error));
     }
+    rememberLogin(uname, pass);
     if (res.data.session) return enter(res.data.user);
     // With e-mail confirmation on, an address that is already registered comes back with no identities.
     if (res.data.user && res.data.user.identities && res.data.user.identities.length === 0) return fail(t("eEmailTaken"));
