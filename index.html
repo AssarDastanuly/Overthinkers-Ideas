@@ -121,8 +121,12 @@ h2, h3, p { margin: 0; }
 
 .stats { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0.85rem; }
 .stat { display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem; }
-.stat.deadline { width: 100%; border: 0; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
-.stat.deadline small { font-size: 0.85rem; opacity: 0.8; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.stat.upcoming { width: 100%; border: 0; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.stat.upcoming small { font-size: 0.85rem; opacity: 0.8; }
+.upcoming-list { list-style: none; margin: 0.15rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.upcoming-list li { display: flex; flex-direction: column; min-width: 0; font-size: 0.92rem; font-weight: 600; line-height: 1.25; }
+.upcoming-list b { font-size: 0.75rem; font-weight: 700; opacity: 0.65; font-variant-numeric: tabular-nums; }
+.upcoming-list span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .stat .num { font-family: var(--display); font-weight: 800; font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; }
 .stat.feature { grid-row: span 2; background: var(--green); color: var(--on-green); position: relative; overflow: hidden; min-height: 9.5rem; }
 .stat.feature .card-title { color: var(--on-green); opacity: 0.85; }
@@ -415,6 +419,13 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .link { color: var(--green); }
 .field input, .field textarea, .search, .affirm-card textarea { background: var(--surface-2); border: 1px solid transparent; border-radius: 14px; }
 .field input[readonly] { background: transparent; }
+.pass-wrap { position: relative; }
+.field .pass-wrap input { padding-right: 3rem; }
+.pass-eye { position: absolute; top: 50%; right: 0.4rem; transform: translateY(-50%); width: 2.4rem; height: 2.4rem; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0.7rem; background: transparent; color: var(--muted); cursor: pointer; }
+.pass-eye:hover, .pass-eye.on { color: var(--ink); }
+.pass-eye svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pass-eye .slash { display: none; }
+.pass-eye.on .slash { display: inline; }
 .choice button { background: var(--surface-2); border-color: transparent; }
 .choice button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .voice { background: var(--card-c); color: var(--ink); }
@@ -610,10 +621,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
           <span class="num" id="stat-total">0</span>
           <small id="stat-last" data-i18n="none">Пока ни одной</small>
         </div>
-        <button type="button" class="card stat deadline" id="deadline-card">
-          <span class="card-title" data-i18n="deadline">Дедлайн</span>
-          <span class="num" id="stat-deadline">—</span>
-          <small id="deadline-what" data-i18n="noDeadline">Нет задач в календаре</small>
+        <button type="button" class="card stat upcoming" id="upcoming-card">
+          <span class="card-title" data-i18n="upcoming">Скоро</span>
+          <ul class="upcoming-list" id="upcoming-list"></ul>
+          <small id="upcoming-empty" data-i18n="noDeadline">Нет задач в календаре</small>
         </button>
       </div>
 
@@ -924,12 +935,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var LOCALE = { ru: "ru-RU", kk: "kk-KZ", en: "en-US", fr: "fr-FR", zh: "zh-CN", es: "es-ES" };
   var I18N = {
     ru: {
-      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", opening: "Открываем архив…",
+      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", showPass: "Показать пароль", opening: "Открываем архив…",
       name: "Имя", surname: "Фамилия", copy: "Скопировать", copied: "Скопировано", recCode: "Код восстановления",
       pass: "Пароль", newPass: "Новый пароль", pass2: "Пароль ещё раз", signIn: "Войти", backLogin: "Назад ко входу",
       forgot: "Забыли пароль?", byCode: "Восстановить по коду", wipe: "Стереть всё и начать заново", cancel: "Отмена",
       hello: "Привет,", quick: "Что придумал? Запиши сразу", total: "Всего идей", none: "Пока ни одной",
-      today: "Сегодня", deadline: "Дедлайн", noDeadline: "Нет задач в календаре",  week: "На этой неделе", activity: "Сколько я накручиваю себя", perDay: "идей в день, эта неделя",
+      today: "Сегодня", upcoming: "Скоро", noDeadline: "Нет задач в календаре",  week: "На этой неделе", activity: "Сколько я накручиваю себя", perDay: "идей в день, эта неделя",
       chartAria: "Активность за неделю", recent: "Последние идеи", all: "Весь архив", emptyT: "Здесь пока пусто",
       emptyHome: "Нажмите «+» и запишите первую идею.", archive: "Архив", search: "Поиск по идеям",
       emptyArch: "Первая идея появится здесь, как только вы её запишете.", noMatchT: "Ничего не найдено",
@@ -968,12 +979,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
     },
     kk: {
-      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", opening: "Мұрағат ашылуда…",
+      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", showPass: "Құпиясөзді көрсету", opening: "Мұрағат ашылуда…",
       name: "Аты", surname: "Тегі", copy: "Көшіру", copied: "Көшірілді", recCode: "Қалпына келтіру коды",
       pass: "Құпиясөз", newPass: "Жаңа құпиясөз", pass2: "Құпиясөзді қайталаңыз", signIn: "Кіру", backLogin: "Кіруге оралу",
       forgot: "Құпиясөзді ұмыттыңыз ба?", byCode: "Код арқылы қалпына келтіру", wipe: "Бәрін өшіріп, қайта бастау", cancel: "Бас тарту",
       hello: "Сәлем,", quick: "Не ойладың? Бірден жаз", total: "Барлық идея", none: "Әзірге жоқ",
-      today: "Бүгін", deadline: "Дедлайн", noDeadline: "Күнтізбеде тапсырма жоқ",  week: "Осы аптада", activity: "Қаншалықты көп ойланамын", perDay: "күніне идея, осы апта",
+      today: "Бүгін", upcoming: "Жақында", noDeadline: "Күнтізбеде тапсырма жоқ",  week: "Осы аптада", activity: "Қаншалықты көп ойланамын", perDay: "күніне идея, осы апта",
       chartAria: "Осы аптадағы белсенділік", recent: "Соңғы идеялар", all: "Бүкіл мұрағат", emptyT: "Әзірге бос",
       emptyHome: "«+» басып, алғашқы идеяңызды жазыңыз.", archive: "Мұрағат", search: "Идеялардан іздеу",
       emptyArch: "Алғашқы идеяңыз жазылған бойда осында пайда болады.", noMatchT: "Ештеңе табылмады",
@@ -1012,12 +1023,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
     },
     en: {
-      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", opening: "Opening the archive…",
+      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", showPass: "Show password", opening: "Opening the archive…",
       name: "First name", surname: "Last name", copy: "Copy", copied: "Copied", recCode: "Recovery code",
       pass: "Password", newPass: "New password", pass2: "Repeat password", signIn: "Sign in", backLogin: "Back to sign-in",
       forgot: "Forgot password?", byCode: "Recover with code", wipe: "Erase everything and start over", cancel: "Cancel",
       hello: "What's up,", quick: "Got an idea? Write it down now", total: "Total ideas", none: "None yet",
-      today: "Today", deadline: "Deadline", noDeadline: "No tasks in your calendar",  week: "This week", activity: "How much I overthink", perDay: "ideas per day, this week",
+      today: "Today", upcoming: "Coming up", noDeadline: "No tasks in your calendar",  week: "This week", activity: "How much I overthink", perDay: "ideas per day, this week",
       chartAria: "Activity this week", recent: "Latest ideas", all: "Full archive", emptyT: "Nothing here yet",
       emptyHome: "Tap “+” and write your first idea.", archive: "Archive", search: "Search ideas",
       emptyArch: "Your first idea will appear here as soon as you write it.", noMatchT: "Nothing found",
@@ -1056,12 +1067,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
     },
     fr: {
-      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", opening: "Ouverture de l'archive…",
+      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", showPass: "Afficher le mot de passe", opening: "Ouverture de l'archive…",
       name: "Prénom", surname: "Nom", copy: "Copier", copied: "Copié", recCode: "Code de récupération",
       pass: "Mot de passe", newPass: "Nouveau mot de passe", pass2: "Répétez le mot de passe", signIn: "Se connecter", backLogin: "Retour à la connexion",
       forgot: "Mot de passe oublié ?", byCode: "Récupérer avec le code", wipe: "Tout effacer et recommencer", cancel: "Annuler",
       hello: "Salut,", quick: "Une idée ? Notez-la tout de suite", total: "Total des idées", none: "Aucune pour l'instant",
-      today: "Aujourd'hui", deadline: "Échéance", noDeadline: "Aucune tâche dans le calendrier", week: "Cette semaine", activity: "À quel point je réfléchis trop", perDay: "idées par jour, cette semaine",
+      today: "Aujourd'hui", upcoming: "À venir", noDeadline: "Aucune tâche dans le calendrier", week: "Cette semaine", activity: "À quel point je réfléchis trop", perDay: "idées par jour, cette semaine",
       chartAria: "Activité de la semaine", recent: "Dernières idées", all: "Toute l'archive", emptyT: "Rien ici pour l'instant",
       emptyHome: "Appuyez sur « + » et notez votre première idée.", archive: "Archive", search: "Rechercher dans les idées",
       emptyArch: "Votre première idée apparaîtra ici dès que vous l'aurez notée.", noMatchT: "Aucun résultat",
@@ -1100,12 +1111,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
     },
     zh: {
-      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", opening: "正在打开档案…",
+      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", showPass: "显示密码", opening: "正在打开档案…",
       name: "名字", surname: "姓氏", copy: "复制", copied: "已复制", recCode: "恢复码",
       pass: "密码", newPass: "新密码", pass2: "再次输入密码", signIn: "登录", backLogin: "返回登录",
       forgot: "忘记密码？", byCode: "用恢复码找回", wipe: "清空全部并重新开始", cancel: "取消",
       hello: "你好，", quick: "有想法了？马上记下来", total: "想法总数", none: "还没有",
-      today: "今天", deadline: "截止日期", noDeadline: "日历中没有任务", week: "本周", activity: "我想太多的程度", perDay: "每天的想法数，本周",
+      today: "今天", upcoming: "即将到来", noDeadline: "日历中没有任务", week: "本周", activity: "我想太多的程度", perDay: "每天的想法数，本周",
       chartAria: "本周活跃度", recent: "最近的想法", all: "全部档案", emptyT: "这里还是空的",
       emptyHome: "点击“+”，记下第一个想法。", archive: "档案", search: "搜索想法",
       emptyArch: "记下第一个想法后，它会出现在这里。", noMatchT: "没有找到",
@@ -1144,12 +1155,12 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
     },
     es: {
-      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", opening: "Abriendo el archivo…",
+      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", showPass: "Mostrar contraseña", opening: "Abriendo el archivo…",
       name: "Nombre", surname: "Apellido", copy: "Copiar", copied: "Copiado", recCode: "Código de recuperación",
       pass: "Contraseña", newPass: "Nueva contraseña", pass2: "Repite la contraseña", signIn: "Entrar", backLogin: "Volver al inicio de sesión",
       forgot: "¿Olvidaste la contraseña?", byCode: "Recuperar con el código", wipe: "Borrar todo y empezar de nuevo", cancel: "Cancelar",
       hello: "Hola,", quick: "¿Una idea? Anótala ya", total: "Ideas en total", none: "Ninguna todavía",
-      today: "Hoy", deadline: "Fecha límite", noDeadline: "No hay tareas en el calendario", week: "Esta semana", activity: "Cuánto pienso de más", perDay: "ideas por día, esta semana",
+      today: "Hoy", upcoming: "Próximamente", noDeadline: "No hay tareas en el calendario", week: "Esta semana", activity: "Cuánto pienso de más", perDay: "ideas por día, esta semana",
       chartAria: "Actividad de la semana", recent: "Últimas ideas", all: "Todo el archivo", emptyT: "Aquí no hay nada todavía",
       emptyHome: "Pulsa «+» y anota tu primera idea.", archive: "Archivo", search: "Buscar en las ideas",
       emptyArch: "Tu primera idea aparecerá aquí en cuanto la anotes.", noMatchT: "No se encontró nada",
@@ -1244,6 +1255,30 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var editingId = null, editDraft = "";
 
   function setNote() { note.textContent = user ? t("noteServer") : ""; }
+  // Password fields get an eye button: a tap shows the password for 5 seconds, then it hides again.
+  Array.prototype.forEach.call(document.querySelectorAll('.field input[type="password"]'), function (input) {
+    var wrap = document.createElement("div");
+    wrap.className = "pass-wrap";
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    var eye = document.createElement("button");
+    eye.type = "button";
+    eye.className = "pass-eye";
+    eye.setAttribute("data-i18n-aria", "showPass");
+    eye.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg>';
+    wrap.appendChild(eye);
+    var timer = null;
+    function conceal() { clearTimeout(timer); input.type = "password"; eye.classList.remove("on"); }
+    eye.addEventListener("click", function () {
+      if (input.type === "text") return conceal();
+      input.type = "text";
+      eye.classList.add("on");
+      timer = setTimeout(conceal, 5000);
+    });
+    // Hide again before submitting, so password managers still see a password field.
+    if (input.form) input.form.addEventListener("submit", conceal, true);
+  });
+
   function applyLang() {
     document.documentElement.lang = lang;
     Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (e) { e.textContent = t(e.getAttribute("data-i18n")); });
@@ -1367,22 +1402,34 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     return li;
   }
 
-  // The nearest unfinished task or event from today on; a tap opens its day in the calendar.
-  var deadlineItem = null;
-  function renderDeadline() {
-    var today = dayStart(Date.now());
-    deadlineItem = calData.filter(function (it) { return it.kind !== "idea" && !it.done && dayStart(it.start) >= today; })
-      .sort(function (x, y) { return x.start - y.start; })[0] || null;
-    $("deadline-what").hidden = !!deadlineItem; // only the empty state gets a hint
-    if (!deadlineItem) {
-      $("stat-deadline").textContent = "—";
-      $("deadline-what").textContent = t("noDeadline");
-      return;
-    }
-    $("stat-deadline").textContent = Math.round((dayStart(deadlineItem.start) - today) / 864e5);
+  // The next three unfinished tasks or events; a tap opens the calendar on the first one's day.
+  var upcoming = [];
+  function renderUpcoming() {
+    var now = Date.now(), today = dayStart(now), list = $("upcoming-list");
+    upcoming = calData.filter(function (it) {
+      if (it.kind === "idea" || it.done) return false;
+      // tasks stay until the end of their day; events go once they are over
+      return it.allDay || it.kind === "task" ? dayStart(it.start) >= today : (it.end || it.start) >= now;
+    }).sort(function (x, y) { return x.start - y.start; }).slice(0, 3);
+    list.textContent = "";
+    $("upcoming-empty").hidden = upcoming.length > 0;
+    upcoming.forEach(function (it) {
+      var days = Math.round((dayStart(it.start) - today) / 864e5), day;
+      if (days === 0) day = t("today");
+      else if (days === 1) day = new Intl.RelativeTimeFormat(LOCALE[lang], { numeric: "auto" }).format(1, "day");
+      else day = new Date(it.start).toLocaleDateString(LOCALE[lang], { day: "numeric", month: "short" });
+      day = day.charAt(0).toUpperCase() + day.slice(1);
+      var short = new Intl.DateTimeFormat(LOCALE[lang], { hour: "numeric", minute: "2-digit" }); // «1:00 – 1:45 PM», not «01:00 PM–01:45 PM»
+      var time = it.allDay ? t("calAllDay")
+        : it.kind === "event" && it.end > it.start ? short.formatRange(new Date(it.start), new Date(it.end)) : short.format(new Date(it.start));
+      var li = el("li");
+      li.appendChild(el("span", null, it.title));
+      li.appendChild(el("b", null, day + " · " + time));
+      list.appendChild(li);
+    });
   }
-  $("deadline-card").addEventListener("click", function () {
-    if (deadlineItem) calDay = dayStart(deadlineItem.start);
+  $("upcoming-card").addEventListener("click", function () {
+    if (upcoming.length) calDay = dayStart(upcoming[0].start);
     show("cal");
   });
 
@@ -1451,7 +1498,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     });
     boxes.reverse().forEach(function (box) { list.appendChild(dayBox(box.ts, box.items, box.items.length)); });
     freshId = null;
-    renderDeadline();
+    renderUpcoming();
   }
 
   function show(next) {
@@ -1821,7 +1868,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     stopVoice();
     stopAffirmVoice();
     closeSheet();
-    try { await sb.auth.signOut(); } catch (e) {}
+    // "local" signs out only this device; the default would end the session on every device.
+    try { await sb.auth.signOut({ scope: "local" }); } catch (e) {}
     user = null; profile = null;
     ideasData = []; affirmData = []; progress = {}; progressDay = null; goalDraft = null; calData = [];
     lastRemoved = null;
@@ -2090,7 +2138,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
         : calDay === today ? minutesOf(Date.now()) : 8 * 60;
       $("cal-scroll").scrollTop = Math.max(0, first / 60 * HOUR_PX - HOUR_PX);
     }
-    renderDeadline();
+    renderUpcoming();
   }
   function buildColors() {
     var box = $("cal-colors");
