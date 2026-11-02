@@ -572,14 +572,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
           <input id="gate-uname" type="text" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false">
           <span class="hint" data-i18n="unameHint">3–24 символа: латинские буквы, цифры, _ или .</span>
         </div>
-        <div class="field" id="field-name">
-          <label for="gate-name" data-i18n="name">Имя</label>
-          <input id="gate-name" type="text" maxlength="40" autocomplete="given-name">
-        </div>
-        <div class="field" id="field-surname">
-          <label for="gate-surname" data-i18n="surname">Фамилия</label>
-          <input id="gate-surname" type="text" maxlength="40" autocomplete="family-name">
-        </div>
         <div class="field" id="field-email">
           <label for="gate-email" data-i18n="email">Почта</label>
           <input id="gate-email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false">
@@ -1695,8 +1687,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     $("gate-pass").value = ""; $("gate-pass2").value = "";
     $("field-ident").hidden = !login;
     $("field-uname").hidden = !reg;
-    $("field-name").hidden = !reg;
-    $("field-surname").hidden = !reg;
     $("field-email").hidden = !(reg || forgotMode);
     $("field-pass").hidden = forgotMode;
     $("field-pass2").hidden = !(reg || reset);
@@ -1735,11 +1725,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   }
   async function register() {
     var uname = $("gate-uname").value.trim().toLowerCase();
-    var first = $("gate-name").value.trim(), last = $("gate-surname").value.trim();
     var email = $("gate-email").value.trim(), pass = $("gate-pass").value;
     if (!USERNAME.test(uname)) return fail(t("eUname"));
-    if (!first) return fail(t("eName"));
-    if (!last) return fail(t("eSurname"));
     if (!EMAIL.test(email)) return fail(t("eEmail"));
     if (pass.length < MIN_PASS) return fail(t("ePassShort", { n: MIN_PASS }));
     if (pass !== $("gate-pass2").value) return fail(t("ePassMatch"));
@@ -1750,7 +1737,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       email: email,
       password: pass,
       options: {
-        data: { username: uname, first_name: first.slice(0, 40), last_name: last.slice(0, 40) },
+        data: { username: uname, first_name: "", last_name: "" }, // names are optional, set later in Settings
         emailRedirectTo: location.origin + location.pathname
       }
     });
