@@ -268,7 +268,6 @@ h2, h3, p { margin: 0; }
 kbd { font-family: inherit; font-size: 0.78rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.05rem 0.4rem; }
 @media (min-width: 40rem) { .sheet { align-items: center; } }
 
-.colophon { text-align: center; color: var(--muted); font-size: 0.8rem; }
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%);
   bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px)); z-index: 6;
@@ -934,10 +933,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       </form>
     </div>
   </div>
-
-  <footer class="colophon">
-    <span id="storage-note"></span>
-  </footer>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden>
@@ -1262,7 +1257,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var gateError = $("gate-error"), gateOk = $("gate-ok"), gateSubmit = $("gate-submit");
   var app = $("app"), greetName = $("greet-name");
   var form = $("idea-form"), input = $("idea-input"), saveBtn = $("idea-save");
-  var list = $("list"), empty = $("empty"), count = $("count"), note = $("storage-note");
+  var list = $("list"), empty = $("empty"), count = $("count");
   var toast = $("toast"), toastText = $("toast-text"), toastUndo = $("toast-undo");
 
   var user = null, profile = null;
@@ -1274,7 +1269,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var freshId = null, lastRemoved = null, toastTimer = null;
   var editingId = null, editDraft = "";
 
-  function setNote() { note.textContent = user ? t("noteServer") : ""; }
   // Password fields get an eye button: a tap shows the password for 5 seconds, then it hides again.
   Array.prototype.forEach.call(document.querySelectorAll('.field input[type="password"]'), function (input) {
     var wrap = document.createElement("div");
@@ -1308,7 +1302,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     markChoice("lang-choice", lang);
     $("voice-lang").value = LOCALE[lang];
     $("affirm-voice-lang").value = LOCALE[lang];
-    setNote();
   }
   function setLang(next) {
     if (!I18N[next]) return;
@@ -1902,7 +1895,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     $("lang").hidden = true;
     $("bar-tag").hidden = true;
     greetName.textContent = fullName();
-    setNote();
     show("home");
     render();
     saveBtn.disabled = !input.value.trim();
@@ -1919,7 +1911,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     lastRemoved = null;
     toast.hidden = true;
     input.value = "";
-    setNote();
     showGate("login");
   }
   $("lock").addEventListener("click", lock);
