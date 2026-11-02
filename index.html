@@ -614,6 +614,14 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 
       <button type="button" class="quick" id="quick"><span data-i18n="quick">Что придумал? Запиши сразу</span> <b aria-hidden="true">+</b></button>
 
+      <section class="card chart-card" data-i18n-aria="chartAria" aria-label="Активность за 7 дней">
+        <div class="chart-head">
+          <h3 data-i18n="activity">Сколько я накручиваю себя</h3>
+          <span class="card-title" data-i18n="perDay">идей в день, эта неделя</span>
+        </div>
+        <div class="chart" id="chart" role="img"></div>
+      </section>
+
       <div class="stats">
         <div class="card stat feature">
           <span class="card-title" data-i18n="total">Всего идей</span>
@@ -626,14 +634,6 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
           <span class="num" id="upcoming-free" data-i18n="free" hidden>Свободно</span>
         </button>
       </div>
-
-      <section class="card chart-card" data-i18n-aria="chartAria" aria-label="Активность за 7 дней">
-        <div class="chart-head">
-          <h3 data-i18n="activity">Сколько я накручиваю себя</h3>
-          <span class="card-title" data-i18n="perDay">идей в день, эта неделя</span>
-        </div>
-        <div class="chart" id="chart" role="img"></div>
-      </section>
 
       <section class="stack" data-i18n-aria="recent" aria-label="Последние идеи">
         <div class="section-head">
