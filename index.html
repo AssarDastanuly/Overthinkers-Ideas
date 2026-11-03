@@ -88,7 +88,7 @@ body {
 .page { max-width: 36rem; margin-inline: auto; display: flex; flex-direction: column; gap: 1.5rem; }
 #app, .view { display: flex; flex-direction: column; gap: 1.25rem; }
 button { font: inherit; cursor: pointer; color: inherit; }
-button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 h2, h3, p { margin: 0; }
 
 /* Top bar */
@@ -549,6 +549,10 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .hero mark { display: inline-block; background: var(--ink); color: var(--bg); padding: 0 0.18em; border-radius: 0.18em; transform: rotate(-2deg); }
 .hero-q { margin: 0; font-family: var(--hand); font-weight: 700; font-size: clamp(1.7rem, 7vw, 2.2rem); line-height: 1.1; }
 .hero-lead { margin: 0; max-width: 30rem; color: var(--muted); font-size: 1.05rem; }
+/* No lone last words: headings balance their lines, running text avoids orphans. */
+h1, h2, h3, .hero-q, .hero-lead { text-wrap: balance; }
+p, small, .hint { text-wrap: pretty; }
+.hero mark { font-variant-numeric: tabular-nums; }
 .hero .primary { margin-top: 0.4rem; padding: 0.95rem 2rem; border-radius: 999px; font-size: 1.05rem; }
 .hero-source { font-size: 0.78rem; color: var(--muted); }
 .author-note { margin: 0; padding: 1rem 1.1rem; background: #34a853; border-radius: 18px; color: #0e1a13; }
@@ -557,7 +561,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 
 /* Header toggle for the minimal mode. */
 .mode-btn { width: 2.35rem; height: 2.35rem; flex: none; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
-.mode-btn svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 2; }
+.mode-glyph { font-family: "Inter", system-ui, sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
 .mode-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* Minimal mode: Inter everywhere, plain black and white, no grid, no marker strokes.
@@ -614,7 +618,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     <div class="top-right">
       <span class="bar-tag" id="bar-tag" data-i18n="tag">личный архив</span>
       <button type="button" class="mode-btn" id="mode-btn" data-i18n-aria="modeAria" aria-label="Минималистичный режим" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg>
+        <span class="mode-glyph" aria-hidden="true">Aa</span>
       </button>
       <select class="lang" id="lang" data-i18n-aria="langAria" aria-label="Язык">
         <option value="ru">RU</option>
@@ -1784,10 +1788,31 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     gateHint.textContent = reg || reset ? t("minPass", { n: MIN_PASS }) : "";
     $("gate-pass-label").textContent = t(reset ? "newPass" : "pass");
   }
+  // The one moment of motion on the page: the hero number runs up from 0 the first time it shows.
+  var heroCounted = false;
+  function countUpHero() {
+    if (heroCounted) return;
+    heroCounted = true;
+    var mark = document.querySelector('.hero mark');
+    if (!mark || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // hold the final width so the headline does not jump while the digits run
+    mark.style.minWidth = mark.getBoundingClientRect().width + "px";
+    mark.style.textAlign = "center";
+    var target = 6200, fmt = new Intl.NumberFormat(LOCALE[lang]), start = null;
+    function step(now) {
+      if (start === null) start = now;
+      var p = Math.min(1, (now - start) / 1100);
+      var eased = 1 - Math.pow(1 - p, 3);
+      mark.textContent = p < 1 ? fmt.format(Math.round(target * eased)) : t("heroNum");
+      if (p < 1) requestAnimationFrame(step); else mark.style.minWidth = "";
+    }
+    requestAnimationFrame(step);
+  }
   function showGate(next) {
     mode = next;
     var reg = next === "register", forgotMode = next === "forgot", reset = next === "reset", login = next === "login";
     gate.hidden = false; app.hidden = true; $("author-note").hidden = false; $("hero").hidden = false;
+    countUpHero();
     $("lang").hidden = false; $("bar-tag").hidden = false;
     gateWait.hidden = true; gateFields.hidden = false;
     gateError.hidden = true; gateOk.hidden = true; gateSubmit.hidden = false;
