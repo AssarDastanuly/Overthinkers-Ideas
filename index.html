@@ -38,7 +38,7 @@
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: a phone-style app in one centered column — greeting, a quick-capture row, a
    featured green stat card beside two small ones, a 7-day activity chart, recent ideas;
@@ -554,6 +554,56 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 .author-note { margin: 0; padding: 1rem 1.1rem; background: #34a853; border-radius: 18px; color: #0e1a13; }
 .author-note p { margin: 0; color: #0e1a13; font-family: var(--hand); font-size: 1.35rem; line-height: 1.25; }
 .author-note cite { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; font-weight: 700; opacity: 0.7; }
+
+/* Header toggle for the minimal mode. */
+.mode-btn { width: 2.35rem; height: 2.35rem; flex: none; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
+.mode-btn svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 2; }
+.mode-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* Minimal mode: Inter everywhere, plain black and white, no grid, no marker strokes.
+   Cards are told apart by hairline borders instead of colour; the only "colour" left is black. */
+:root[data-mode="minimal"] {
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #F2F2F2; --ink: #000000; --muted: #6B6B6B; --line: #E4E4E4;
+  --green: #000000; --green-deep: #333333; --mint: #E4E4E4; --on-green: #000000; --btn-ink: #FFFFFF;
+  --scrim: rgba(0, 0, 0, 0.4); --shadow: none;
+  --hand: "Inter", system-ui, sans-serif; --brand: "Inter", system-ui, sans-serif;
+  --display: "Inter", system-ui, sans-serif; --body: "Inter", system-ui, sans-serif;
+}
+:root[data-mode="minimal"] body {
+  --paper: #FFFFFF; --paper-img: none; --surface: #FFFFFF; --grid: transparent; --mark: transparent;
+  --pat1: none; --pat2: none; --card-a: #F2F2F2; --card-b: #F2F2F2; --card-c: #F2F2F2;
+  font-feature-settings: "cv11", "ss01";
+}
+:root[data-mode="minimal"][data-theme="dark"] {
+  --bg: #000000; --surface: #0E0E0E; --surface-2: #1A1A1A; --ink: #FFFFFF; --muted: #9A9A9A; --line: #262626;
+  --green: #FFFFFF; --green-deep: #D4D4D4; --mint: #2A2A2A; --on-green: #FFFFFF; --btn-ink: #000000;
+}
+:root[data-mode="minimal"][data-theme="dark"] body { --paper: #000000; --surface: #0E0E0E; --card-a: #1A1A1A; --card-b: #1A1A1A; --card-c: #1A1A1A; }
+@media (prefers-color-scheme: dark) {
+  :root[data-mode="minimal"]:not([data-theme="light"]) {
+    --bg: #000000; --surface: #0E0E0E; --surface-2: #1A1A1A; --ink: #FFFFFF; --muted: #9A9A9A; --line: #262626;
+    --green: #FFFFFF; --green-deep: #D4D4D4; --mint: #2A2A2A; --on-green: #FFFFFF; --btn-ink: #000000;
+  }
+  :root[data-mode="minimal"]:not([data-theme="light"]) body { --paper: #000000; --surface: #0E0E0E; --card-a: #1A1A1A; --card-b: #1A1A1A; --card-c: #1A1A1A; }
+}
+:root[data-mode="minimal"] .card, :root[data-mode="minimal"] .quick, :root[data-mode="minimal"] .nav,
+:root[data-mode="minimal"] .gate { box-shadow: none; border: 1px solid var(--line); }
+:root[data-mode="minimal"] .hello h2, :root[data-mode="minimal"] .section-head h2, :root[data-mode="minimal"] .gate h2 {
+  background: none; padding-inline: 0; font-weight: 700; letter-spacing: -0.035em; font-size: clamp(1.8rem, 7vw, 2.3rem);
+}
+:root[data-mode="minimal"] .hello span { font-size: 1rem; font-weight: 500; }
+:root[data-mode="minimal"] .stat .num, :root[data-mode="minimal"] .stat.feature .num { font-weight: 700; letter-spacing: -0.04em; }
+:root[data-mode="minimal"] .stats .stat.feature, :root[data-mode="minimal"] .stats .stat:nth-child(2) { background: var(--surface-2); color: var(--ink); border: 0; }
+:root[data-mode="minimal"] .stats .stat .card-title, :root[data-mode="minimal"] .stats .stat small, :root[data-mode="minimal"] .stats .stat.upcoming { color: var(--ink); }
+:root[data-mode="minimal"] .stats .stat.feature::after { display: none; }
+:root[data-mode="minimal"] .add, :root[data-mode="minimal"] .quick b { background: var(--ink); color: var(--bg); box-shadow: none; }
+:root[data-mode="minimal"] .author-note { background: var(--surface-2); color: var(--ink); }
+:root[data-mode="minimal"] .author-note p { color: var(--ink); font-size: 1.05rem; line-height: 1.5; font-weight: 500; }
+:root[data-mode="minimal"] .hero h1 { letter-spacing: -0.045em; }
+:root[data-mode="minimal"] .hero mark { transform: none; border-radius: 0.12em; }
+:root[data-mode="minimal"] .hero-q { font-size: clamp(1.2rem, 5vw, 1.45rem); font-weight: 600; }
+:root[data-mode="minimal"] .brand-logo { filter: grayscale(1) contrast(1.15); }
+:root[data-mode="minimal"] .mode-btn { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 </style>
 
 <div class="page">
@@ -561,6 +611,9 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     <h1 class="brand"><img class="brand-logo" src="/img/logo-banner.png" alt="overfocusAI" width="134" height="44"></h1>
     <div class="top-right">
       <span class="bar-tag" id="bar-tag" data-i18n="tag">личный архив</span>
+      <button type="button" class="mode-btn" id="mode-btn" data-i18n-aria="modeAria" aria-label="Минималистичный режим" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg>
+      </button>
       <select class="lang" id="lang" data-i18n-aria="langAria" aria-label="Язык">
         <option value="ru">RU</option>
         <option value="kk">ҚАЗ</option>
@@ -963,7 +1016,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
   var LOCALE = { ru: "ru-RU", kk: "kk-KZ", en: "en-US", fr: "fr-FR", zh: "zh-CN", es: "es-ES" };
   var I18N = {
     ru: {
-      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", heroA: "У человека", heroNum: "6 200", heroB: "мыслей в день.", heroQ: "Ты запомнишь все?", heroLead: "Запиши мысль за секунду — и она перестанет крутиться в голове.", heroCta: "Начать бесплатно", heroSource: "По данным Queen's University, 2020", showPass: "Показать пароль", opening: "Открываем архив…",
+      langAria: "Язык интерфейса", tag: "личный архив", logout: "Выйти", gateAria: "Вход в архив", modeAria: "Минималистичный режим", heroA: "У человека", heroNum: "6 200", heroB: "мыслей в день.", heroQ: "Ты запомнишь все?", heroLead: "Запиши мысль за секунду — и она перестанет крутиться в голове.", heroCta: "Начать бесплатно", heroSource: "По данным Queen's University, 2020", showPass: "Показать пароль", opening: "Открываем архив…",
       name: "Имя", surname: "Фамилия", copy: "Скопировать", copied: "Скопировано", recCode: "Код восстановления",
       pass: "Пароль", newPass: "Новый пароль", pass2: "Пароль ещё раз", signIn: "Войти", backLogin: "Назад ко входу",
       forgot: "Забыли пароль?", byCode: "Восстановить по коду", wipe: "Стереть всё и начать заново", cancel: "Отмена",
@@ -1007,7 +1060,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Есть вопросы?", contactText: "Если у вас есть вопросы, пишите на почту.", phoneLabel: "Номер", emailLabel: "Почта", creatorLabel: "Создатель"
     },
     kk: {
-      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", heroA: "Адамда күніне", heroNum: "6 200", heroB: "ой болады.", heroQ: "Бәрін есте сақтай аласың ба?", heroLead: "Ойды бір секундта жаз — сонда ол басыңда айнала бермейді.", heroCta: "Тегін бастау", heroSource: "Queen's University деректері, 2020", showPass: "Құпиясөзді көрсету", opening: "Мұрағат ашылуда…",
+      langAria: "Интерфейс тілі", tag: "жеке мұрағат", logout: "Шығу", gateAria: "Мұрағатқа кіру", modeAria: "Минималистік режим", heroA: "Адамда күніне", heroNum: "6 200", heroB: "ой болады.", heroQ: "Бәрін есте сақтай аласың ба?", heroLead: "Ойды бір секундта жаз — сонда ол басыңда айнала бермейді.", heroCta: "Тегін бастау", heroSource: "Queen's University деректері, 2020", showPass: "Құпиясөзді көрсету", opening: "Мұрағат ашылуда…",
       name: "Аты", surname: "Тегі", copy: "Көшіру", copied: "Көшірілді", recCode: "Қалпына келтіру коды",
       pass: "Құпиясөз", newPass: "Жаңа құпиясөз", pass2: "Құпиясөзді қайталаңыз", signIn: "Кіру", backLogin: "Кіруге оралу",
       forgot: "Құпиясөзді ұмыттыңыз ба?", byCode: "Код арқылы қалпына келтіру", wipe: "Бәрін өшіріп, қайта бастау", cancel: "Бас тарту",
@@ -1051,7 +1104,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Сұрақтарыңыз бар ма?", contactText: "Сұрақтарыңыз болса, поштаға жазыңыз.", phoneLabel: "Телефон", emailLabel: "Пошта", creatorLabel: "Жасаған"
     },
     en: {
-      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", heroA: "A person has", heroNum: "6,200", heroB: "thoughts a day.", heroQ: "Will you remember them all?", heroLead: "Write a thought down in a second, and it stops spinning in your head.", heroCta: "Start for free", heroSource: "Source: Queen's University, 2020", showPass: "Show password", opening: "Opening the archive…",
+      langAria: "Interface language", tag: "private archive", logout: "Sign out", gateAria: "Sign in to the archive", modeAria: "Minimal mode", heroA: "A person has", heroNum: "6,200", heroB: "thoughts a day.", heroQ: "Will you remember them all?", heroLead: "Write a thought down in a second, and it stops spinning in your head.", heroCta: "Start for free", heroSource: "Source: Queen's University, 2020", showPass: "Show password", opening: "Opening the archive…",
       name: "First name", surname: "Last name", copy: "Copy", copied: "Copied", recCode: "Recovery code",
       pass: "Password", newPass: "New password", pass2: "Repeat password", signIn: "Sign in", backLogin: "Back to sign-in",
       forgot: "Forgot password?", byCode: "Recover with code", wipe: "Erase everything and start over", cancel: "Cancel",
@@ -1095,7 +1148,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Questions?", contactText: "If you have any questions, send an email.", phoneLabel: "Phone", emailLabel: "Email", creatorLabel: "Created by"
     },
     fr: {
-      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", heroA: "Nous avons", heroNum: "6 200", heroB: "pensées par jour.", heroQ: "Tu vas toutes t’en souvenir ?", heroLead: "Note une pensée en une seconde, et elle arrête de tourner dans ta tête.", heroCta: "Commencer gratuitement", heroSource: "Source : Queen's University, 2020", showPass: "Afficher le mot de passe", opening: "Ouverture de l'archive…",
+      langAria: "Langue de l'interface", tag: "archive privée", logout: "Se déconnecter", gateAria: "Connexion à l'archive", modeAria: "Mode minimaliste", heroA: "Nous avons", heroNum: "6 200", heroB: "pensées par jour.", heroQ: "Tu vas toutes t’en souvenir ?", heroLead: "Note une pensée en une seconde, et elle arrête de tourner dans ta tête.", heroCta: "Commencer gratuitement", heroSource: "Source : Queen's University, 2020", showPass: "Afficher le mot de passe", opening: "Ouverture de l'archive…",
       name: "Prénom", surname: "Nom", copy: "Copier", copied: "Copié", recCode: "Code de récupération",
       pass: "Mot de passe", newPass: "Nouveau mot de passe", pass2: "Répétez le mot de passe", signIn: "Se connecter", backLogin: "Retour à la connexion",
       forgot: "Mot de passe oublié ?", byCode: "Récupérer avec le code", wipe: "Tout effacer et recommencer", cancel: "Annuler",
@@ -1139,7 +1192,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "Des questions ?", contactText: "Si vous avez des questions, écrivez-nous par e-mail.", phoneLabel: "Téléphone", emailLabel: "E-mail", creatorLabel: "Créé par"
     },
     zh: {
-      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", heroA: "人每天有", heroNum: "6200", heroB: "个念头。", heroQ: "你能全都记住吗？", heroLead: "一秒记下念头，它就不再在脑海里打转。", heroCta: "免费开始", heroSource: "数据来源：Queen's University，2020", showPass: "显示密码", opening: "正在打开档案…",
+      langAria: "界面语言", tag: "私人档案", logout: "退出", gateAria: "登录档案", modeAria: "极简模式", heroA: "人每天有", heroNum: "6200", heroB: "个念头。", heroQ: "你能全都记住吗？", heroLead: "一秒记下念头，它就不再在脑海里打转。", heroCta: "免费开始", heroSource: "数据来源：Queen's University，2020", showPass: "显示密码", opening: "正在打开档案…",
       name: "名字", surname: "姓氏", copy: "复制", copied: "已复制", recCode: "恢复码",
       pass: "密码", newPass: "新密码", pass2: "再次输入密码", signIn: "登录", backLogin: "返回登录",
       forgot: "忘记密码？", byCode: "用恢复码找回", wipe: "清空全部并重新开始", cancel: "取消",
@@ -1183,7 +1236,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       contactTitle: "有问题吗？", contactText: "如有任何问题，欢迎发邮件。", phoneLabel: "电话", emailLabel: "邮箱", creatorLabel: "作者"
     },
     es: {
-      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", heroA: "Una persona tiene", heroNum: "6.200", heroB: "pensamientos al día.", heroQ: "¿Los vas a recordar todos?", heroLead: "Anota un pensamiento en un segundo y dejará de dar vueltas en tu cabeza.", heroCta: "Empezar gratis", heroSource: "Fuente: Queen's University, 2020", showPass: "Mostrar contraseña", opening: "Abriendo el archivo…",
+      langAria: "Idioma de la interfaz", tag: "archivo privado", logout: "Salir", gateAria: "Entrar al archivo", modeAria: "Modo minimalista", heroA: "Una persona tiene", heroNum: "6.200", heroB: "pensamientos al día.", heroQ: "¿Los vas a recordar todos?", heroLead: "Anota un pensamiento en un segundo y dejará de dar vueltas en tu cabeza.", heroCta: "Empezar gratis", heroSource: "Fuente: Queen's University, 2020", showPass: "Mostrar contraseña", opening: "Abriendo el archivo…",
       name: "Nombre", surname: "Apellido", copy: "Copiar", copied: "Copiado", recCode: "Código de recuperación",
       pass: "Contraseña", newPass: "Nueva contraseña", pass2: "Repite la contraseña", signIn: "Entrar", backLogin: "Volver al inicio de sesión",
       forgot: "¿Olvidaste la contraseña?", byCode: "Recuperar con el código", wipe: "Borrar todo y empezar de nuevo", cancel: "Cancelar",
@@ -1321,6 +1374,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
     lang = next;
     try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
     applyLang();
+    $("mode-btn").title = t("modeAria");
     gateError.hidden = true;
     voiceNote.hidden = true;
     if (mode !== "wait" && !gate.hidden) gateTexts();
@@ -1939,6 +1993,22 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
       b.setAttribute("aria-pressed", b.value === value ? "true" : "false");
     });
   }
+  // Minimal mode (Inter, black and white) is a per-device choice, like the theme.
+  var MODE_KEY = "overthinkers-mode";
+  var uiMode = (function () { try { return localStorage.getItem(MODE_KEY) === "minimal" ? "minimal" : "default"; } catch (e) { return "default"; } })();
+  function applyMode() {
+    var root = document.documentElement, on = uiMode === "minimal";
+    if (on) root.setAttribute("data-mode", "minimal"); else root.removeAttribute("data-mode");
+    $("mode-btn").setAttribute("aria-pressed", on ? "true" : "false");
+    $("mode-btn").title = t("modeAria");
+    queueTilt();
+  }
+  $("mode-btn").addEventListener("click", function () {
+    uiMode = uiMode === "minimal" ? "default" : "minimal";
+    try { localStorage.setItem(MODE_KEY, uiMode); } catch (e) {}
+    applyMode();
+  });
+  applyMode();
   function applyTheme() {
     var root = document.documentElement, want = theme === "system" ? hostTheme : theme;
     if (want) root.setAttribute("data-theme", want); else root.removeAttribute("data-theme");
