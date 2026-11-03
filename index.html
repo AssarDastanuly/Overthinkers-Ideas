@@ -604,6 +604,8 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
 :root[data-mode="minimal"] .hero-q { font-size: clamp(1.2rem, 5vw, 1.45rem); font-weight: 600; }
 :root[data-mode="minimal"] .brand-logo { filter: grayscale(1) contrast(1.15); }
 :root[data-mode="minimal"] .mode-btn { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+/* Colour backgrounds don't apply in black and white, so the picker is hidden there. */
+:root[data-mode="minimal"] #bg-card { display: none; }
 </style>
 
 <div class="page">
@@ -839,7 +841,7 @@ body[data-pattern="none"] { --pat1: none; --pat2: none; }
           <button type="button" value="dark" data-i18n="themeDark">Тёмная</button>
         </div>
       </section>
-      <section class="card stack">
+      <section class="card stack" id="bg-card">
         <h3 data-i18n="bgTitle">Фон и карточки</h3>
         <p class="hint" data-i18n="bgHint">Выберите оформление. Оно сохранится на этом устройстве.</p>
         <div class="swatches" id="bg-choice"></div>
